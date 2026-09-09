@@ -35,9 +35,9 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.15), rgba(5, 4, 3, 0.25)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
-            background-position: top center !important; /* Ancora a imagem no topo para o texto não sair do lugar */
+            background-position: top center !important; /* Trava a foto no topo para a escrita nunca mudar de lugar */
             background-attachment: fixed;
             color: #f3e5ab;
             font-family: 'Helvetica Neue', sans-serif;
@@ -227,7 +227,6 @@ else:
 
 st.markdown("""
     <style>
-    /* Oculta os cabeçalhos padrão do Streamlit para o topo ficar limpo */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -243,41 +242,63 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Sobrescreve o botão vermelho padrão do Streamlit para dourado */
-    button[kind="primary"] {
-        background: linear-gradient(135deg, #d4af37 0%, #996515 100%) !important;
-        color: #0c0908 !important;
-        font-weight: bold !important;
-        border: none !important;
-        border-radius: 8px !important;
-        width: 100% !important;
-        padding: 0.6rem !important;
-        text-transform: uppercase !important;
-        letter-spacing: 1.5px !important;
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3) !important;
+    /* ----------------------------------------------------------------- */
+    /* DESIGN IDÊNTICO À IMAGEM: Caixa sem fundo, borda fina e pílulas   */
+    /* ----------------------------------------------------------------- */
+
+    /* Container Principal da Caixa (Sem fundo escuro, apenas a borda fina) */
+    div[data-testid="column"]:has(input[type="password"]) {
+        max-width: 330px !important; 
+        margin: 0 auto !important; 
+        float: none !important;
+        background-color: transparent !important; 
+        border: 1px solid rgba(212, 175, 55, 0.4) !important; /* Borda dourada fina */
+        border-radius: 6px !important;
+        padding: 30px 25px 25px 25px !important;
+    }
+
+    /* Estilo do Input (Pílula com fundo escuro e borda fina) */
+    .stTextInput div[data-baseweb="input"] {
+        background-color: rgba(10, 8, 7, 0.8) !important;
+        border: 1px solid rgba(212, 175, 55, 0.35) !important;
+        border-radius: 30px !important; /* Formato de pílula arredondado */
     }
     
-    button[kind="primary"]:hover {
-        background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%) !important;
-        color: #000000 !important;
+    .stTextInput div[data-baseweb="input"]:focus-within {
+        border: 1px solid rgba(212, 175, 55, 0.8) !important;
+        box-shadow: 0 0 5px rgba(212, 175, 55, 0.2) !important;
     }
 
-    /* Estilização da caixa de inputs para ficar escura e com borda fina */
-    div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] {
-        background-color: rgba(9, 7, 6, 0.95) !important;
-        border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 10px !important;
-        padding: 12px 15px !important;
-        box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.8) !important;
-    }
-
-    /* Modifica as caixas de texto */
-    .stTextInput input, .stSelectbox select {
-        background-color: rgba(20, 16, 13, 1) !important;
+    .stTextInput input {
         color: #f3e5ab !important;
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
-        border-radius: 6px !important;
-        padding: 6px 10px !important;
+        background-color: transparent !important;
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+    }
+    
+    .stTextInput input::placeholder {
+        color: rgba(243, 229, 171, 0.4) !important;
+    }
+
+    /* Botão de Login (Pílula com degradê) */
+    .stButton > button {
+        background: linear-gradient(180deg, rgba(60,45,25,1) 0%, rgba(120,95,50,1) 50%, rgba(60,45,25,1) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.5) !important;
+        border-radius: 30px !important; /* Formato de pílula arredondado */
+        color: #f3e5ab !important;
+        text-transform: uppercase !important;
+        letter-spacing: 4px !important;
+        font-weight: 500 !important;
+        padding: 12px !important;
+        margin-top: 15px !important;
+        width: 100% !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stButton > button:hover {
+        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 50%, rgba(80,60,30,1) 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(212, 175, 55, 0.9) !important;
     }
     
     [data-testid="stSidebar"] {
@@ -289,23 +310,19 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # Este espaçador é o que empurra a caixa de login milimetricamente para baixo!
-    # "48vh" significa 48% da altura da tela. Isso garante que fique embaixo da escrita.
-    st.markdown('<div style="height: 48vh;"></div>', unsafe_allow_html=True)
+    # ESPAÇADOR PERFEITO: Empurra a caixa exatamente para baixo do texto (43% da tela)
+    st.markdown('<div style="height: 43vh;"></div>', unsafe_allow_html=True)
 
-    # Cria colunas para espremer a caixa e deixá-la pequena no centro
-    col_esq, col_form, col_dir = st.columns([1, 4, 1])
-    
-    with col_form:
-      with st.container(border=True):
+    col_esq, col_login, col_dir = st.columns([1, 10, 1])
+    with col_login:
+        # Usa placeholders com emojis para simular os ícones idênticos à imagem, e esconde labels
         login_digitado = st.text_input(
-            "Usuário", key="login_usuario_jurado", placeholder="Digite seu usuário", label_visibility="collapsed"
+            "Usuário", key="login_usuario_jurado", placeholder="👤   Usuário", label_visibility="collapsed"
         )
         senha_digitada = st.text_input(
-            "Senha", type="password", key="senha_login_jurado", placeholder="Digite sua senha", label_visibility="collapsed"
+            "Senha", type="password", key="senha_login_jurado", placeholder="🔒   Senha", label_visibility="collapsed"
         )
-        st.write("")
-        if st.button("ENTRAR", type="primary"):
+        if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
           usuario_limpo = login_digitado.strip()
           if usuario_limpo in senhas_jurados:
             if senha_digitada == senhas_jurados[usuario_limpo]:
