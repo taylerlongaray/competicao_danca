@@ -11,7 +11,7 @@ if "votos" not in st.session_state:
 if "revelado" not in st.session_state:
   st.session_state.revelado = False
 
-# Categorias organizadas por Condutores e Conduzidas (com Diamante atualizado)
+# Categorias organizadas por Condutores e Conduzidas
 categorias = {
     "Aprendendo a Voar": {
         "Condutores": ["Fernando"],
@@ -120,76 +120,70 @@ if modo == "Painel do Jurado":
   # 2. Jurado
   jurado_atual = st.selectbox("Identifique-se (Jurado):", jurados)
 
-  # 3. Selecionar tipo de participante dinâmico
-  tipo_selecionado = st.selectbox(
-      "Selecionar Competidor:", ["Selecione...", "Condutor", "Conduzida"]
+  # 3. Escolha direta entre Condutor ou Conduzida (com botões lado a lado)
+  tipo_selecionado = st.radio(
+      "Selecione o Grupo:", ["Condutor", "Conduzida"], horizontal=True
   )
-
-  competidor_escolhido = None
-  papel_escolhido = None
 
   if tipo_selecionado == "Condutor":
     papel_escolhido = "Condutores"
     competidor_escolhido = st.selectbox(
         "Selecionar Condutor:", categorias[categoria_escolhida]["Condutores"]
     )
-  elif tipo_selecionado == "Conduzida":
+  else:
     papel_escolhido = "Conduzidas"
     competidor_escolhido = st.selectbox(
         "Selecionar Conduzida:", categorias[categoria_escolhida]["Conduzidas"]
     )
 
-  # Só exibe os critérios e notas se já escolheu se é Condutor ou Conduzida
-  if tipo_selecionado != "Selecione...":
-    st.divider()
-    st.subheader(
-        f"📋 Avaliação de Todos os Critérios para: {competidor_escolhido}"
-        f" ({tipo_selecionado})"
+  st.divider()
+  st.subheader(
+      f"📋 Avaliação de Todos os Critérios para: {competidor_escolhido}"
+      f" ({tipo_selecionado})"
+  )
+
+  notas_jurado = {}
+  justificativas_jurado = {}
+
+  for criterio_nome, descricao in criterios_por_categoria[
+      categoria_escolhida
+  ].items():
+    st.markdown(f"### 🔹 {criterio_nome}")
+    st.info(f"💡 **O que avaliar:** {descricao}")
+
+    chave_base = f"{categoria_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
+
+    notas_jurado[criterio_nome] = st.number_input(
+        f"Digite a nota para {criterio_nome} (0 a 10):",
+        min_value=0.0,
+        max_value=10.0,
+        value=5.0,
+        step=0.1,
+        format="%.1f",
+        key=f"input_{chave_base}",
     )
+    justificativas_jurado[criterio_nome] = st.text_area(
+        f"Justificativa para {criterio_nome} (Opcional):",
+        key=f"just_{chave_base}",
+    )
+    st.write("")
 
-    notas_jurado = {}
-    justificativas_jurado = {}
+  if st.button("Enviar Todas as Notas", type="primary"):
+    for criterio_nome, nota_val in notas_jurado.items():
+      novo_voto = {
+          "jurado": jurado_atual,
+          "categoria": categoria_escolhida,
+          "papel": papel_escolhido,
+          "competidor": competidor_escolhido,
+          "criterio": criterio_nome,
+          "nota": nota_val,
+          "justificativa": justificativas_jurado[criterio_nome],
+      }
+      st.session_state.votos.append(novo_voto)
 
-    for criterio_nome, descricao in criterios_por_categoria[
-        categoria_escolhida
-    ].items():
-      st.markdown(f"### 🔹 {criterio_nome}")
-      st.info(f"💡 **O que avaliar:** {descricao}")
-
-      chave_base = f"{categoria_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
-
-      notas_jurado[criterio_nome] = st.number_input(
-          f"Digite a nota para {criterio_nome} (0 a 10):",
-          min_value=0.0,
-          max_value=10.0,
-          value=5.0,
-          step=0.1,
-          format="%.1f",
-          key=f"input_{chave_base}",
-      )
-      justificativas_jurado[criterio_nome] = st.text_area(
-          f"Justificativa para {criterio_nome} (Opcional):",
-          key=f"just_{chave_base}",
-      )
-      st.write("")
-
-    if st.button("Enviar Todas as Notas", type="primary"):
-      for criterio_nome, nota_val in notas_jurado.items():
-        novo_voto = {
-            "jurado": jurado_atual,
-            "categoria": categoria_escolhida,
-            "papel": papel_escolhido,
-            "competidor": competidor_escolhido,
-            "criterio": criterio_nome,
-            "nota": nota_val,
-            "justificativa": justificativas_jurado[criterio_nome],
-        }
-        st.session_state.votos.append(novo_voto)
-
-      st.success(
-          f"Todas as notas foram enviadas com sucesso para"
-          f" {competidor_escolhido}!"
-      )
+    st.success(
+        f"Todas as notas foram enviadas com sucesso para {competidor_escolhido}!"
+    )
 
 # ---------------------------------------------------------
 # 2. PAINEL DA ORGANIZAÇÃO (Protegido por Senha)
