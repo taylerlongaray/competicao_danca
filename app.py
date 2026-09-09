@@ -33,7 +33,7 @@ if modo == "Painel do Jurado":
     competidor_escolhido = st.selectbox("Escolha o Competidor:", competidores)
     
     criterio = st.selectbox("Critério:", ["Sincronismo", "Figurino", "Ritmo e Musicalidade"])
-    nota = st.slider("Nota (0 a 10):", 0.0, 10.0, 5.0, 0.5)
+    nota = st.slider("Nota (0 a 10):", 0.0, 10.0, 5.0, 0.1)
     justificativa = st.text_area("Justificativa (Opcional):")
     
     if st.button("Enviar Nota", type="primary"):
