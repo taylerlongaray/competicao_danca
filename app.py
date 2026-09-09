@@ -1,7 +1,67 @@
 import pandas as pd
 import streamlit as st
 
-st.set_page_config(page_title="Competição de Dança", layout="wide")
+st.set_page_config(
+    page_title="Jack & Jill - Noite nas Arábias", page_icon="🌙", layout="wide"
+)
+
+# Estilização visual inspirada na identidade "Noite nas Arábias" (Luxo, Tons Escuros e Dourados)
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: #090706;
+        color: #f3e5ab;
+        font-family: 'Helvetica Neue', sans-serif;
+    }
+    
+    /* Títulos e Cabeçalhos com Estilo Luxuoso */
+    h1, h2, h3 {
+        color: #e5c158 !important;
+        font-family: 'Georgia', serif;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    /* Botões com Gradiente Dourado */
+    .stButton>button {
+        background: linear-gradient(135deg, #d4af37 0%, #996515 100%);
+        color: #0c0908;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        width: 100%;
+        padding: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        color: #000000;
+    }
+
+    /* Campos de Entrada Estilizados */
+    .stTextInput input, .stSelectbox select {
+        background-color: #14100d !important;
+        color: #f3e5ab !important;
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Elementos ocultos para layout limpo tipo app profissional */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Sidebar Customizada */
+    [data-testid="stSidebar"] {
+        background-color: #0e0a08;
+        border-right: 1px solid rgba(212, 175, 55, 0.15);
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 if "votos" not in st.session_state:
   st.session_state.votos = []
@@ -99,7 +159,7 @@ criterios_por_categoria = {
     "Ouro": {
         "Conexão e Resposta": (
             "Qualidade da conexão, comunicação corporal, precisão, resposta,"
-            " atenção, sintonia e naturalidade."
+            " attention, sintonia e naturalidade."
         ),
         "Movimentos Característicos e Sambado": (
             "Domínio, repertório, técnica, segurança, fluidez, criatividade e"
@@ -149,62 +209,117 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
-st.sidebar.title("Navegação")
+st.sidebar.markdown(
+    "<h2 style='text-align: center; color: #e5c158;'>✨ PASSION DANCE</h2>",
+    unsafe_allow_html=True,
+)
+st.sidebar.markdown(
+    "<p style='text-align: center; color: #b39b6b; font-size: 12px;'>JACK &"
+    " JILL - NOITE NAS ARÁBIAS</p>",
+    unsafe_allow_html=True,
+)
+st.sidebar.markdown("---")
+
 modo = st.sidebar.radio(
-    "Painel:",
+    "Navegação",
     ["Painel do Jurado", "Painel da Organização", "Telão (Público)"],
+    label_visibility="collapsed",
 )
 
 if modo == "Painel do Jurado":
-  st.title("📱 Painel de Votação do Jurado")
-
   if st.session_state.jurado_logado is None:
-    st.info("🔒 Insira suas credenciais de jurado para acessar o painel.")
-    col1, col2, col3 = st.columns([2, 2, 1])
-    with col1:
-      login_selecionado = st.selectbox(
-          "Usuário:", ["Selecione..."] + list(senhas_jurados.keys())
-      )
-    with col2:
-      senha_digitada = st.text_input(
-          "Senha:", type="password", key="senha_login_jurado"
-      )
-    with col3:
-      st.write("")
-      st.write("")
-      if st.button("Entrar", type="primary"):
-        if login_selecionado != "Selecione...":
-          if senha_digitada == senhas_jurados[login_selecionado]:
-            st.session_state.jurado_logado = login_selecionado
-            st.rerun()
+    # Layout idêntico ao conceito visual da imagem enviada
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown(
+        "<h3"
+        " style='color: #b39b6b; font-size: 14px; letter-spacing: 3px;'>"
+        "PASSION DANCE APRESENTA</h3>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        "<h1"
+        " style='font-size: 42px; font-family: Georgia, serif; color: #e5c158;"
+        " margin-bottom: 0px;'>JACK & JILL</h1>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        "<h3"
+        " style='color: #d4af37; font-size: 16px; letter-spacing: 2px;"
+        " margin-top: 5px;'>NOITE NAS ARÁBIAS</h3>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        "<p style='text-align: center; color: #8c7853; font-size: 11px;"
+        " letter-spacing: 1px; margin-bottom: 30px;'>SISTEMA OFICIAL DE"
+        " COMPETIÇÃO</p>",
+        unsafe_allow_html=True,
+    )
+
+    col_center1, col_form, col_center2 = st.columns([1, 1.2, 1])
+    with col_form:
+      with st.container(border=True):
+        st.markdown(
+            "<p"
+            " style='text-align: center; color: #d4af37; font-size: 12px;"
+            " margin-bottom: 15px;'>ACESSO RESTRITO</p>",
+            unsafe_allow_html=True,
+        )
+        login_selecionado = st.selectbox(
+            "Usuário", ["Selecione o usuário..."] + list(senhas_jurados.keys())
+        )
+        senha_digitada = st.text_input(
+            "Senha", type="password", key="senha_login_jurado"
+        )
+        st.write("")
+        if st.button("ENTRAR", type="primary"):
+          if login_selecionado != "Selecione o usuário...":
+            if senha_digitada == senhas_jurados[login_selecionado]:
+              st.session_state.jurado_logado = login_selecionado
+              st.rerun()
+            else:
+              st.error("❌ Senha incorreta!")
           else:
-            st.error("❌ Senha incorreta!")
-        else:
-          st.error("Selecione um jurado.")
+            st.error("Selecione um usuário válido.")
+    st.markdown(
+        "<p"
+        " style='text-align: center; color: #6e5d42; font-size: 12px;"
+        " margin-top: 40px;'>✨ Mais que passos, conexões. ✨</p>",
+        unsafe_allow_html=True,
+    )
+
   else:
-    col_info, col_sair = st.columns([3, 1])
+    col_info, col_sair = st.columns([4, 1])
     with col_info:
-      st.success(f"Logado com sucesso como: **{st.session_state.jurado_logado}**")
+      st.success(
+          f"✨ Conectado com sucesso como: **{st.session_state.jurado_logado}**"
+      )
     with col_sair:
-      if st.button("Sair (Logout)"):
+      if st.button("Sair"):
         st.session_state.jurado_logado = None
         st.rerun()
 
-    st.divider()
+    st.markdown("---")
 
-    categoria_escolhida = st.selectbox(
-        "Categoria:", list(categorias.keys())
-    )
+    col_cat, col_fase = st.columns(2)
+    with col_cat:
+      categoria_escolhida = st.selectbox(
+          "Categoria", list(categorias.keys())
+      )
 
-    # Só exibe a seleção de fase se a categoria tiver mais de uma fase
     fases_disponiveis = fases_por_categoria[categoria_escolhida]
-    if len(fases_disponiveis) > 1:
-      fase_escolhida = st.selectbox("Fase / Etapa:", fases_disponiveis)
-    else:
-      fase_escolhida = fases_disponiveis[0]
+    with col_fase:
+      if len(fases_disponiveis) > 1:
+        fase_escolhida = st.selectbox("Fase / Etapa", fases_disponiveis)
+      else:
+        fase_escolhida = fases_disponiveis[0]
+        st.text_input("Fase / Etapa", value=fase_escolhida, disabled=True)
 
+    st.markdown("##### Selecione o Grupo")
     tipo_selecionado = st.radio(
-        "Grupo:", ["Condutor", "Conduzida"], horizontal=True
+        "Grupo",
+        ["Condutor", "Conduzida"],
+        horizontal=True,
+        label_visibility="collapsed",
     )
 
     if tipo_selecionado == "Condutor":
@@ -212,18 +327,23 @@ if modo == "Painel do Jurado":
       competidores_ordenados = sorted(
           categorias[categoria_escolhida]["Condutores"]
       )
-      competidor_escolhido = st.selectbox("Condutor:", competidores_ordenados)
+      competidor_escolhido = st.selectbox(
+          "Condutor", competidores_ordenados, label_visibility="collapsed"
+      )
     else:
       papel_escolhido = "Conduzidas"
       competidores_ordenados = sorted(
           categorias[categoria_escolhida]["Conduzidas"]
       )
-      competidor_escolhido = st.selectbox("Conduzida:", competidores_ordenados)
+      competidor_escolhido = st.selectbox(
+          "Conduzida", competidores_ordenados, label_visibility="collapsed"
+      )
 
-    st.divider()
-    st.subheader(
-        f"📋 Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
-        f" {fase_escolhida}"
+    st.markdown("---")
+    st.markdown(
+        f"<h3>Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
+        f" <i>{fase_escolhida}</i></h3>",
+        unsafe_allow_html=True,
     )
 
     notas_jurado = {}
@@ -232,29 +352,34 @@ if modo == "Painel do Jurado":
     for criterio_nome, descricao in criterios_por_categoria[
         categoria_escolhida
     ].items():
-      st.markdown(f"### 🔹 {criterio_nome}")
-      st.info(f"💡 **O que avaliar:** {descricao}")
+      with st.container(border=True):
+        st.markdown(f"<h4>{criterio_nome}</h4>", unsafe_allow_html=True)
+        st.info(f"💡 **O que avaliar:** {descricao}")
 
-      chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
+        chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
 
-      nota_str = st.text_input(
-          f"Digite a nota para {criterio_nome} (0 a 10):",
-          value="5.0",
-          key=f"input_{chave_base}",
-      )
-      try:
-        nota_val = float(nota_str.replace(",", "."))
-      except ValueError:
-        nota_val = 0.0
+        col_nota, col_just = st.columns([1, 2])
+        with col_nota:
+          nota_str = st.text_input(
+              f"Nota (0 a 10) - {criterio_nome}",
+              value="5.0",
+              key=f"input_{chave_base}",
+          )
+          try:
+            nota_val = float(nota_str.replace(",", "."))
+          except ValueError:
+            nota_val = 0.0
+          notas_jurado[criterio_nome] = nota_val
 
-      justificativas_jurado[criterio_nome] = st.text_area(
-          f"Justificativa para {criterio_nome} (Opcional):",
-          key=f"just_{chave_base}",
-      )
-      notas_jurado[criterio_nome] = nota_val
-      st.write("")
+        with col_just:
+          justificativas_jurado[criterio_nome] = st.text_area(
+              "Justificativa (Opcional)",
+              key=f"just_{chave_base}",
+              height=70,
+          )
 
-    if st.button("Enviar Todas as Notas", type="primary"):
+    st.write("")
+    if st.button("ENVIAR TODAS AS NOTAS", type="primary"):
       for criterio_nome, nota_val in notas_jurado.items():
         novo_voto = {
             "jurado": st.session_state.jurado_logado,
@@ -269,42 +394,44 @@ if modo == "Painel do Jurado":
         st.session_state.votos.append(novo_voto)
 
       st.success(
-          f"Notas enviadas com sucesso por {st.session_state.jurado_logado} para"
-          f" {competidor_escolhido} ({fase_escolhida})!"
+          f"✨ Notas enviadas com sucesso por {st.session_state.jurado_logado} para"
+          f" **{competidor_escolhido}** ({fase_escolhida})!"
       )
 
 elif modo == "Painel da Organização":
-  st.title("📋 Painel da Organização (Área Restrita)")
-  senha_digitada = st.text_input(
-      "Senha de acesso da organização:", type="password"
-  )
+  st.title("📋 Painel da Organização")
+  with st.container(border=True):
+    senha_digitada = st.text_input(
+        "Digite a senha de acesso da organização", type="password"
+    )
   SENHA_MESTRE = "danca123"
 
   if senha_digitada == SENHA_MESTRE:
-    st.success("Acesso autorizado!")
+    st.success("🔓 Acesso autorizado!")
     if not st.session_state.votos:
       st.warning("Ainda não há votos registrados na competição.")
     else:
       df_votos = pd.DataFrame(st.session_state.votos)
-      st.subheader("🔍 Todas as Notas e Justificativas Reais")
+      st.markdown("### Auditoria Completa de Notas e Justificativas")
       st.dataframe(df_votos, use_container_width=True)
   elif senha_digitada != "":
     st.error("❌ Senha incorreta!")
 
 else:
-  st.title("🏆 Telão da Competição por Fases e Categorias")
+  st.title("🏆 Telão da Competição — Noite nas Arábias")
 
-  st.sidebar.divider()
-  st.sidebar.subheader("Controle do Telão")
-  revelar_tudo = st.sidebar.checkbox(
-      "Revelar Últimas Notas e Resultados", value=st.session_state.revelado
-  )
-  st.session_state.revelado = revelar_tudo
+  with st.sidebar:
+    st.markdown("---")
+    st.markdown("### Controle do Telão")
+    revelar_tudo = st.checkbox(
+        "Revelar Últimas Notas e Resultados", value=st.session_state.revelado
+    )
+    st.session_state.revelado = revelar_tudo
 
   if not st.session_state.votos:
     st.info(
-        "💡 As abas abaixo estão separadas por categoria. Aguardando o envio"
-        " dos votos!"
+        "💡 Aguardando o envio dos votos pelos jurados. As categorias aparecerão"
+        " aqui."
     )
 
   nomes_abas = list(categorias.keys())
@@ -328,7 +455,7 @@ else:
 
   for i, categoria_nome in enumerate(nomes_abas):
     with abas[i]:
-      st.subheader(f"📊 Categoria: {categoria_nome}")
+      st.markdown(f"## 📊 Categoria: {categoria_nome}")
       df_cat = df_votos[df_votos["categoria"] == categoria_nome]
 
       if df_cat.empty:
@@ -350,7 +477,7 @@ else:
 
           with container:
             if len(fases_da_cat) > 1:
-              st.markdown(f"### 📌 Etapa: {fase_nome}")
+              st.markdown(f"### Etapa: {fase_nome}")
 
             df_fase = df_cat[df_cat["fase"] == fase_nome]
             sub_abas = st.tabs(["Condutores", "Conduzidas"])
@@ -426,8 +553,8 @@ else:
 
         if categoria_nome in ["Platina", "Diamante"]:
           st.divider()
-          st.subheader(
-              "🌟 Classificação Geral Acumulada (Fase 1 + Fase 2 Somadas)"
+          st.markdown(
+              "### 🌟 Classificação Geral Acumulada (Fase 1 + Fase 2 Somadas)"
           )
           df_cat_geral = df_cat.copy()
           if not df_cat_geral.empty:
