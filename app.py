@@ -101,7 +101,7 @@ modo = st.sidebar.radio(
 )
 
 # ---------------------------------------------------------
-# 1. PAINEL DO JURADO (Votação em todos os critérios da categoria)
+# 1. PAINEL DO JURADO (Nota digitada em todos os critérios)
 # ---------------------------------------------------------
 if modo == "Painel do Jurado":
   st.title("📱 Painel de Votação do Jurado")
@@ -125,7 +125,6 @@ if modo == "Painel do Jurado":
       f"📋 Avaliação de Todos os Critérios para: {competidor_escolhido}"
   )
 
-  # Dicionários temporários para capturar as notas de cada critério
   notas_jurado = {}
   justificativas_jurado = {}
 
@@ -136,13 +135,15 @@ if modo == "Painel do Jurado":
     st.markdown(f"### 🔹 {criterio_nome}")
     st.info(f"💡 **O que avaliar:** {descricao}")
 
-    notas_jurado[criterio_nome] = st.slider(
-        f"Nota para {criterio_nome} (0 a 10):",
-        0.0,
-        10.0,
-        5.0,
-        0.1,
-        key=f"slider_{criterio_nome}",
+    # Campo de digitação de nota (number_input) sem a barra deslizante
+    notas_jurado[criterio_nome] = st.number_input(
+        f"Digite a nota para {criterio_nome} (0 a 10):",
+        min_value=0.0,
+        max_value=10.0,
+        value=5.0,
+        step=0.1,
+        format="%.1f",
+        key=f"input_{criterio_nome}",
     )
     justificativas_jurado[criterio_nome] = st.text_area(
         f"Justificativa para {criterio_nome} (Opcional):",
@@ -151,7 +152,6 @@ if modo == "Painel do Jurado":
     st.write("")
 
   if st.button("Enviar Todas as Notas", type="primary"):
-    # Salva uma linha de voto para cada critério avaliado
     for criterio_nome, nota_val in notas_jurado.items():
       novo_voto = {
           "jurado": jurado_atual,
