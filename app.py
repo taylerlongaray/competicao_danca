@@ -120,7 +120,7 @@ if modo == "Painel do Jurado":
   # 2. Jurado
   jurado_atual = st.selectbox("Identifique-se (Jurado):", jurados)
 
-  # 3. Escolha direta entre Condutor ou Conduzida (com botões lado a lado)
+  # 3. Escolha direta entre Condutor ou Conduzida
   tipo_selecionado = st.radio(
       "Selecione o Grupo:", ["Condutor", "Conduzida"], horizontal=True
   )
@@ -203,7 +203,7 @@ elif modo == "Painel da Organização":
       st.warning("Ainda não há votos registrados na competição.")
     else:
       df_votos = pd.DataFrame(st.session_state.votos)
-      st.subheader("🔍 Todas as Notas e Justificativas")
+      st.subheader("🔍 Todas as Notas e Justificativas Reais")
       st.dataframe(df_votos, use_container_width=True)
 
   elif senha_digitada != "":
@@ -265,6 +265,7 @@ else:
             if df_papel.empty:
               st.info(f"Sem votos para {papel_nome} nesta categoria ainda.")
             else:
+              # Regra de suspense: se não revelado, oculta o último voto de cada competidor do cálculo
               if not st.session_state.revelado:
                 indices_para_ignorar = []
                 for comp in df_papel["competidor"].unique():
@@ -276,6 +277,7 @@ else:
                 df_calculo = df_papel.copy()
 
               if not df_calculo.empty:
+                # Ranking ordenado da maior para a menor nota
                 ranking = (
                     df_calculo.groupby("competidor")["nota"]
                     .mean()
@@ -287,12 +289,12 @@ else:
                 ).reset_index(drop=True)
                 ranking.index = ranking.index + 1
 
-                st.markdown("##### Ranking")
+                st.markdown("##### 🏆 Ranking de Classificação")
                 st.dataframe(ranking, use_container_width=True)
               else:
                 st.warning("Aguardando mais votos para o ranking parcial.")
 
-              st.markdown("##### Histórico de Notas")
+              st.markdown("##### 📝 Histórico de Notas")
               df_exibicao_papel = df_papel.copy()
               if not st.session_state.revelado:
                 indices_para_mascarar = []
@@ -307,7 +309,7 @@ else:
                     str
                 )
                 df_exibicao_papel.loc[indices_para_mascarar, "nota"] = (
-                    "🔒 [Oculta para Suspense]"
+                    "🔒 [Nota Secreta Oculta]"
                 )
                 df_exibicao_papel.loc[indices_para_mascarar, "justificativa"] = (
                     "🔒 [Oculta]"
