@@ -35,7 +35,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.25), rgba(5, 4, 3, 0.35)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.20), rgba(5, 4, 3, 0.30)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -271,35 +271,28 @@ st.markdown("""
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
-    /* Posição mais abaixo para não encobrir o texto do topo */
-    .login-container-pos {
-        margin-top: 57vh; 
+    /* Trava a caixa de login exatamente na área do retângulo vermelho por coordenadas absolutas da tela */
+    div[data-testid="column"]:has(input) {
+        position: absolute !important;
+        top: 52vh !important;
+        left: 12vw !important;
+        width: 76vw !important;
+        z-index: 999;
     }
 
-    /* Caixa menor, compacta e elegante */
+    /* Estilo compacto do container de login */
     div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] {
-        background-color: rgba(8, 6, 5, 0.75) !important;
-        border: 1px solid rgba(212, 175, 55, 0.35) !important;
+        background-color: rgba(8, 6, 5, 0.85) !important;
+        border: 1px solid rgba(212, 175, 55, 0.45) !important;
         border-radius: 8px !important;
-        padding: 6px 10px !important;
+        padding: 8px 12px !important;
     }
 
     @media (max-width: 768px) {
-        .login-container-pos {
-            margin-top: 55vh;
-        }
-        .stColumns {
-            flex-direction: column !important;
-        }
-        div[data-testid="column"] {
-            width: 100% !important;
-            flex: 1 1 100% !important;
-            min-width: 100% !important;
-        }
-        .block-container {
-            padding-left: 0.6rem !important;
-            padding-right: 0.6rem !important;
-            padding-top: 0.1rem !important;
+        div[data-testid="column"]:has(input) {
+            top: 52vh !important;
+            left: 10vw !important;
+            width: 80vw !important;
         }
     }
     </style>
@@ -307,10 +300,6 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    st.markdown(
-        '<div class="login-container-pos"></div>', unsafe_allow_html=True
-    )
-
     col_center1, col_form, col_center2 = st.columns([0.1, 3.8, 0.1])
     with col_form:
       with st.container(border=True):
