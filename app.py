@@ -271,28 +271,28 @@ st.markdown("""
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
-    /* Trava a caixa de login exatamente na área do retângulo vermelho por coordenadas absolutas da tela */
+    /* Posicionamento mais abaixo (65vh), fixando no espaco vazio inferior */
     div[data-testid="column"]:has(input) {
         position: absolute !important;
-        top: 52vh !important;
-        left: 12vw !important;
-        width: 76vw !important;
+        top: 65vh !important;
+        left: 10vw !important;
+        width: 80vw !important;
         z-index: 999;
     }
 
     /* Estilo compacto do container de login */
     div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] {
-        background-color: rgba(8, 6, 5, 0.85) !important;
-        border: 1px solid rgba(212, 175, 55, 0.45) !important;
+        background-color: rgba(8, 6, 5, 0.80) !important;
+        border: 1px solid rgba(212, 175, 55, 0.4) !important;
         border-radius: 8px !important;
-        padding: 8px 12px !important;
+        padding: 6px 10px !important;
     }
 
     @media (max-width: 768px) {
         div[data-testid="column"]:has(input) {
-            top: 52vh !important;
-            left: 10vw !important;
-            width: 80vw !important;
+            top: 65vh !important;
+            left: 8vw !important;
+            width: 84vw !important;
         }
     }
     </style>
