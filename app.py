@@ -35,7 +35,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.50), rgba(5, 4, 3, 0.65)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.40), rgba(5, 4, 3, 0.50)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -150,7 +150,7 @@ criterios_por_categoria = {
     },
     "Ouro": {
         "Conexão e Resposta": (
-            "Qualidade da conexão, comunicação corporal, precisão, resposta,"
+            "Qualidade da conexão, communication corporal, precisão, resposta,"
             " atenção, sintonia e naturalidade."
         ),
         "Movimentos Característicos e Sambado": (
@@ -290,18 +290,12 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # Espaçamento vertical ampliado para empurrar o card para o espaço vazio inferior
-    st.markdown("<br><br><br><br><br><br><br>", unsafe_allow_html=True)
+    # Espaçamento ajustado exatamente para posicionar o card na área vazia (retângulo vermelho)
+    st.markdown("<br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
 
     col_center1, col_form, col_center2 = st.columns([0.5, 3, 0.5])
     with col_form:
       with st.container(border=True):
-        st.markdown(
-            "<p"
-            " style='text-align: center; color: #d4af37; font-size: 11px;"
-            " margin-bottom: 10px; letter-spacing: 1px;'>ACESSO RESTRITO</p>",
-            unsafe_allow_html=True,
-        )
         login_digitado = st.text_input(
             "Usuário", key="login_usuario_jurado", placeholder="Digite seu usuário"
         )
