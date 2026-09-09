@@ -100,14 +100,14 @@ criterios_por_categoria = {
     },
 }
 
-# Lista de jurados cadastrados (incluindo o seu teste)
-jurados_cadastrados = [
-    "alisson (teste)",
-    "Jurado 1",
-    "Jurado 2",
-    "Jurado 3",
-    "Jurado de Referência",
-]
+# Dicionário com os jurados e suas respectivas senhas de acesso
+senhas_jurados = {
+    "alisson (teste)": "1234",
+    "Jurado 1": "1234",
+    "Jurado 2": "1234",
+    "Jurado 3": "1234",
+    "Jurado de Referência": "1234",
+}
 
 # Menu lateral
 st.sidebar.title("Navegação")
@@ -117,36 +117,42 @@ modo = st.sidebar.radio(
 )
 
 # ---------------------------------------------------------
-# 1. PAINEL DO JURADO (Com Tela de Login)
+# 1. PAINEL DO JURADO (Com Login e Senha)
 # ---------------------------------------------------------
 if modo == "Painel do Jurado":
   st.title("📱 Painel de Votação do Jurado")
 
-  # Tela de Login do Jurado se ainda não estiver logado
+  # Tela de Login e Senha se ainda não estiver logado
   if st.session_state.jurado_logado is None:
-    st.info("🔒 Por favor, faça o login com o seu usuário de jurado para continuar.")
-    
-    col1, col2 = st.columns([2, 1])
+    st.info("🔒 Insira suas credenciais de jurado para acessar o painel.")
+
+    col1, col2, col3 = st.columns([2, 2, 1])
     with col1:
       login_selecionado = st.selectbox(
-          "Selecione o seu usuário:", ["Selecione..."] + jurados_cadastrados
+          "Selecione o seu usuário:", ["Selecione..."] + list(senhas_jurados.keys())
       )
-    
     with col2:
+      senha_digitada = st.text_input(
+          "Senha:", type="password", key="senha_login_jurado"
+      )
+    with col3:
       st.write("")
       st.write("")
       if st.button("Entrar", type="primary"):
         if login_selecionado != "Selecione...":
-          st.session_state.jurado_logado = login_selecionado
-          st.rerun()
+          if senha_digitada == senhas_jurados[login_selecionado]:
+            st.session_state.jurado_logado = login_selecionado
+            st.rerun()
+          else:
+            st.error("❌ Senha incorreta!")
         else:
-          st.error("Selecione um jurado válido.")
-  
+          st.error("Selecione um jurado.")
+
   else:
-    # Exibe quem está logado e um botão para sair/trocar
+    # Exibe quem está logado e botão de sair
     col_info, col_sair = st.columns([3, 1])
     with col_info:
-      st.success(f"Logado como: **{st.session_state.jurado_logado}**")
+      st.success(f"Logado com sucesso como: **{st.session_state.jurado_logado}**")
     with col_sair:
       if st.button("Sair (Logout)"):
         st.session_state.jurado_logado = None
