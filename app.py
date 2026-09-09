@@ -37,7 +37,7 @@ def obter_fundo_css(tipo_tela):
         .stApp {{
             background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
-            background-position: top center !important; /* Trava a foto no topo para a escrita nunca mudar de lugar */
+            background-position: top center !important;
             background-attachment: fixed;
             color: #f3e5ab;
             font-family: 'Helvetica Neue', sans-serif;
@@ -201,22 +201,38 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
-st.sidebar.markdown(
-    "<h2 style='text-align: center; color: #e5c158;'>✨ PASSION DANCE</h2>",
-    unsafe_allow_html=True,
-)
-st.sidebar.markdown(
-    "<p style='text-align: center; color: #b39b6b; font-size: 12px;'>JACK &"
-    " JILL - NOITE NAS ARÁBIAS</p>",
-    unsafe_allow_html=True,
-)
-st.sidebar.markdown("---")
+# Verifica se o link acessado é o exclusivo para jurados (?view=jurado)
+query_params = st.query_params
+link_jurado_exclusivo = query_params.get("view") == "jurado"
 
-modo = st.sidebar.radio(
-    "Navegação",
-    ["Painel do Jurado", "Painel da Organização", "Telão (Público)"],
-    label_visibility="collapsed",
-)
+if link_jurado_exclusivo:
+  modo = "Painel do Jurado"
+  # Oculta completamente a barra lateral no link do jurado
+  st.markdown(
+      """
+        <style>
+        [data-testid="stSidebar"] { display: none !important; }
+        </style>
+        """,
+      unsafe_allow_html=True,
+  )
+else:
+  st.sidebar.markdown(
+      "<h2 style='text-align: center; color: #e5c158;'>✨ PASSION DANCE</h2>",
+      unsafe_allow_html=True,
+  )
+  st.sidebar.markdown(
+      "<p style='text-align: center; color: #b39b6b; font-size: 12px;'>JACK &"
+      " JILL - NOITE NAS ARÁBIAS</p>",
+      unsafe_allow_html=True,
+  )
+  st.sidebar.markdown("---")
+
+  modo = st.sidebar.radio(
+      "Navegação",
+      ["Painel do Jurado", "Painel da Organização", "Telão (Público)"],
+      label_visibility="collapsed",
+  )
 
 if modo == "Painel do Jurado" and st.session_state.jurado_logado is None:
   st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
@@ -242,26 +258,21 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* ----------------------------------------------------------------- */
-    /* DESIGN IDÊNTICO À IMAGEM: Caixa sem fundo, borda fina e pílulas   */
-    /* ----------------------------------------------------------------- */
-
-    /* Container Principal da Caixa (Sem fundo escuro, apenas a borda fina) */
+    /* Caixa de login idêntica à referência */
     div[data-testid="column"]:has(input[type="password"]) {
         max-width: 330px !important; 
         margin: 0 auto !important; 
         float: none !important;
         background-color: transparent !important; 
-        border: 1px solid rgba(212, 175, 55, 0.4) !important; /* Borda dourada fina */
+        border: 1px solid rgba(212, 175, 55, 0.4) !important;
         border-radius: 6px !important;
         padding: 30px 25px 25px 25px !important;
     }
 
-    /* Estilo do Input (Pílula com fundo escuro e borda fina) */
     .stTextInput div[data-baseweb="input"] {
         background-color: rgba(10, 8, 7, 0.8) !important;
         border: 1px solid rgba(212, 175, 55, 0.35) !important;
-        border-radius: 30px !important; /* Formato de pílula arredondado */
+        border-radius: 30px !important;
     }
     
     .stTextInput div[data-baseweb="input"]:focus-within {
@@ -280,11 +291,10 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
-    /* Botão de Login (Pílula com degradê) */
     .stButton > button {
         background: linear-gradient(180deg, rgba(60,45,25,1) 0%, rgba(120,95,50,1) 50%, rgba(60,45,25,1) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 30px !important; /* Formato de pílula arredondado */
+        border-radius: 30px !important;
         color: #f3e5ab !important;
         text-transform: uppercase !important;
         letter-spacing: 4px !important;
@@ -310,28 +320,33 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # ESPAÇADOR PERFEITO: Empurra a caixa exatamente para baixo do texto (43% da tela)
     st.markdown('<div style="height: 43vh;"></div>', unsafe_allow_html=True)
 
     col_esq, col_login, col_dir = st.columns([1, 10, 1])
     with col_login:
-        # Usa placeholders com emojis para simular os ícones idênticos à imagem, e esconde labels
-        login_digitado = st.text_input(
-            "Usuário", key="login_usuario_jurado", placeholder="👤   Usuário", label_visibility="collapsed"
-        )
-        senha_digitada = st.text_input(
-            "Senha", type="password", key="senha_login_jurado", placeholder="🔒   Senha", label_visibility="collapsed"
-        )
-        if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
-          usuario_limpo = login_digitado.strip()
-          if usuario_limpo in senhas_jurados:
-            if senha_digitada == senhas_jurados[usuario_limpo]:
-              st.session_state.jurado_logado = usuario_limpo
-              st.rerun()
-            else:
-              st.error("❌ Senha incorreta!")
+      login_digitado = st.text_input(
+          "Usuário",
+          key="login_usuario_jurado",
+          placeholder="👤   Usuário",
+          label_visibility="collapsed",
+      )
+      senha_digitada = st.text_input(
+          "Senha",
+          type="password",
+          key="senha_login_jurado",
+          placeholder="🔒   Senha",
+          label_visibility="collapsed",
+      )
+      if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
+        usuario_limpo = login_digitado.strip()
+        if usuario_limpo in senhas_jurados:
+          if senha_digitada == senhas_jurados[usuario_limpo]:
+            st.session_state.jurado_logado = usuario_limpo
+            st.rerun()
           else:
-            st.error("❌ Usuário não encontrado.")
+            st.error("❌ Senha incorreta!")
+        else:
+          st.error("❌ Usuário não encontrado.")
   else:
     col_info, col_sair = st.columns([3, 1])
     with col_info:
