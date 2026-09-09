@@ -4,17 +4,30 @@ import pandas as pd
 import streamlit as st
 
 st.set_page_config(
-    page_title="Jack & Jill - Noite nas Arábias", page_icon="🌙", layout="wide"
+    page_title="Jack & Jill - Noite nas Arábias",
+    page_icon="🌙",
+    layout="wide",
+    initial_sidebar_state="auto",
 )
 
 
-# Função blindada para encontrar a imagem de fundo independentemente de maiúsculas/minúsculas
-def aplicar_fundo():
+# Função inteligente que aplica imagens diferentes dependendo da tela atual
+def obter_fundo_css(tipo_tela):
+  # Mapeia qual arquivo procurar de acordo com a tela
+  candidatos = [f"fundo_{tipo_tela}.png", f"fundo_{tipo_tela}.jpg"]
+
   img_encontrada = None
-  for arquivo in os.listdir("."):
-    if arquivo.lower() in ["fundo.png", "fundo.jpg", "fundo.jpeg"]:
+  for arquivo in candidatos:
+    if os.path.exists(arquivo):
       img_encontrada = arquivo
       break
+
+  # Se não achar a específica, tenta achar uma geral (fundo.png / fundo.jpg)
+  if not img_encontrada:
+    for arquivo in ["fundo.png", "fundo.jpg", "Fundo.png", "Fundo.jpg"]:
+      if os.path.exists(arquivo):
+        img_encontrada = arquivo
+        break
 
   if img_encontrada:
     with open(img_encontrada, "rb") as f:
@@ -25,7 +38,7 @@ def aplicar_fundo():
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.55), rgba(5, 4, 3, 0.65)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.60), rgba(5, 4, 3, 0.70)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -35,7 +48,6 @@ def aplicar_fundo():
         </style>
         """
   else:
-    st.sidebar.warning("⚠️ Arquivo de fundo não encontrado na pasta.")
     return """
         <style>
         .stApp {
@@ -46,55 +58,6 @@ def aplicar_fundo():
         """
 
 
-st.markdown(aplicar_fundo(), unsafe_allow_html=True)
-
-# Estilização visual inspirada na identidade "Noite nas Arábias"
-st.markdown("""
-    <style>
-    h1, h2, h3 {
-        color: #e5c158 !important;
-        font-family: 'Georgia', serif;
-        text-align: center;
-        letter-spacing: 1px;
-    }
-
-    .stButton>button {
-        background: linear-gradient(135deg, #d4af37 0%, #996515 100%);
-        color: #0c0908;
-        font-weight: bold;
-        border: none;
-        border-radius: 8px;
-        width: 100%;
-        padding: 0.6rem;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        transition: all 0.3s ease;
-    }
-    .stButton>button:hover {
-        background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%);
-        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
-        color: #000000;
-    }
-
-    .stTextInput input, .stSelectbox select {
-        background-color: rgba(20, 16, 13, 0.85) !important;
-        color: #f3e5ab !important;
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
-        border-radius: 8px !important;
-    }
-    
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    [data-testid="stSidebar"] {
-        background-color: rgba(14, 10, 8, 0.95);
-        border-right: 1px solid rgba(212, 175, 55, 0.15);
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 if "votos" not in st.session_state:
   st.session_state.votos = []
 
@@ -104,6 +67,7 @@ if "revelado" not in st.session_state:
 if "jurado_logado" not in st.session_state:
   st.session_state.jurado_logado = None
 
+# Listas oficiais de competidores atualizadas
 categorias = {
     "Aprendendo a Voar": {
         "Condutores": ["Bruno", "Ivan", "Luis"],
@@ -176,7 +140,7 @@ criterios_por_categoria = {
     },
     "Prata": {
         "Conexão e Resposta": (
-            "Conexão, comunicação corporal, condução, resposta, atenção e"
+            "Conexão, communication corporal, condução, resposta, atenção e"
             " sintonia."
         ),
         "Movimentos Característicos e Sambado": (
@@ -258,12 +222,89 @@ modo = st.sidebar.radio(
     label_visibility="collapsed",
 )
 
+# Define qual fundo carregar com base na tela ativa
+if modo == "Painel do Jurado" and st.session_state.jurado_logado is None:
+  st.markdown(
+      obter_fundo_css("login"), unsafe_allow_html=True
+  )  _# Procura fundo_login.png/jpg
+elif modo == "Telão (Público)":
+  st.markdown(
+      obter_fundo_css("telao"), unsafe_allow_html=True
+  )  # Procura fundo_telao.png/jpg
+else:
+  st.markdown(
+      obter_fundo_css("painel"), unsafe_allow_html=True
+  )  # Procura fundo_painel.png/jpg
+
+# Estilização de Luxo + Responsividade Mobile Avançada
+st.markdown("""
+    <style>
+    h1, h2, h3 {
+        color: #e5c158 !important;
+        font-family: 'Georgia', serif;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .stButton>button {
+        background: linear-gradient(135deg, #d4af37 0%, #996515 100%);
+        color: #0c0908;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        width: 100%;
+        padding: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        color: #000000;
+    }
+
+    .stTextInput input, .stSelectbox select {
+        background-color: rgba(20, 16, 13, 0.90) !important;
+        color: #f3e5ab !important;
+        border: 1px solid rgba(212, 175, 55, 0.4) !important;
+        border-radius: 8px !important;
+    }
+    
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    [data-testid="stSidebar"] {
+        background-color: rgba(14, 10, 8, 0.96);
+        border-right: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    @media (max-width: 768px) {
+        .stColumns {
+            flex-direction: column !important;
+        }
+        div[data-testid="column"] {
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+            margin-bottom: 10px;
+        }
+        .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            padding-top: 1rem !important;
+        }
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # Espaçamento para empurrar o card de login para a mesma posição da imagem de referência
-    st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
-    col_center1, col_form, col_center2 = st.columns([1, 1.2, 1])
+    col_center1, col_form, col_center2 = st.columns([0.5, 3, 0.5])
     with col_form:
       with st.container(border=True):
         st.markdown(
@@ -272,7 +313,6 @@ if modo == "Painel do Jurado":
             " margin-bottom: 10px; letter-spacing: 1px;'>ACESSO RESTRITO</p>",
             unsafe_allow_html=True,
         )
-        # Login por texto digitado
         login_digitado = st.text_input(
             "Usuário", key="login_usuario_jurado", placeholder="Digite seu usuário"
         )
@@ -281,7 +321,6 @@ if modo == "Painel do Jurado":
         )
         st.write("")
         if st.button("ENTRAR", type="primary"):
-          # Normaliza para minúsculas/espaços para facilitar o digite do usuário
           usuario_limpo = login_digitado.strip()
           if usuario_limpo in senhas_jurados:
             if senha_digitada == senhas_jurados[usuario_limpo]:
@@ -292,11 +331,9 @@ if modo == "Painel do Jurado":
           else:
             st.error("❌ Usuário não encontrado.")
   else:
-    col_info, col_sair = st.columns([4, 1])
+    col_info, col_sair = st.columns([3, 1])
     with col_info:
-      st.success(
-          f"✨ Conectado com sucesso como: **{st.session_state.jurado_logado}**"
-      )
+      st.success(f"✨ Conectado: **{st.session_state.jurado_logado}**")
     with col_sair:
       if st.button("Sair"):
         st.session_state.jurado_logado = None
@@ -541,7 +578,9 @@ else:
                     indices_para_mascarar = []
                     for comp in df_exibicao_papel["competidor"].unique():
                       temp_df = df_exibicao_papel[
-                          df_exibicao_papel["competidor"] == comp
+                          df_exibicao_pal_ := df_exibicao_papel[
+                              df_exibicao_papel["competidor"] == comp
+                          ]
                       ]
                       if not temp_df.empty:
                         indices_para_mascarar.append(temp_df.index[-1])
