@@ -37,7 +37,7 @@ def obter_fundo_css(tipo_tela):
         .stApp {{
             background-image: linear-gradient(rgba(5, 4, 3, 0.15), rgba(5, 4, 3, 0.25)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
-            background-position: center;
+            background-position: top center !important; /* Ancora a imagem no topo para o texto não sair do lugar */
             background-attachment: fixed;
             color: #f3e5ab;
             font-family: 'Helvetica Neue', sans-serif;
@@ -227,6 +227,15 @@ else:
 
 st.markdown("""
     <style>
+    /* Oculta os cabeçalhos padrão do Streamlit para o topo ficar limpo */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    .block-container {
+        padding-top: 1rem !important;
+    }
+
     h1, h2, h3 {
         color: #e5c158 !important;
         font-family: 'Georgia', serif;
@@ -234,52 +243,42 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Oculta margens globais no modo login para evitar rolagem indesejada */
-    .block-container {
-        padding-top: 1rem !important;
+    /* Sobrescreve o botão vermelho padrão do Streamlit para dourado */
+    button[kind="primary"] {
+        background: linear-gradient(135deg, #d4af37 0%, #996515 100%) !important;
+        color: #0c0908 !important;
+        font-weight: bold !important;
+        border: none !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        padding: 0.6rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3) !important;
+    }
+    
+    button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%) !important;
+        color: #000000 !important;
     }
 
-    /* ESTILO FIXO, PEQUENO E CENTRALIZADO EXCLUSIVO DO LOGIN (Caixa Vermelha) */
-    div[data-testid="column"]:has(input[type="password"]) {
-        position: fixed !important;
-        top: 61% !important; /* Desce até o exato meio do espaço vazio vermelho */
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 80% !important;
-        max-width: 320px !important; /* Trava o tamanho para ser uma caixa pequena */
+    /* Estilização da caixa de inputs para ficar escura e com borda fina */
+    div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] {
         background-color: rgba(9, 7, 6, 0.95) !important;
-        border: 1.5px solid rgba(212, 175, 55, 0.6) !important;
+        border: 1px solid rgba(212, 175, 55, 0.5) !important;
         border-radius: 10px !important;
-        padding: 15px 15px 5px 15px !important;
-        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8) !important;
-        z-index: 99999 !important;
+        padding: 12px 15px !important;
+        box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.8) !important;
     }
 
-    /* Deixa os botões e inputs menores e mais compactos */
-    div[data-testid="column"]:has(input[type="password"]) .stTextInput input {
-        font-size: 13px !important;
-        padding: 6px 10px !important;
-        min-height: 36px !important;
+    /* Modifica as caixas de texto */
+    .stTextInput input, .stSelectbox select {
         background-color: rgba(20, 16, 13, 1) !important;
+        color: #f3e5ab !important;
+        border: 1px solid rgba(212, 175, 55, 0.4) !important;
+        border-radius: 6px !important;
+        padding: 6px 10px !important;
     }
-
-    div[data-testid="column"]:has(input[type="password"]) .stButton>button {
-        padding: 4px 10px !important;
-        font-size: 14px !important;
-        min-height: 38px !important;
-        background: linear-gradient(135deg, #d4af37 0%, #996515 100%);
-        color: #0c0908;
-        font-weight: bold;
-        border: none;
-        border-radius: 6px;
-        width: 100%;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }
-
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
     
     [data-testid="stSidebar"] {
         background-color: rgba(14, 10, 8, 0.96);
@@ -290,9 +289,15 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # A estrutura aqui é mínima, pois o CSS flutua essa coluna especificamente para o espaço vazio
-    col_esq, col_login, col_dir = st.columns([1, 8, 1])
-    with col_login:
+    # Este espaçador é o que empurra a caixa de login milimetricamente para baixo!
+    # "48vh" significa 48% da altura da tela. Isso garante que fique embaixo da escrita.
+    st.markdown('<div style="height: 48vh;"></div>', unsafe_allow_html=True)
+
+    # Cria colunas para espremer a caixa e deixá-la pequena no centro
+    col_esq, col_form, col_dir = st.columns([1, 4, 1])
+    
+    with col_form:
+      with st.container(border=True):
         login_digitado = st.text_input(
             "Usuário", key="login_usuario_jurado", placeholder="Digite seu usuário", label_visibility="collapsed"
         )
