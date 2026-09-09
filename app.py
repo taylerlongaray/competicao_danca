@@ -14,15 +14,31 @@ if "revelado" not in st.session_state:
 if "jurado_logado" not in st.session_state:
   st.session_state.jurado_logado = None
 
-# Categorias organizadas por Condutores e Conduzidas
+# Categorias atualizadas com os nomes em verde da imagem (Diamante mantido)
 categorias = {
     "Aprendendo a Voar": {
-        "Condutores": ["Fernando"],
-        "Conduzidas": ["Juliana"],
+        "Condutores": ["Bruno"],
+        "Conduzidas": ["Sheila", "Carla"],
     },
-    "Prata": {"Condutores": ["Marcos"], "Conduzidas": ["Elena"]},
-    "Ouro": {"Condutores": ["Diego"], "Conduzidas": ["Carla"]},
-    "Platina": {"Condutores": ["Bruno"], "Conduzidas": ["Beatriz"]},
+    "Prata": {
+        "Condutores": ["Michel", "Alisson"],
+        "Conduzidas": ["Franciele"],
+    },
+    "Ouro": {
+        "Condutores": [
+            "Jonatan Santos",
+            "Edilson**",
+            "Lukas",
+            "Welisson",
+            "Duarte",
+            "Diego Dom",
+        ],
+        "Conduzidas": ["Marcia", "Juliana", "Thaizete", "Michele"],
+    },
+    "Platina": {
+        "Condutores": ["Anderson", "Douglas Clo"],
+        "Conduzidas": ["Nanda", "Cassi"],
+    },
     "Diamante": {
         "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
         "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
@@ -164,13 +180,17 @@ if modo == "Painel do Jurado":
     # Competidores ordenados alfabeticamente apenas para o jurado
     if tipo_selecionado == "Condutor":
       papel_escolhido = "Condutores"
-      competidores_ordenados = sorted(categorias[categoria_escolhida]["Condutores"])
+      competidores_ordenados = sorted(
+          categorias[categoria_escolhida]["Condutores"]
+      )
       competidor_escolhido = st.selectbox(
           "Selecionar Condutor:", competidores_ordenados
       )
     else:
       papel_escolhido = "Conduzidas"
-      competidores_ordenados = sorted(categorias[categoria_escolhida]["Conduzidas"])
+      competidores_ordenados = sorted(
+          categorias[categoria_escolhida]["Conduzidas"]
+      )
       competidor_escolhido = st.selectbox(
           "Selecionar Conduzida:", competidores_ordenados
       )
@@ -321,7 +341,6 @@ else:
                     .reset_index()
                 )
                 ranking.columns = ["Competidor", "Média Geral"]
-                # Ranking ordenado da maior para a menor nota
                 ranking = ranking.sort_values(
                     by="Média Geral", ascending=False
                 ).reset_index(drop=True)
@@ -333,9 +352,15 @@ else:
                 st.warning("Aguardando mais votos para o ranking parcial.")
 
               st.markdown("##### 📝 Histórico de Notas")
-              # Apenas notas (sem justificativas) na visão pública do telão
               df_exibicao_papel = df_papel[
-                  ["jurado", "categoria", "papel", "competidor", "criterio", "nota"]
+                  [
+                      "jurado",
+                      "categoria",
+                      "papel",
+                      "competidor",
+                      "criterio",
+                      "nota",
+                  ]
               ].copy()
 
               if not st.session_state.revelado:
