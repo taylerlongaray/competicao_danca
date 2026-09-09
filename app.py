@@ -271,36 +271,24 @@ st.markdown("""
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
-    /* Posicionamento mais abaixo (65vh), fixando no espaco vazio inferior */
-    div[data-testid="column"]:has(input) {
-        position: absolute !important;
-        top: 65vh !important;
-        left: 10vw !important;
-        width: 80vw !important;
-        z-index: 999;
-    }
-
-    /* Estilo compacto do container de login */
+    /* Caixa de login compacta e elegante */
     div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] {
-        background-color: rgba(8, 6, 5, 0.80) !important;
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
+        background-color: rgba(8, 6, 5, 0.75) !important;
+        border: 1px solid rgba(212, 175, 55, 0.35) !important;
         border-radius: 8px !important;
-        padding: 6px 10px !important;
-    }
-
-    @media (max-width: 768px) {
-        div[data-testid="column"]:has(input) {
-            top: 65vh !important;
-            left: 8vw !important;
-            width: 84vw !important;
-        }
+        padding: 8px 12px !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    col_center1, col_form, col_center2 = st.columns([0.1, 3.8, 0.1])
+    # Espaçador proporcional em altura da tela (46% do topo fica livre para a imagem de fundo)
+    st.markdown(
+        '<div style="height: 46vh; width: 100%;"></div>', unsafe_allow_html=True
+    )
+
+    col_esq, col_form, col_dir = st.columns([0.5, 3, 0.5])
     with col_form:
       with st.container(border=True):
         login_digitado = st.text_input(
@@ -554,14 +542,14 @@ else:
                   st.markdown("##### 📝 Histórico de Notas da Etapa")
                   df_exibicao_papel = df_papel[
                       [
-                          "jurado",
-                          "categoria",
-                          "fase",
-                          "papel",
-                          "competidor",
-                          "criterio",
-                          "nota",
-                      ]
+                        "jurado",
+                        "categoria",
+                        "fase",
+                        "papel",
+                        "competidor",
+                        "criterio",
+                        "nota",
+                    ]
                   ].copy()
 
                   if not st.session_state.revelado:
