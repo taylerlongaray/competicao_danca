@@ -201,13 +201,19 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
-# Verifica se o link acessado é o exclusivo para jurados (?view=jurado)
-query_params = st.query_params
-link_jurado_exclusivo = query_params.get("view") == "jurado"
+# Leitura segura dos parâmetros de URL compatível com qualquer versão do Streamlit
+try:
+  params = st.query_params
+  link_jurado_exclusivo = (
+      params.get("view") == "jurado"
+      if hasattr(params, "get")
+      else False
+  )
+except Exception:
+  link_jurado_exclusivo = False
 
 if link_jurado_exclusivo:
   modo = "Painel do Jurado"
-  # Oculta completamente a barra lateral no link do jurado
   st.markdown(
       """
         <style>
@@ -258,7 +264,6 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Caixa de login idêntica à referência */
     div[data-testid="column"]:has(input[type="password"]) {
         max-width: 330px !important; 
         margin: 0 auto !important; 
