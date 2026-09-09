@@ -35,7 +35,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.60), rgba(5, 4, 3, 0.70)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.50), rgba(5, 4, 3, 0.65)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -290,7 +290,8 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    # Espaçamento vertical ampliado para empurrar o card para o espaço vazio inferior
+    st.markdown("<br><br><br><br><br><br><br>", unsafe_allow_html=True)
 
     col_center1, col_form, col_center2 = st.columns([0.5, 3, 0.5])
     with col_form:
