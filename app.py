@@ -1,10 +1,8 @@
 import pandas as pd
 import streamlit as st
 
-# Configuração inicial da página
 st.set_page_config(page_title="Competição de Dança", layout="wide")
 
-# Inicializando os dados na sessão
 if "votos" not in st.session_state:
   st.session_state.votos = []
 
@@ -14,7 +12,6 @@ if "revelado" not in st.session_state:
 if "jurado_logado" not in st.session_state:
   st.session_state.jurado_logado = None
 
-# Listas oficiais atualizadas por categoria
 categorias = {
     "Aprendendo a Voar": {
         "Condutores": ["Bruno", "Ivan", "Luis"],
@@ -66,7 +63,14 @@ categorias = {
     },
 }
 
-# Critérios oficiais detalhados por categoria
+fases_por_categoria = {
+    "Aprendendo a Voar": ["Fase Única"],
+    "Prata": ["Fase Classificatória", "Fase Final"],
+    "Gold": ["Fase Classificatória", "Fase Final"],
+    "Platina": ["Fase 1 (Música 1)", "Fase 2 (Música 2)"],
+    "Diamante": ["Fase 1 (Música 1)", "Fase 2 (Música 2)"],
+}
+
 criterios_por_categoria = {
     "Aprendendo a Voar": {
         "Conexão e Entrega na Dança": (
@@ -151,9 +155,6 @@ modo = st.sidebar.radio(
     ["Painel do Jurado", "Painel da Organização", "Telão (Público)"],
 )
 
-# ---------------------------------------------------------
-# 1. PAINEL DO JURADO (Competidores em ordem alfabética)
-# ---------------------------------------------------------
 if modo == "Painel do Jurado":
   st.title("📱 Painel de Votação do Jurado")
 
@@ -194,11 +195,15 @@ if modo == "Painel do Jurado":
     categoria_escolhida = st.selectbox(
         "Escolha a Categoria:", list(categorias.keys())
     )
+
+    # Seleção dinâmica de fases conforme o regulamento do PDF
+    fases_disponiveis = fases_por_categoria[categoria_escolhida]
+    fase_escolhida = st.selectbox("Escolha a Fase / Etapa:", fases_disponiveis)
+
     tipo_selecionado = st.radio(
         "Selecione o Grupo:", ["Condutor", "Conduzida"], horizontal=True
     )
 
-    # Competidores ordenados alfabeticamente apenas para o jurado
     if tipo_selecionado == "Condutor":
       papel_escolhido = "Condutores"
       competidores_ordenados = sorted(
@@ -218,8 +223,8 @@ if modo == "Painel do Jurado":
 
     st.divider()
     st.subheader(
-        f"📋 Avaliação de Todos os Critérios para: {competidor_escolhido}"
-        f" ({tipo_selecionado})"
+        f"📋 Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
+        f" {fase_escolhida}"
     )
 
     notas_jurado = {}
@@ -231,7 +236,7 @@ if modo == "Painel do Jurado":
       st.markdown(f"### 🔹 {criterio_nome}")
       st.info(f"💡 **O que avaliar:** {descricao}")
 
-      chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
+      chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
 
       nota_str = st.text_input(
           f"Digite a nota para {criterio_nome} (0 a 10):",
@@ -255,6 +260,7 @@ if modo == "Painel do Jurado":
         novo_voto = {
             "jurado": st.session_state.jurado_logado,
             "categoria": categoria_escolhida,
+            "fase": fase_escolhida,
             "papel": papel_escolhido,
             "competidor": competidor_escolhido,
             "criterio": criterio_nome,
@@ -264,13 +270,10 @@ if modo == "Painel do Jurado":
         st.session_state.votos.append(novo_voto)
 
       st.success(
-          f"Todas as notas foram enviadas com sucesso por"
-          f" {st.session_state.jurado_logado} para {competidor_escolhido}!"
+          f"Notas enviadas com sucesso por {st.session_state.jurado_logado} para"
+          f" {competidor_escolhido} ({fase_escolhida})!"
       )
 
-# ---------------------------------------------------------
-# 2. PAINEL DA ORGANIZAÇÃO
-# ---------------------------------------------------------
 elif modo == "Painel da Organização":
   st.title("📋 Painel da Organização (Área Restrita)")
   senha_digitada = st.text_input(
@@ -289,11 +292,8 @@ elif modo == "Painel da Organização":
   elif senha_digitada != "":
     st.error("❌ Senha incorreta!")
 
-# ---------------------------------------------------------
-# 3. TELÃO / PÚBLICO (Ranking ordenado do maior ao menor)
-# ---------------------------------------------------------
 else:
-  st.title("🏆 Telão da Competição por Categorias")
+  st.title("🏆 Telão da Competição por Fases e Categorias")
 
   st.sidebar.divider()
   st.sidebar.subheader("Controle do Telão")
@@ -318,6 +318,7 @@ else:
         columns=[
             "jurado",
             "categoria",
+            "fase",
             "papel",
             "competidor",
             "criterio",
@@ -334,70 +335,129 @@ else:
       if df_cat.empty:
         st.info("Nenhum voto registrado ainda para esta categoria.")
       else:
-        sub_abas = st.tabs(["Condutores", "Conduzidas"])
-        papeis = ["Condutores", "Conduzidas"]
+        fases_da_cat = fases_por_categoria[categoria_nome]
 
-        for j, papel_nome in enumerate(papeis):
-          with sub_abas[j]:
-            st.markdown(f"#### Divisão: {papel_nome}")
-            df_papel = df_cat[df_cat["papel"] == papel_nome]
+        if len(fases_da_cat) > 1:
+          fase_abas = st.tabs(fases_da_cat)
+          fases_iter = list(zip(fases_da_cat, fase_abas))
+        else:
+          fases_iter = [(fases_da_cat[0], None)]
 
-            if df_papel.empty:
-              st.info(f"Sem votos para {papel_nome} nesta categoria ainda.")
-            else:
-              if not st.session_state.revelado:
-                indices_para_ignorar = []
-                for comp in df_papel["competidor"].unique():
-                  temp_df = df_papel[df_papel["competidor"] == comp]
-                  if not temp_df.empty:
-                    indices_para_ignorar.append(temp_df.index[-1])
-                df_calculo = df_papel.drop(indices_para_ignorar)
-              else:
-                df_calculo = df_papel.copy()
+        for fase_nome, fase_aba in fases_iter:
+          if fase_aba is not None:
+            container = fase_aba
+          else:
+            container = st.container()
 
-              if not df_calculo.empty:
-                ranking = (
-                    df_calculo.groupby("competidor")["nota"]
-                    .mean()
-                    .reset_index()
-                )
-                ranking.columns = ["Competidor", "Média Geral"]
-                ranking = ranking.sort_values(
-                    by="Média Geral", ascending=False
-                ).reset_index(drop=True)
-                ranking.index = ranking.index + 1
+          with container:
+            if len(fases_da_cat) > 1:
+              st.markdown(f"### 📌 Etapa: {fase_nome}")
 
-                st.markdown("##### 🏆 Ranking de Classificação")
-                st.dataframe(ranking, use_container_width=True)
-              else:
-                st.warning("Aguardando mais votos para o ranking parcial.")
+            df_fase = df_cat[df_cat["fase"] == fase_nome]
+            sub_abas = st.tabs(["Condutores", "Conduzidas"])
+            papeis = ["Condutores", "Conduzidas"]
 
-              st.markdown("##### 📝 Histórico de Notas")
-              df_exibicao_papel = df_papel[
-                  [
-                      "jurado",
-                      "categoria",
-                      "papel",
-                      "competidor",
-                      "criterio",
-                      "nota",
+            for j, papel_nome in enumerate(papeis):
+              with sub_abas[j]:
+                st.markdown(f"#### Divisão: {papel_nome}")
+                df_papel = df_fase[df_fase["papel"] == papel_nome]
+
+                if df_papel.empty:
+                  st.info(
+                      f"Sem votos para {papel_nome} nesta etapa/fase ainda."
+                  )
+                else:
+                  if not st.session_state.revelado:
+                    indices_para_ignorar = []
+                    for comp in df_papel["competidor"].unique():
+                      temp_df = df_papel[df_papel["competidor"] == comp]
+                      if not temp_df.empty:
+                        indices_para_ignorar.append(temp_df.index[-1])
+                    df_calculo = df_papel.drop(indices_para_ignorar)
+                  else:
+                    df_calculo = df_papel.copy()
+
+                  if not df_calculo.empty:
+                    ranking = (
+                        df_calculo.groupby("competidor")["nota"]
+                        .mean()
+                        .reset_index()
+                    )
+                    ranking.columns = ["Competidor", "Média da Etapa"]
+                    ranking = ranking.sort_values(
+                        by="Média da Etapa", ascending=False
+                    ).reset_index(drop=True)
+                    ranking.index = ranking.index + 1
+
+                    st.markdown("##### 🏆 Ranking da Etapa")
+                    st.dataframe(ranking, use_container_width=True)
+                  else:
+                    st.warning("Aguardando mais votos para o ranking parcial.")
+
+                  st.markdown("##### 📝 Histórico de Notas da Etapa")
+                  df_exibicao_papel = df_papel[
+                      [
+                          "jurado",
+                          "categoria",
+                          "fase",
+                          "papel",
+                          "competidor",
+                          "criterio",
+                          "nota",
+                      ]
+                  ].copy()
+
+                  if not st.session_state.revelado:
+                    indices_para_mascarar = []
+                    for comp in df_exibicao_papel["competidor"].unique():
+                      temp_df = df_exibicao_papel[
+                          df_exibicao_papel["competidor"] == comp
+                      ]
+                      if not temp_df.empty:
+                        indices_para_mascarar.append(temp_df.index[-1])
+
+                    df_exibicao_papel["nota"] = df_exibicao_papel["nota"].astype(
+                        str
+                    )
+                    df_exibicao_papel.loc[indices_para_mascarar, "nota"] = (
+                        "🔒 [Nota Secreta Oculta]"
+                    )
+
+                  st.dataframe(df_exibicao_papel, use_container_width=True)
+
+        # Para Platina e Diamante, exibe a classificação geral acumulada somando as 2 fases conforme o regulamento
+        if categoria_nome in ["Platina", "Diamante"]:
+          st.divider()
+          st.subheader(
+              "🌟 Classificação Geral Acumulada (Fase 1 + Fase 2 Somadas)"
+          )
+          df_cat_geral = df_cat.copy()
+          if not df_cat_geral.empty:
+            sub_abas_geral = st.tabs(
+                ["Condutores Geral", "Conduzidas Geral"]
+            )
+            for g_idx, g_papel in enumerate(["Condutores", "Conduzidas"]):
+              with sub_abas_geral[g_idx]:
+                df_g = df_cat_geral[df_cat_geral["papel"] == g_papel]
+                if not df_g.empty:
+                  fase_means = (
+                      df_g.groupby(["competidor", "fase"])["nota"]
+                      .mean()
+                      .reset_index()
+                  )
+                  total_score = (
+                      fase_means.groupby("competidor")["nota"]
+                      .sum()
+                      .reset_index()
+                  )
+                  total_score.columns = [
+                      "Competidor",
+                      "Pontuação Total Acumulada",
                   ]
-              ].copy()
-
-              if not st.session_state.revelado:
-                indices_para_mascarar = []
-                for comp in df_exibicao_papel["competidor"].unique():
-                  temp_df = df_exibicao_papel[
-                      df_exibicao_papel["competidor"] == comp
-                  ]
-                  if not temp_df.empty:
-                    indices_para_mascarar.append(temp_df.index[-1])
-
-                df_exibicao_papel["nota"] = df_exibicao_papel["nota"].astype(
-                    str
-                )
-                df_exibicao_papel.loc[indices_para_mascarar, "nota"] = (
-                    "🔒 [Nota Secreta Oculta]"
-                )
-
-              st.dataframe(df_exibicao_papel, use_container_width=True)
+                  total_score = total_score.sort_values(
+                      by="Pontuação Total Acumulada", ascending=False
+                  ).reset_index(drop=True)
+                  total_score.index = total_score.index + 1
+                  st.dataframe(total_score, use_container_width=True)
+                else:
+                  st.info("Aguardando votos em ambas as fases.")
