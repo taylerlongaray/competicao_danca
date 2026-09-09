@@ -7,7 +7,7 @@ st.set_page_config(
     page_title="Jack & Jill - Noite nas Arábias",
     page_icon="🌙",
     layout="wide",
-    initial_sidebar_state="auto",
+    initial_sidebar_state="expanded",  # Mantém a barra lateral aberta por padrão para o administrador
 )
 
 
@@ -201,16 +201,9 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
-# Leitura segura dos parâmetros de URL compatível com qualquer versão do Streamlit
-try:
-  params = st.query_params
-  link_jurado_exclusivo = (
-      params.get("view") == "jurado"
-      if hasattr(params, "get")
-      else False
-  )
-except Exception:
-  link_jurado_exclusivo = False
+# Verificação limpa e direta dos parâmetros de URL
+query_params = st.query_params
+link_jurado_exclusivo = query_params.get("view") == "jurado"
 
 if link_jurado_exclusivo:
   modo = "Painel do Jurado"
