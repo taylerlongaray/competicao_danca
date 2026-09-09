@@ -100,7 +100,6 @@ criterios_por_categoria = {
     },
 }
 
-# Dicionário com os jurados e suas respectivas senhas de acesso
 senhas_jurados = {
     "alisson (teste)": "1234",
     "Jurado 1": "1234",
@@ -109,7 +108,6 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
-# Menu lateral
 st.sidebar.title("Navegação")
 modo = st.sidebar.radio(
     "Escolha o Painel:",
@@ -117,15 +115,13 @@ modo = st.sidebar.radio(
 )
 
 # ---------------------------------------------------------
-# 1. PAINEL DO JURADO (Com Login e Senha)
+# 1. PAINEL DO JURADO (Competidores em ordem alfabética)
 # ---------------------------------------------------------
 if modo == "Painel do Jurado":
   st.title("📱 Painel de Votação do Jurado")
 
-  # Tela de Login e Senha se ainda não estiver logado
   if st.session_state.jurado_logado is None:
     st.info("🔒 Insira suas credenciais de jurado para acessar o painel.")
-
     col1, col2, col3 = st.columns([2, 2, 1])
     with col1:
       login_selecionado = st.selectbox(
@@ -147,9 +143,7 @@ if modo == "Painel do Jurado":
             st.error("❌ Senha incorreta!")
         else:
           st.error("Selecione um jurado.")
-
   else:
-    # Exibe quem está logado e botão de sair
     col_info, col_sair = st.columns([3, 1])
     with col_info:
       st.success(f"Logado com sucesso como: **{st.session_state.jurado_logado}**")
@@ -160,25 +154,25 @@ if modo == "Painel do Jurado":
 
     st.divider()
 
-    # 1. Categoria
     categoria_escolhida = st.selectbox(
         "Escolha a Categoria:", list(categorias.keys())
     )
-
-    # 2. Escolha direta entre Condutor ou Conduzida
     tipo_selecionado = st.radio(
         "Selecione o Grupo:", ["Condutor", "Conduzida"], horizontal=True
     )
 
+    # Competidores ordenados alfabeticamente apenas para o jurado
     if tipo_selecionado == "Condutor":
       papel_escolhido = "Condutores"
+      competidores_ordenados = sorted(categorias[categoria_escolhida]["Condutores"])
       competidor_escolhido = st.selectbox(
-          "Selecionar Condutor:", categorias[categoria_escolhida]["Condutores"]
+          "Selecionar Condutor:", competidores_ordenados
       )
     else:
       papel_escolhido = "Conduzidas"
+      competidores_ordenados = sorted(categorias[categoria_escolhida]["Conduzidas"])
       competidor_escolhido = st.selectbox(
-          "Selecionar Conduzida:", categorias[categoria_escolhida]["Conduzidas"]
+          "Selecionar Conduzida:", competidores_ordenados
       )
 
     st.divider()
@@ -198,19 +192,21 @@ if modo == "Painel do Jurado":
 
       chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
 
-      notas_jurado[criterio_nome] = st.number_input(
+      nota_str = st.text_input(
           f"Digite a nota para {criterio_nome} (0 a 10):",
-          min_value=0.0,
-          max_value=10.0,
-          value=5.0,
-          step=0.1,
-          format="%.1f",
+          value="5.0",
           key=f"input_{chave_base}",
       )
+      try:
+        nota_val = float(nota_str.replace(",", "."))
+      except ValueError:
+        nota_val = 0.0
+
       justificativas_jurado[criterio_nome] = st.text_area(
           f"Justificativa para {criterio_nome} (Opcional):",
           key=f"just_{chave_base}",
       )
+      notas_jurado[criterio_nome] = nota_val
       st.write("")
 
     if st.button("Enviar Todas as Notas", type="primary"):
@@ -232,11 +228,10 @@ if modo == "Painel do Jurado":
       )
 
 # ---------------------------------------------------------
-# 2. PAINEL DA ORGANIZAÇÃO (Protegido por Senha)
+# 2. PAINEL DA ORGANIZAÇÃO
 # ---------------------------------------------------------
 elif modo == "Painel da Organização":
   st.title("📋 Painel da Organização (Área Restrita)")
-
   senha_digitada = st.text_input(
       "Digite a senha de acesso da organização:", type="password"
   )
@@ -244,19 +239,17 @@ elif modo == "Painel da Organização":
 
   if senha_digitada == SENHA_MESTRE:
     st.success("Acesso autorizado!")
-
     if not st.session_state.votos:
       st.warning("Ainda não há votos registrados na competição.")
     else:
       df_votos = pd.DataFrame(st.session_state.votos)
       st.subheader("🔍 Todas as Notas e Justificativas Reais")
       st.dataframe(df_votos, use_container_width=True)
-
   elif senha_digitada != "":
     st.error("❌ Senha incorreta!")
 
 # ---------------------------------------------------------
-# 3. TELÃO / PÚBLICO
+# 3. TELÃO / PÚBLICO (Ranking ordenado do maior ao menor)
 # ---------------------------------------------------------
 else:
   st.title("🏆 Telão da Competição por Categorias")
@@ -328,6 +321,7 @@ else:
                     .reset_index()
                 )
                 ranking.columns = ["Competidor", "Média Geral"]
+                # Ranking ordenado da maior para a menor nota
                 ranking = ranking.sort_values(
                     by="Média Geral", ascending=False
                 ).reset_index(drop=True)
@@ -339,7 +333,11 @@ else:
                 st.warning("Aguardando mais votos para o ranking parcial.")
 
               st.markdown("##### 📝 Histórico de Notas")
-              df_exibicao_papel = df_papel.copy()
+              # Apenas notas (sem justificativas) na visão pública do telão
+              df_exibicao_papel = df_papel[
+                  ["jurado", "categoria", "papel", "competidor", "criterio", "nota"]
+              ].copy()
+
               if not st.session_state.revelado:
                 indices_para_mascarar = []
                 for comp in df_exibicao_papel["competidor"].unique():
@@ -354,9 +352,6 @@ else:
                 )
                 df_exibicao_papel.loc[indices_para_mascarar, "nota"] = (
                     "🔒 [Nota Secreta Oculta]"
-                )
-                df_exibicao_papel.loc[indices_para_mascarar, "justificativa"] = (
-                    "🔒 [Oculta]"
                 )
 
               st.dataframe(df_exibicao_papel, use_container_width=True)
