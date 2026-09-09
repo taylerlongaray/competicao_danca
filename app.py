@@ -20,70 +20,70 @@ categorias = {
     "Diamante": ["Ana"],
 }
 
-# Critérios oficiais detalhados por categoria
+# Critérios oficiais detalhados por categoria (sem a numeração no título)
 criterios_por_categoria = {
     "Aprendendo a Voar": {
-        "Critério 1 — Conexão e Entrega na Dança": (
-            "Atenção ao parceiro, interação, sintonia, presença, envolvimento e"
-            " entrega."
+        "Conexão e Entrega na Dança": (
+            "Atenção ao parceiro, interação, sintonia, presença,"
+            " envolvimento e entrega."
         ),
-        "Critério 2 — Fundamentos e Qualidade da Base": (
+        "Fundamentos e Qualidade da Base": (
             "Ritmo, postura, equilíbrio, condução e resposta, segurança e"
             " movimentos básicos. (Obs: O sambado não será exigido)."
         ),
     },
     "Prata": {
-        "Critério 1 — Conexão e Resposta": (
+        "Conexão e Resposta": (
             "Conexão, comunicação corporal, condução, resposta, atenção e"
             " sintonia."
         ),
-        "Critério 2 — Movimentos Característicos e Sambado": (
+        "Movimentos Característicos e Sambado": (
             "Execução, variedade, segurança, fluidez, qualidade técnica e"
             " integração com a dança."
         ),
-        "Critério 3 — Criatividade e Musicalidade": (
+        "Criatividade e Musicalidade": (
             "Interpretação musical, ritmo, adaptação, criatividade e"
             " combinação de movimentos."
         ),
     },
     "Ouro": {
-        "Critério 1 — Conexão e Resposta": (
+        "Conexão e Resposta": (
             "Qualidade da conexão, comunicação corporal, precisão, resposta,"
             " atenção, sintonia e naturalidade."
         ),
-        "Critério 2 — Movimentos Característicos e Sambado": (
+        "Movimentos Característicos e Sambado": (
             "Domínio, repertório, técnica, segurança, fluidez, criatividade e"
             " qualidade do sambado."
         ),
-        "Critério 3 — Criatividade e Musicalidade": (
+        "Criatividade e Musicalidade": (
             "Interpretação, percepção das variações musicais, ritmo, adaptação e"
             " criatividade."
         ),
     },
     "Platina": {
-        "Critério 1 — Musicalidade e Criatividade": (
+        "Musicalidade e Criatividade": (
             "Interpretação musical, variações, ritmo, criatividade,"
             " originalidade e construção da dança."
         ),
-        "Critério 2 — Técnica e Finalização": (
+        "Técnica e Finalização": (
             "Postura, equilíbrio, controle corporal, precisão, segurança,"
             " fluidez, movimentos inerentes à dança e acabamento."
         ),
-        "Critério 3 — Conexão e Resposta": (
+        "Conexão e Resposta": (
             "Clareza da condução, intenção, precisão, resposta, adaptação e"
             " naturalidade."
         ),
     },
     "Diamante": {
-        "Critério 1 — Musicalidade e Criatividade": (
+        "Musicalidade e Criatividade": (
             "Elevado nível de interpretação, percepção musical, criatividade,"
             " originalidade e soluções durante a dança."
         ),
-        "Critério 2 — Técnica e Finalização": (
-            "Alto nível de exigência em postura, equilíbrio, controle, precisão,"
-            " segurança, fluidez e acabamento."
+        "Técnica e Finalização": (
+            "Alto nível de exigência em postura, equilíbrio, controle,"
+            " precisão, segurança, fluidez e acabamento."
         ),
-        "Critério 3 — Conexão e Resposta": (
+        "Conexão e Resposta": (
             "Elevado domínio da comunicação corporal, condução, intenção,"
             " resposta, adaptação e naturalidade. (Nível mais elevado de"
             " exigência)."
@@ -101,7 +101,7 @@ modo = st.sidebar.radio(
 )
 
 # ---------------------------------------------------------
-# 1. PAINEL DO JURADO
+# 1. PAINEL DO JURADO (Votação em todos os critérios da categoria)
 # ---------------------------------------------------------
 if modo == "Painel do Jurado":
   st.title("📱 Painel de Votação do Jurado")
@@ -120,32 +120,52 @@ if modo == "Painel do Jurado":
       "Escolha o Competidor:", competidores_da_categoria
   )
 
-  # 4. Critérios dinâmicos (puxa apenas os critérios da categoria selecionada)
-  criterios_disponiveis = list(
-      criterios_por_categoria[categoria_escolhida].keys()
+  st.divider()
+  st.subheader(
+      f"📋 Avaliação de Todos os Critérios para: {competidor_escolhido}"
   )
-  criterio = st.selectbox("Critério de Avaliação:", criterios_disponiveis)
 
-  # Caixa de ajuda visual explicando o critério para o jurado
-  descricao_criterio = criterios_por_categoria[categoria_escolhida][criterio]
-  st.info(f"💡 **O que avaliar neste critério:** {descricao_criterio}")
+  # Dicionários temporários para capturar as notas de cada critério
+  notas_jurado = {}
+  justificativas_jurado = {}
 
-  # 5. Nota com décimos (0.1)
-  nota = st.slider("Nota (0 a 10):", 0.0, 10.0, 5.0, 0.1)
-  justificativa = st.text_area("Justificativa (Opcional):")
+  # Loop por cada critério oficial da categoria escolhida
+  for criterio_nome, descricao in criterios_por_categoria[
+      categoria_escolhida
+  ].items():
+    st.markdown(f"### 🔹 {criterio_nome}")
+    st.info(f"💡 **O que avaliar:** {descricao}")
 
-  if st.button("Enviar Nota", type="primary"):
-    novo_voto = {
-        "jurado": jurado_atual,
-        "categoria": categoria_escolhida,
-        "competidor": competidor_escolhido,
-        "criterio": criterio,
-        "nota": nota,
-        "justificativa": justificativa,
-    }
-    st.session_state.votos.append(novo_voto)
+    notas_jurado[criterio_nome] = st.slider(
+        f"Nota para {criterio_nome} (0 a 10):",
+        0.0,
+        10.0,
+        5.0,
+        0.1,
+        key=f"slider_{criterio_nome}",
+    )
+    justificativas_jurado[criterio_nome] = st.text_area(
+        f"Justificativa para {criterio_nome} (Opcional):",
+        key=f"just_{criterio_nome}",
+    )
+    st.write("")
+
+  if st.button("Enviar Todas as Notas", type="primary"):
+    # Salva uma linha de voto para cada critério avaliado
+    for criterio_nome, nota_val in notas_jurado.items():
+      novo_voto = {
+          "jurado": jurado_atual,
+          "categoria": categoria_escolhida,
+          "competidor": competidor_escolhido,
+          "criterio": criterio_nome,
+          "nota": nota_val,
+          "justificativa": justificativas_jurado[criterio_nome],
+      }
+      st.session_state.votos.append(novo_voto)
+
     st.success(
-        f"Nota enviada com sucesso para {competidor_escolhido} ({categoria_escolhida})!"
+        f"Todas as notas foram enviadas com sucesso para {competidor_escolhido}"
+        f" ({categoria_escolhida})!"
     )
 
 # ---------------------------------------------------------
@@ -235,10 +255,10 @@ else:
           ranking = (
               df_calculo.groupby("competidor")["nota"].mean().reset_index()
           )
-          ranking.columns = ["Competidor", "Média"]
-          ranking = ranking.sort_values(by="Média", ascending=False).reset_index(
-              drop=True
-          )
+          ranking.columns = ["Competidor", "Média Geral"]
+          ranking = ranking.sort_values(
+              by="Média Geral", ascending=False
+          ).reset_index(drop=True)
           ranking.index = ranking.index + 1
 
           st.markdown("### Ranking da Categoria")
