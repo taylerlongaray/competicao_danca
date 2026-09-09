@@ -1,3 +1,5 @@
+import base64
+import os
 import pandas as pd
 import streamlit as st
 
@@ -5,16 +7,50 @@ st.set_page_config(
     page_title="Jack & Jill - Noite nas Arábias", page_icon="🌙", layout="wide"
 )
 
-# Estilização visual inspirada na identidade "Noite nas Arábias" (Luxo, Tons Escuros e Dourados)
+
+# Função blindada para encontrar a imagem de fundo independentemente de maiúsculas/minúsculas
+def aplicar_fundo():
+  img_encontrada = None
+  for arquivo in os.listdir("."):
+    if arquivo.lower() in ["fundo.png", "fundo.jpg", "fundo.jpeg"]:
+      img_encontrada = arquivo
+      break
+
+  if img_encontrada:
+    with open(img_encontrada, "rb") as f:
+      data = f.read()
+    encoded = base64.b64encode(data).decode()
+    ext = img_encontrada.split(".")[-1].lower()
+    mime = "png" if ext == "png" else "jpeg"
+    return f"""
+        <style>
+        .stApp {{
+            background-image: linear-gradient(rgba(5, 4, 3, 0.65), rgba(5, 4, 3, 0.75)), url("data:image/{mime};base64,{encoded}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f3e5ab;
+            font-family: 'Helvetica Neue', sans-serif;
+        }}
+        </style>
+        """
+  else:
+    st.sidebar.warning("⚠️ Arquivo de fundo não encontrado na pasta.")
+    return """
+        <style>
+        .stApp {
+            background-color: #090706;
+            color: #f3e5ab;
+        }
+        </style>
+        """
+
+
+st.markdown(aplicar_fundo(), unsafe_allow_html=True)
+
+# Estilização visual inspirada na identidade "Noite nas Arábias"
 st.markdown("""
     <style>
-    .stApp {
-        background-color: #090706;
-        color: #f3e5ab;
-        font-family: 'Helvetica Neue', sans-serif;
-    }
-    
-    /* Títulos e Cabeçalhos com Estilo Luxuoso */
     h1, h2, h3 {
         color: #e5c158 !important;
         font-family: 'Georgia', serif;
@@ -22,7 +58,6 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Botões com Gradiente Dourado */
     .stButton>button {
         background: linear-gradient(135deg, #d4af37 0%, #996515 100%);
         color: #0c0908;
@@ -42,22 +77,19 @@ st.markdown("""
         color: #000000;
     }
 
-    /* Campos de Entrada Estilizados */
     .stTextInput input, .stSelectbox select {
-        background-color: #14100d !important;
+        background-color: rgba(20, 16, 13, 0.85) !important;
         color: #f3e5ab !important;
-        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        border: 1px solid rgba(212, 175, 55, 0.4) !important;
         border-radius: 8px !important;
     }
     
-    /* Elementos ocultos para layout limpo tipo app profissional */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Sidebar Customizada */
     [data-testid="stSidebar"] {
-        background-color: #0e0a08;
+        background-color: rgba(14, 10, 8, 0.95);
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
     </style>
@@ -72,6 +104,7 @@ if "revelado" not in st.session_state:
 if "jurado_logado" not in st.session_state:
   st.session_state.jurado_logado = None
 
+# Listas oficiais de competidores atualizadas
 categorias = {
     "Aprendendo a Voar": {
         "Condutores": ["Bruno", "Ivan", "Luis"],
@@ -159,7 +192,7 @@ criterios_por_categoria = {
     "Ouro": {
         "Conexão e Resposta": (
             "Qualidade da conexão, comunicação corporal, precisão, resposta,"
-            " attention, sintonia e naturalidade."
+            " atenção, sintonia e naturalidade."
         ),
         "Movimentos Característicos e Sambado": (
             "Domínio, repertório, técnica, segurança, fluidez, criatividade e"
@@ -228,29 +261,28 @@ modo = st.sidebar.radio(
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # Layout idêntico ao conceito visual da imagem enviada
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(
         "<h3"
-        " style='color: #b39b6b; font-size: 14px; letter-spacing: 3px;'>"
-        "PASSION DANCE APRESENTA</h3>",
+        " style='color: #b39b6b; font-size: 13px; letter-spacing: 3px;"
+        " text-align: center;'>PASSION DANCE APRESENTA</h3>",
         unsafe_allow_html=True,
     )
     st.markdown(
         "<h1"
-        " style='font-size: 42px; font-family: Georgia, serif; color: #e5c158;"
-        " margin-bottom: 0px;'>JACK & JILL</h1>",
+        " style='font-size: 40px; font-family: Georgia, serif; color: #e5c158;"
+        " text-align: center; margin-bottom: 0px;'>JACK & JILL</h1>",
         unsafe_allow_html=True,
     )
     st.markdown(
         "<h3"
-        " style='color: #d4af37; font-size: 16px; letter-spacing: 2px;"
-        " margin-top: 5px;'>NOITE NAS ARÁBIAS</h3>",
+        " style='color: #d4af37; font-size: 15px; letter-spacing: 2px;"
+        " text-align: center; margin-top: 5px;'>NOITE NAS ARÁBIAS</h3>",
         unsafe_allow_html=True,
     )
     st.markdown(
         "<p style='text-align: center; color: #8c7853; font-size: 11px;"
-        " letter-spacing: 1px; margin-bottom: 30px;'>SISTEMA OFICIAL DE"
+        " letter-spacing: 1px; margin-bottom: 25px;'>SISTEMA OFICIAL DE"
         " COMPETIÇÃO</p>",
         unsafe_allow_html=True,
     )
@@ -260,8 +292,8 @@ if modo == "Painel do Jurado":
       with st.container(border=True):
         st.markdown(
             "<p"
-            " style='text-align: center; color: #d4af37; font-size: 12px;"
-            " margin-bottom: 15px;'>ACESSO RESTRITO</p>",
+            " style='text-align: center; color: #d4af37; font-size: 11px;"
+            " margin-bottom: 10px; letter-spacing: 1px;'>ACESSO RESTRITO</p>",
             unsafe_allow_html=True,
         )
         login_selecionado = st.selectbox(
@@ -282,8 +314,8 @@ if modo == "Painel do Jurado":
             st.error("Selecione um usuário válido.")
     st.markdown(
         "<p"
-        " style='text-align: center; color: #6e5d42; font-size: 12px;"
-        " margin-top: 40px;'>✨ Mais que passos, conexões. ✨</p>",
+        " style='text-align: center; color: #c4af7e; font-size: 12px;"
+        " margin-top: 30px;'>✨ Mais que passos, conexões. ✨</p>",
         unsafe_allow_html=True,
     )
 
