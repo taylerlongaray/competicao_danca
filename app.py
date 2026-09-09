@@ -35,7 +35,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.30), rgba(5, 4, 3, 0.40)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.25), rgba(5, 4, 3, 0.35)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -239,9 +239,9 @@ st.markdown("""
         color: #0c0908;
         font-weight: bold;
         border: none;
-        border-radius: 8px;
+        border-radius: 6px;
         width: 100%;
-        padding: 0.5rem;
+        padding: 0.4rem;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
@@ -254,11 +254,12 @@ st.markdown("""
     }
 
     .stTextInput input, .stSelectbox select {
-        background-color: rgba(15, 12, 10, 0.95) !important;
+        background-color: rgba(10, 8, 7, 0.95) !important;
         color: #f3e5ab !important;
         border: 1px solid rgba(212, 175, 55, 0.4) !important;
         border-radius: 6px !important;
-        padding: 6px 10px !important;
+        padding: 4px 8px !important;
+        font-size: 13px !important;
     }
     
     #MainMenu {visibility: hidden;}
@@ -270,22 +271,22 @@ st.markdown("""
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
-    /* Posicionamento exato na área vazia inferior */
+    /* Posição mais abaixo para não encobrir o texto do topo */
     .login-container-pos {
-        margin-top: 50vh; 
+        margin-top: 57vh; 
     }
 
-    /* Compactar o container de login para ficar menor e elegante */
+    /* Caixa menor, compacta e elegante */
     div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] {
-        background-color: rgba(10, 8, 7, 0.85) !important;
-        border: 1px solid rgba(212, 175, 55, 0.45) !important;
-        border-radius: 10px !important;
-        padding: 8px 12px !important;
+        background-color: rgba(8, 6, 5, 0.75) !important;
+        border: 1px solid rgba(212, 175, 55, 0.35) !important;
+        border-radius: 8px !important;
+        padding: 6px 10px !important;
     }
 
     @media (max-width: 768px) {
         .login-container-pos {
-            margin-top: 48vh;
+            margin-top: 55vh;
         }
         .stColumns {
             flex-direction: column !important;
@@ -296,9 +297,9 @@ st.markdown("""
             min-width: 100% !important;
         }
         .block-container {
-            padding-left: 0.8rem !important;
-            padding-right: 0.8rem !important;
-            padding-top: 0.2rem !important;
+            padding-left: 0.6rem !important;
+            padding-right: 0.6rem !important;
+            padding-top: 0.1rem !important;
         }
     }
     </style>
@@ -310,7 +311,7 @@ if modo == "Painel do Jurado":
         '<div class="login-container-pos"></div>', unsafe_allow_html=True
     )
 
-    col_center1, col_form, col_center2 = st.columns([0.15, 3.7, 0.15])
+    col_center1, col_form, col_center2 = st.columns([0.1, 3.8, 0.1])
     with col_form:
       with st.container(border=True):
         login_digitado = st.text_input(
