@@ -35,7 +35,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.20), rgba(5, 4, 3, 0.30)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.15), rgba(5, 4, 3, 0.25)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -234,34 +234,49 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    .stButton>button {
+    /* Oculta margens globais no modo login para evitar rolagem indesejada */
+    .block-container {
+        padding-top: 1rem !important;
+    }
+
+    /* ESTILO FIXO, PEQUENO E CENTRALIZADO EXCLUSIVO DO LOGIN (Caixa Vermelha) */
+    div[data-testid="column"]:has(input[type="password"]) {
+        position: fixed !important;
+        top: 61% !important; /* Desce até o exato meio do espaço vazio vermelho */
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 80% !important;
+        max-width: 320px !important; /* Trava o tamanho para ser uma caixa pequena */
+        background-color: rgba(9, 7, 6, 0.95) !important;
+        border: 1.5px solid rgba(212, 175, 55, 0.6) !important;
+        border-radius: 10px !important;
+        padding: 15px 15px 5px 15px !important;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8) !important;
+        z-index: 99999 !important;
+    }
+
+    /* Deixa os botões e inputs menores e mais compactos */
+    div[data-testid="column"]:has(input[type="password"]) .stTextInput input {
+        font-size: 13px !important;
+        padding: 6px 10px !important;
+        min-height: 36px !important;
+        background-color: rgba(20, 16, 13, 1) !important;
+    }
+
+    div[data-testid="column"]:has(input[type="password"]) .stButton>button {
+        padding: 4px 10px !important;
+        font-size: 14px !important;
+        min-height: 38px !important;
         background: linear-gradient(135deg, #d4af37 0%, #996515 100%);
         color: #0c0908;
         font-weight: bold;
         border: none;
         border-radius: 6px;
         width: 100%;
-        padding: 0.4rem;
         text-transform: uppercase;
         letter-spacing: 1.5px;
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        transition: all 0.3s ease;
-    }
-    .stButton>button:hover {
-        background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%);
-        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
-        color: #000000;
     }
 
-    .stTextInput input, .stSelectbox select {
-        background-color: rgba(10, 8, 7, 0.95) !important;
-        color: #f3e5ab !important;
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
-        border-radius: 6px !important;
-        padding: 4px 8px !important;
-        font-size: 13px !important;
-    }
-    
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -270,32 +285,19 @@ st.markdown("""
         background-color: rgba(14, 10, 8, 0.96);
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
-
-    /* Caixa de login compacta e elegante */
-    div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] {
-        background-color: rgba(8, 6, 5, 0.75) !important;
-        border: 1px solid rgba(212, 175, 55, 0.35) !important;
-        border-radius: 8px !important;
-        padding: 8px 12px !important;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # Espaçador proporcional em altura da tela (46% do topo fica livre para a imagem de fundo)
-    st.markdown(
-        '<div style="height: 46vh; width: 100%;"></div>', unsafe_allow_html=True
-    )
-
-    col_esq, col_form, col_dir = st.columns([0.5, 3, 0.5])
-    with col_form:
-      with st.container(border=True):
+    # A estrutura aqui é mínima, pois o CSS flutua essa coluna especificamente para o espaço vazio
+    col_esq, col_login, col_dir = st.columns([1, 8, 1])
+    with col_login:
         login_digitado = st.text_input(
-            "Usuário", key="login_usuario_jurado", placeholder="Digite seu usuário"
+            "Usuário", key="login_usuario_jurado", placeholder="Digite seu usuário", label_visibility="collapsed"
         )
         senha_digitada = st.text_input(
-            "Senha", type="password", key="senha_login_jurado", placeholder="Digite sua senha"
+            "Senha", type="password", key="senha_login_jurado", placeholder="Digite sua senha", label_visibility="collapsed"
         )
         st.write("")
         if st.button("ENTRAR", type="primary"):
@@ -542,14 +544,14 @@ else:
                   st.markdown("##### 📝 Histórico de Notas da Etapa")
                   df_exibicao_papel = df_papel[
                       [
-                        "jurado",
-                        "categoria",
-                        "fase",
-                        "papel",
-                        "competidor",
-                        "criterio",
-                        "nota",
-                    ]
+                          "jurado",
+                          "categoria",
+                          "fase",
+                          "papel",
+                          "competidor",
+                          "criterio",
+                          "nota",
+                      ]
                   ].copy()
 
                   if not st.session_state.revelado:
