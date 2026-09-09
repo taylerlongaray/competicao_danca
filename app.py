@@ -25,7 +25,7 @@ def aplicar_fundo():
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.65), rgba(5, 4, 3, 0.75)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.55), rgba(5, 4, 3, 0.65)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -104,7 +104,6 @@ if "revelado" not in st.session_state:
 if "jurado_logado" not in st.session_state:
   st.session_state.jurado_logado = None
 
-# Listas oficiais de competidores atualizadas
 categorias = {
     "Aprendendo a Voar": {
         "Condutores": ["Bruno", "Ivan", "Luis"],
@@ -261,31 +260,8 @@ modo = st.sidebar.radio(
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(
-        "<h3"
-        " style='color: #b39b6b; font-size: 13px; letter-spacing: 3px;"
-        " text-align: center;'>PASSION DANCE APRESENTA</h3>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<h1"
-        " style='font-size: 40px; font-family: Georgia, serif; color: #e5c158;"
-        " text-align: center; margin-bottom: 0px;'>JACK & JILL</h1>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<h3"
-        " style='color: #d4af37; font-size: 15px; letter-spacing: 2px;"
-        " text-align: center; margin-top: 5px;'>NOITE NAS ARÁBIAS</h3>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<p style='text-align: center; color: #8c7853; font-size: 11px;"
-        " letter-spacing: 1px; margin-bottom: 25px;'>SISTEMA OFICIAL DE"
-        " COMPETIÇÃO</p>",
-        unsafe_allow_html=True,
-    )
+    # Espaçamento para empurrar o card de login para a mesma posição da imagem de referência
+    st.markdown("<br><br><br><br>", unsafe_allow_html=True)
 
     col_center1, col_form, col_center2 = st.columns([1, 1.2, 1])
     with col_form:
@@ -296,29 +272,25 @@ if modo == "Painel do Jurado":
             " margin-bottom: 10px; letter-spacing: 1px;'>ACESSO RESTRITO</p>",
             unsafe_allow_html=True,
         )
-        login_selecionado = st.selectbox(
-            "Usuário", ["Selecione o usuário..."] + list(senhas_jurados.keys())
+        # Login por texto digitado
+        login_digitado = st.text_input(
+            "Usuário", key="login_usuario_jurado", placeholder="Digite seu usuário"
         )
         senha_digitada = st.text_input(
-            "Senha", type="password", key="senha_login_jurado"
+            "Senha", type="password", key="senha_login_jurado", placeholder="Digite sua senha"
         )
         st.write("")
         if st.button("ENTRAR", type="primary"):
-          if login_selecionado != "Selecione o usuário...":
-            if senha_digitada == senhas_jurados[login_selecionado]:
-              st.session_state.jurado_logado = login_selecionado
+          # Normaliza para minúsculas/espaços para facilitar o digite do usuário
+          usuario_limpo = login_digitado.strip()
+          if usuario_limpo in senhas_jurados:
+            if senha_digitada == senhas_jurados[usuario_limpo]:
+              st.session_state.jurado_logado = usuario_limpo
               st.rerun()
             else:
               st.error("❌ Senha incorreta!")
           else:
-            st.error("Selecione um usuário válido.")
-    st.markdown(
-        "<p"
-        " style='text-align: center; color: #c4af7e; font-size: 12px;"
-        " margin-top: 30px;'>✨ Mais que passos, conexões. ✨</p>",
-        unsafe_allow_html=True,
-    )
-
+            st.error("❌ Usuário não encontrado.")
   else:
     col_info, col_sair = st.columns([4, 1])
     with col_info:
