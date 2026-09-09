@@ -30,19 +30,20 @@ modo = st.sidebar.radio(
 )
 
 # ---------------------------------------------------------
-# 1. PAINEL DO JURADO (Com Seleção de Categoria)
+# 1. PAINEL DO JURADO (Categoria Primeiro, depois Jurado)
 # ---------------------------------------------------------
 if modo == "Painel do Jurado":
   st.title("📱 Painel de Votação do Jurado")
 
-  jurado_atual = st.selectbox("Identifique-se (Jurado):", jurados)
-
-  # 1. Escolhe a Categoria primeiro
+  # 1. Categoria vem primeiro agora!
   categoria_escolhida = st.selectbox(
       "Escolha a Categoria:", list(categorias.keys())
   )
 
-  # 2. Filtra os competidores apenas daquela categoria selecionada
+  # 2. Depois o Jurado se identifica
+  jurado_atual = st.selectbox("Identifique-se (Jurado):", jurados)
+
+  # 3. Depois escolhe o competidor daquela categoria
   competidores_da_categoria = categorias[categoria_escolhida]
   competidor_escolhido = st.selectbox(
       "Escolha o Competidor:", competidores_da_categoria
