@@ -11,16 +11,22 @@ if "votos" not in st.session_state:
 if "revelado" not in st.session_state:
   st.session_state.revelado = False
 
-# Categorias ordenadas exatamente na ordem solicitada
+# Categorias organizadas por Condutores e Conduzidas (com Diamante atualizado)
 categorias = {
-    "Aprendendo a Voar": ["Fernando"],
-    "Prata": ["Elena"],
-    "Ouro": ["Carla", "Diego"],
-    "Platina": ["Bruno"],
-    "Diamante": ["Ana"],
+    "Aprendendo a Voar": {
+        "Condutores": ["Fernando"],
+        "Conduzidas": ["Juliana"],
+    },
+    "Prata": {"Condutores": ["Marcos"], "Conduzidas": ["Elena"]},
+    "Ouro": {"Condutores": ["Diego"], "Conduzidas": ["Carla"]},
+    "Platina": {"Condutores": ["Bruno"], "Conduzidas": ["Beatriz"]},
+    "Diamante": {
+        "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
+        "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
+    },
 }
 
-# Critérios oficiais detalhados por categoria (sem a numeração no título)
+# Critérios oficiais detalhados por categoria
 criterios_por_categoria = {
     "Aprendendo a Voar": {
         "Conexão e Entrega na Dança": (
@@ -101,72 +107,89 @@ modo = st.sidebar.radio(
 )
 
 # ---------------------------------------------------------
-# 1. PAINEL DO JURADO (Nota digitada em todos os critérios)
+# 1. PAINEL DO JURADO
 # ---------------------------------------------------------
 if modo == "Painel do Jurado":
   st.title("📱 Painel de Votação do Jurado")
 
-  # 1. Categoria primeiro
+  # 1. Categoria
   categoria_escolhida = st.selectbox(
       "Escolha a Categoria:", list(categorias.keys())
   )
 
-  # 2. Identificação do Jurado
+  # 2. Jurado
   jurado_atual = st.selectbox("Identifique-se (Jurado):", jurados)
 
-  # 3. Competidor da categoria
-  competidores_da_categoria = categorias[categoria_escolhida]
-  competidor_escolhido = st.selectbox(
-      "Escolha o Competidor:", competidores_da_categoria
+  # 3. Selecionar tipo de participante dinâmico
+  tipo_selecionado = st.selectbox(
+      "Selecionar Competidor:", ["Selecione...", "Condutor", "Conduzida"]
   )
 
-  st.divider()
-  st.subheader(
-      f"📋 Avaliação de Todos os Critérios para: {competidor_escolhido}"
-  )
+  competidor_escolhido = None
+  papel_escolhido = None
 
-  notas_jurado = {}
-  justificativas_jurado = {}
-
-  # Loop por cada critério oficial da categoria escolhida
-  for criterio_nome, descricao in criterios_por_categoria[
-      categoria_escolhida
-  ].items():
-    st.markdown(f"### 🔹 {criterio_nome}")
-    st.info(f"💡 **O que avaliar:** {descricao}")
-
-    # Campo de digitação de nota (number_input) sem a barra deslizante
-    notas_jurado[criterio_nome] = st.number_input(
-        f"Digite a nota para {criterio_nome} (0 a 10):",
-        min_value=0.0,
-        max_value=10.0,
-        value=5.0,
-        step=0.1,
-        format="%.1f",
-        key=f"input_{criterio_nome}",
+  if tipo_selecionado == "Condutor":
+    papel_escolhido = "Condutores"
+    competidor_escolhido = st.selectbox(
+        "Selecionar Condutor:", categorias[categoria_escolhida]["Condutores"]
     )
-    justificativas_jurado[criterio_nome] = st.text_area(
-        f"Justificativa para {criterio_nome} (Opcional):",
-        key=f"just_{criterio_nome}",
+  elif tipo_selecionado == "Conduzida":
+    papel_escolhido = "Conduzidas"
+    competidor_escolhido = st.selectbox(
+        "Selecionar Conduzida:", categorias[categoria_escolhida]["Conduzidas"]
     )
-    st.write("")
 
-  if st.button("Enviar Todas as Notas", type="primary"):
-    for criterio_nome, nota_val in notas_jurado.items():
-      novo_voto = {
-          "jurado": jurado_atual,
-          "categoria": categoria_escolhida,
-          "competidor": competidor_escolhido,
-          "criterio": criterio_nome,
-          "nota": nota_val,
-          "justificativa": justificativas_jurado[criterio_nome],
-      }
-      st.session_state.votos.append(novo_voto)
-
-    st.success(
-        f"Todas as notas foram enviadas com sucesso para {competidor_escolhido}"
-        f" ({categoria_escolhida})!"
+  # Só exibe os critérios e notas se já escolheu se é Condutor ou Conduzida
+  if tipo_selecionado != "Selecione...":
+    st.divider()
+    st.subheader(
+        f"📋 Avaliação de Todos os Critérios para: {competidor_escolhido}"
+        f" ({tipo_selecionado})"
     )
+
+    notas_jurado = {}
+    justificativas_jurado = {}
+
+    for criterio_nome, descricao in criterios_por_categoria[
+        categoria_escolhida
+    ].items():
+      st.markdown(f"### 🔹 {criterio_nome}")
+      st.info(f"💡 **O que avaliar:** {descricao}")
+
+      chave_base = f"{categoria_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
+
+      notas_jurado[criterio_nome] = st.number_input(
+          f"Digite a nota para {criterio_nome} (0 a 10):",
+          min_value=0.0,
+          max_value=10.0,
+          value=5.0,
+          step=0.1,
+          format="%.1f",
+          key=f"input_{chave_base}",
+      )
+      justificativas_jurado[criterio_nome] = st.text_area(
+          f"Justificativa para {criterio_nome} (Opcional):",
+          key=f"just_{chave_base}",
+      )
+      st.write("")
+
+    if st.button("Enviar Todas as Notas", type="primary"):
+      for criterio_nome, nota_val in notas_jurado.items():
+        novo_voto = {
+            "jurado": jurado_atual,
+            "categoria": categoria_escolhida,
+            "papel": papel_escolhido,
+            "competidor": competidor_escolhido,
+            "criterio": criterio_nome,
+            "nota": nota_val,
+            "justificativa": justificativas_jurado[criterio_nome],
+        }
+        st.session_state.votos.append(novo_voto)
+
+      st.success(
+          f"Todas as notas foram enviadas com sucesso para"
+          f" {competidor_escolhido}!"
+      )
 
 # ---------------------------------------------------------
 # 2. PAINEL DA ORGANIZAÇÃO (Protegido por Senha)
@@ -207,8 +230,8 @@ else:
 
   if not st.session_state.votos:
     st.info(
-        "💡 As abas abaixo já estão separadas por categoria. Aguardando o"
-        " envio do primeiro voto para preencher os rankings!"
+        "💡 As abas abaixo estão separadas por categoria. Aguardando o envio"
+        " dos votos!"
     )
 
   nomes_abas = list(categorias.keys())
@@ -221,6 +244,7 @@ else:
         columns=[
             "jurado",
             "categoria",
+            "papel",
             "competidor",
             "criterio",
             "nota",
@@ -231,56 +255,68 @@ else:
   for i, categoria_nome in enumerate(nomes_abas):
     with abas[i]:
       st.subheader(f"📊 Categoria: {categoria_nome}")
-      competidores_da_categoria = categorias[categoria_nome]
-
-      df_cat = df_votos[df_votos["competidor"].isin(competidores_da_categoria)]
+      df_cat = df_votos[df_votos["categoria"] == categoria_nome]
 
       if df_cat.empty:
-        st.info(
-            "Nenhum voto registrado ainda para os competidores desta"
-            f" categoria: {', '.join(competidores_da_categoria)}"
-        )
+        st.info("Nenhum voto registrado ainda para esta categoria.")
       else:
-        if not st.session_state.revelado:
-          indices_para_ignorar = []
-          for comp in df_cat["competidor"].unique():
-            temp_df = df_cat[df_cat["competidor"] == comp]
-            if not temp_df.empty:
-              indices_para_ignorar.append(temp_df.index[-1])
-          df_calculo = df_cat.drop(indices_para_ignorar)
-        else:
-          df_calculo = df_cat.copy()
+        sub_abas = st.tabs(["Condutores", "Conduzidas"])
+        papeis = ["Condutores", "Conduzidas"]
 
-        if not df_calculo.empty:
-          ranking = (
-              df_calculo.groupby("competidor")["nota"].mean().reset_index()
-          )
-          ranking.columns = ["Competidor", "Média Geral"]
-          ranking = ranking.sort_values(
-              by="Média Geral", ascending=False
-          ).reset_index(drop=True)
-          ranking.index = ranking.index + 1
+        for j, papel_nome in enumerate(papeis):
+          with sub_abas[j]:
+            st.markdown(f"#### Divisão: {papel_nome}")
+            df_papel = df_cat[df_cat["papel"] == papel_nome]
 
-          st.markdown("### Ranking da Categoria")
-          st.dataframe(ranking, use_container_width=True)
-        else:
-          st.warning("Aguardando mais votos para formar o ranking parcial.")
+            if df_papel.empty:
+              st.info(f"Sem votos para {papel_nome} nesta categoria ainda.")
+            else:
+              if not st.session_state.revelado:
+                indices_para_ignorar = []
+                for comp in df_papel["competidor"].unique():
+                  temp_df = df_papel[df_papel["competidor"] == comp]
+                  if not temp_df.empty:
+                    indices_para_ignorar.append(temp_df.index[-1])
+                df_calculo = df_papel.drop(indices_para_ignorar)
+              else:
+                df_calculo = df_papel.copy()
 
-        st.markdown("### Histórico de Notas desta Categoria")
-        df_exibicao_cat = df_cat.copy()
-        if not st.session_state.revelado:
-          indices_para_mascarar = []
-          for comp in df_exibicao_cat["competidor"].unique():
-            temp_df = df_exibicao_cat[df_exibicao_cat["competidor"] == comp]
-            if not temp_df.empty:
-              indices_para_mascarar.append(temp_df.index[-1])
+              if not df_calculo.empty:
+                ranking = (
+                    df_calculo.groupby("competidor")["nota"]
+                    .mean()
+                    .reset_index()
+                )
+                ranking.columns = ["Competidor", "Média Geral"]
+                ranking = ranking.sort_values(
+                    by="Média Geral", ascending=False
+                ).reset_index(drop=True)
+                ranking.index = ranking.index + 1
 
-          df_exibicao_cat["nota"] = df_exibicao_cat["nota"].astype(str)
-          df_exibicao_cat.loc[indices_para_mascarar, "nota"] = (
-              "🔒 [Oculta para Suspense]"
-          )
-          df_exibicao_cat.loc[indices_para_mascarar, "justificativa"] = (
-              "🔒 [Oculta]"
-          )
+                st.markdown("##### Ranking")
+                st.dataframe(ranking, use_container_width=True)
+              else:
+                st.warning("Aguardando mais votos para o ranking parcial.")
 
-        st.dataframe(df_exibicao_cat, use_container_width=True)
+              st.markdown("##### Histórico de Notas")
+              df_exibicao_papel = df_papel.copy()
+              if not st.session_state.revelado:
+                indices_para_mascarar = []
+                for comp in df_exibicao_papel["competidor"].unique():
+                  temp_df = df_exibicao_papel[
+                      df_exibicao_papel["competidor"] == comp
+                  ]
+                  if not temp_df.empty:
+                    indices_para_mascarar.append(temp_df.index[-1])
+
+                df_exibicao_papel["nota"] = df_exibicao_papel["nota"].astype(
+                    str
+                )
+                df_exibicao_papel.loc[indices_para_mascarar, "nota"] = (
+                    "🔒 [Oculta para Suspense]"
+                )
+                df_exibicao_papel.loc[indices_para_mascarar, "justificativa"] = (
+                    "🔒 [Oculta]"
+                )
+
+              st.dataframe(df_exibicao_papel, use_container_width=True)
