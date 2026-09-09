@@ -66,7 +66,7 @@ categorias = {
 fases_por_categoria = {
     "Aprendendo a Voar": ["Fase Única"],
     "Prata": ["Fase Classificatória", "Fase Final"],
-    "Gold": ["Fase Classificatória", "Fase Final"],
+    "Ouro": ["Fase Classificatória", "Fase Final"],
     "Platina": ["Fase 1 (Música 1)", "Fase 2 (Música 2)"],
     "Diamante": ["Fase 1 (Música 1)", "Fase 2 (Música 2)"],
 }
@@ -196,7 +196,6 @@ if modo == "Painel do Jurado":
         "Escolha a Categoria:", list(categorias.keys())
     )
 
-    # Seleção dinâmica de fases conforme o regulamento do PDF
     fases_disponiveis = fases_por_categoria[categoria_escolhida]
     fase_escolhida = st.selectbox("Escolha a Fase / Etapa:", fases_disponiveis)
 
@@ -425,7 +424,6 @@ else:
 
                   st.dataframe(df_exibicao_papel, use_container_width=True)
 
-        # Para Platina e Diamante, exibe a classificação geral acumulada somando as 2 fases conforme o regulamento
         if categoria_nome in ["Platina", "Diamante"]:
           st.divider()
           st.subheader(
