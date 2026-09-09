@@ -11,9 +11,7 @@ st.set_page_config(
 )
 
 
-# Função inteligente que aplica imagens diferentes dependendo da tela atual
 def obter_fundo_css(tipo_tela):
-  # Mapeia qual arquivo procurar de acordo com a tela
   candidatos = [f"fundo_{tipo_tela}.png", f"fundo_{tipo_tela}.jpg"]
 
   img_encontrada = None
@@ -22,7 +20,6 @@ def obter_fundo_css(tipo_tela):
       img_encontrada = arquivo
       break
 
-  # Se não achar a específica, tenta achar uma geral (fundo.png / fundo.jpg)
   if not img_encontrada:
     for arquivo in ["fundo.png", "fundo.jpg", "Fundo.png", "Fundo.jpg"]:
       if os.path.exists(arquivo):
@@ -67,7 +64,6 @@ if "revelado" not in st.session_state:
 if "jurado_logado" not in st.session_state:
   st.session_state.jurado_logado = None
 
-# Listas oficiais de competidores atualizadas
 categorias = {
     "Aprendendo a Voar": {
         "Condutores": ["Bruno", "Ivan", "Luis"],
@@ -140,7 +136,7 @@ criterios_por_categoria = {
     },
     "Prata": {
         "Conexão e Resposta": (
-            "Conexão, communication corporal, condução, resposta, atenção e"
+            "Conexão, comunicação corporal, condução, resposta, atenção e"
             " sintonia."
         ),
         "Movimentos Característicos e Sambado": (
@@ -222,21 +218,13 @@ modo = st.sidebar.radio(
     label_visibility="collapsed",
 )
 
-# Define qual fundo carregar com base na tela ativa
 if modo == "Painel do Jurado" and st.session_state.jurado_logado is None:
-  st.markdown(
-      obter_fundo_css("login"), unsafe_allow_html=True
-  )  _# Procura fundo_login.png/jpg
+  st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
 elif modo == "Telão (Público)":
-  st.markdown(
-      obter_fundo_css("telao"), unsafe_allow_html=True
-  )  # Procura fundo_telao.png/jpg
+  st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
 else:
-  st.markdown(
-      obter_fundo_css("painel"), unsafe_allow_html=True
-  )  # Procura fundo_painel.png/jpg
+  st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
-# Estilização de Luxo + Responsividade Mobile Avançada
 st.markdown("""
     <style>
     h1, h2, h3 {
@@ -578,9 +566,7 @@ else:
                     indices_para_mascarar = []
                     for comp in df_exibicao_papel["competidor"].unique():
                       temp_df = df_exibicao_papel[
-                          df_exibicao_pal_ := df_exibicao_papel[
-                              df_exibicao_papel["competidor"] == comp
-                          ]
+                          df_exibicao_papel["competidor"] == comp
                       ]
                       if not temp_df.empty:
                         indices_para_mascarar.append(temp_df.index[-1])
