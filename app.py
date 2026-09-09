@@ -35,7 +35,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.40), rgba(5, 4, 3, 0.50)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.35), rgba(5, 4, 3, 0.45)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -150,7 +150,7 @@ criterios_por_categoria = {
     },
     "Ouro": {
         "Conexão e Resposta": (
-            "Qualidade da conexão, communication corporal, precisão, resposta,"
+            "Qualidade da conexão, comunicação corporal, precisão, resposta,"
             " atenção, sintonia e naturalidade."
         ),
         "Movimentos Característicos e Sambado": (
@@ -269,7 +269,15 @@ st.markdown("""
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
+    /* Classe exclusiva para travar o card de login na área exata da imagem */
+    .login-container-pos {
+        margin-top: 42vh; 
+    }
+
     @media (max-width: 768px) {
+        .login-container-pos {
+            margin-top: 38vh;
+        }
         .stColumns {
             flex-direction: column !important;
         }
@@ -277,12 +285,11 @@ st.markdown("""
             width: 100% !important;
             flex: 1 1 100% !important;
             min-width: 100% !important;
-            margin-bottom: 10px;
         }
         .block-container {
             padding-left: 1rem !important;
             padding-right: 1rem !important;
-            padding-top: 1rem !important;
+            padding-top: 0.5rem !important;
         }
     }
     </style>
@@ -290,10 +297,12 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # Espaçamento ajustado exatamente para posicionar o card na área vazia (retângulo vermelho)
-    st.markdown("<br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
+    # Div controlada por CSS para empurrar o card milimetricamente para o espaço vermelho
+    st.markdown(
+        '<div class="login-container-pos"></div>', unsafe_allow_html=True
+    )
 
-    col_center1, col_form, col_center2 = st.columns([0.5, 3, 0.5])
+    col_center1, col_form, col_center2 = st.columns([0.2, 3.6, 0.2])
     with col_form:
       with st.container(border=True):
         login_digitado = st.text_input(
