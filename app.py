@@ -20,6 +20,77 @@ categorias = {
     "Diamante": ["Ana"],
 }
 
+# Critérios oficiais detalhados por categoria
+criterios_por_categoria = {
+    "Aprendendo a Voar": {
+        "Critério 1 — Conexão e Entrega na Dança": (
+            "Atenção ao parceiro, interação, sintonia, presença, envolvimento e"
+            " entrega."
+        ),
+        "Critério 2 — Fundamentos e Qualidade da Base": (
+            "Ritmo, postura, equilíbrio, condução e resposta, segurança e"
+            " movimentos básicos. (Obs: O sambado não será exigido)."
+        ),
+    },
+    "Prata": {
+        "Critério 1 — Conexão e Resposta": (
+            "Conexão, comunicação corporal, condução, resposta, atenção e"
+            " sintonia."
+        ),
+        "Critério 2 — Movimentos Característicos e Sambado": (
+            "Execução, variedade, segurança, fluidez, qualidade técnica e"
+            " integração com a dança."
+        ),
+        "Critério 3 — Criatividade e Musicalidade": (
+            "Interpretação musical, ritmo, adaptação, criatividade e"
+            " combinação de movimentos."
+        ),
+    },
+    "Ouro": {
+        "Critério 1 — Conexão e Resposta": (
+            "Qualidade da conexão, comunicação corporal, precisão, resposta,"
+            " atenção, sintonia e naturalidade."
+        ),
+        "Critério 2 — Movimentos Característicos e Sambado": (
+            "Domínio, repertório, técnica, segurança, fluidez, criatividade e"
+            " qualidade do sambado."
+        ),
+        "Critério 3 — Criatividade e Musicalidade": (
+            "Interpretação, percepção das variações musicais, ritmo, adaptação e"
+            " criatividade."
+        ),
+    },
+    "Platina": {
+        "Critério 1 — Musicalidade e Criatividade": (
+            "Interpretação musical, variações, ritmo, criatividade,"
+            " originalidade e construção da dança."
+        ),
+        "Critério 2 — Técnica e Finalização": (
+            "Postura, equilíbrio, controle corporal, precisão, segurança,"
+            " fluidez, movimentos inerentes à dança e acabamento."
+        ),
+        "Critério 3 — Conexão e Resposta": (
+            "Clareza da condução, intenção, precisão, resposta, adaptação e"
+            " naturalidade."
+        ),
+    },
+    "Diamante": {
+        "Critério 1 — Musicalidade e Criatividade": (
+            "Elevado nível de interpretação, percepção musical, criatividade,"
+            " originalidade e soluções durante a dança."
+        ),
+        "Critério 2 — Técnica e Finalização": (
+            "Alto nível de exigência em postura, equilíbrio, controle, precisão,"
+            " segurança, fluidez e acabamento."
+        ),
+        "Critério 3 — Conexão e Resposta": (
+            "Elevado domínio da comunicação corporal, condução, intenção,"
+            " resposta, adaptação e naturalidade. (Nível mais elevado de"
+            " exigência)."
+        ),
+    },
+}
+
 jurados = ["Jurado 1", "Jurado 2", "Jurado 3"]
 
 # Menu lateral
@@ -30,28 +101,36 @@ modo = st.sidebar.radio(
 )
 
 # ---------------------------------------------------------
-# 1. PAINEL DO JURADO (Categoria Primeiro, depois Jurado)
+# 1. PAINEL DO JURADO
 # ---------------------------------------------------------
 if modo == "Painel do Jurado":
   st.title("📱 Painel de Votação do Jurado")
 
-  # 1. Categoria vem primeiro agora!
+  # 1. Categoria primeiro
   categoria_escolhida = st.selectbox(
       "Escolha a Categoria:", list(categorias.keys())
   )
 
-  # 2. Depois o Jurado se identifica
+  # 2. Identificação do Jurado
   jurado_atual = st.selectbox("Identifique-se (Jurado):", jurados)
 
-  # 3. Depois escolhe o competidor daquela categoria
+  # 3. Competidor da categoria
   competidores_da_categoria = categorias[categoria_escolhida]
   competidor_escolhido = st.selectbox(
       "Escolha o Competidor:", competidores_da_categoria
   )
 
-  criterio = st.selectbox(
-      "Critério:", ["Sincronismo", "Figurino", "Ritmo e Musicalidade"]
+  # 4. Critérios dinâmicos (puxa apenas os critérios da categoria selecionada)
+  criterios_disponiveis = list(
+      criterios_por_categoria[categoria_escolhida].keys()
   )
+  criterio = st.selectbox("Critério de Avaliação:", criterios_disponiveis)
+
+  # Caixa de ajuda visual explicando o critério para o jurado
+  descricao_criterio = criterios_por_categoria[categoria_escolhida][criterio]
+  st.info(f"💡 **O que avaliar neste critério:** {descricao_criterio}")
+
+  # 5. Nota com décimos (0.1)
   nota = st.slider("Nota (0 a 10):", 0.0, 10.0, 5.0, 0.1)
   justificativa = st.text_area("Justificativa (Opcional):")
 
@@ -94,12 +173,11 @@ elif modo == "Painel da Organização":
     st.error("❌ Senha incorreta!")
 
 # ---------------------------------------------------------
-# 3. TELÃO / PÚBLICO (Com Abas por Categoria visíveis sempre)
+# 3. TELÃO / PÚBLICO
 # ---------------------------------------------------------
 else:
   st.title("🏆 Telão da Competição por Categorias")
 
-  # Controle de suspense na barra lateral
   st.sidebar.divider()
   st.sidebar.subheader("Controle do Telão")
   revelar_tudo = st.sidebar.checkbox(
@@ -113,7 +191,6 @@ else:
         " envio do primeiro voto para preencher os rankings!"
     )
 
-  # Criando as abas sempre visíveis na ordem exata definida no dicionário
   nomes_abas = list(categorias.keys())
   abas = st.tabs(nomes_abas)
 
@@ -131,7 +208,6 @@ else:
         ]
     )
 
-  # Preenchendo cada aba com os dados específicos daquela categoria
   for i, categoria_nome in enumerate(nomes_abas):
     with abas[i]:
       st.subheader(f"📊 Categoria: {categoria_nome}")
@@ -141,8 +217,8 @@ else:
 
       if df_cat.empty:
         st.info(
-            f"Nenhum voto registrado ainda para os competidores desta categoria:"
-            f" {', '.join(competidores_da_categoria)}"
+            "Nenhum voto registrado ainda para os competidores desta"
+            f" categoria: {', '.join(competidores_da_categoria)}"
         )
       else:
         if not st.session_state.revelado:
