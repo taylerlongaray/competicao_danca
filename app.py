@@ -151,7 +151,7 @@ senhas_jurados = {
 
 st.sidebar.title("Navegação")
 modo = st.sidebar.radio(
-    "Escolha o Painel:",
+    "Painel:",
     ["Painel do Jurado", "Painel da Organização", "Telão (Público)"],
 )
 
@@ -163,7 +163,7 @@ if modo == "Painel do Jurado":
     col1, col2, col3 = st.columns([2, 2, 1])
     with col1:
       login_selecionado = st.selectbox(
-          "Selecione o seu usuário:", ["Selecione..."] + list(senhas_jurados.keys())
+          "Usuário:", ["Selecione..."] + list(senhas_jurados.keys())
       )
     with col2:
       senha_digitada = st.text_input(
@@ -193,14 +193,18 @@ if modo == "Painel do Jurado":
     st.divider()
 
     categoria_escolhida = st.selectbox(
-        "Escolha a Categoria:", list(categorias.keys())
+        "Categoria:", list(categorias.keys())
     )
 
+    # Só exibe a seleção de fase se a categoria tiver mais de uma fase
     fases_disponiveis = fases_por_categoria[categoria_escolhida]
-    fase_escolhida = st.selectbox("Escolha a Fase / Etapa:", fases_disponiveis)
+    if len(fases_disponiveis) > 1:
+      fase_escolhida = st.selectbox("Fase / Etapa:", fases_disponiveis)
+    else:
+      fase_escolhida = fases_disponiveis[0]
 
     tipo_selecionado = st.radio(
-        "Selecione o Grupo:", ["Condutor", "Conduzida"], horizontal=True
+        "Grupo:", ["Condutor", "Conduzida"], horizontal=True
     )
 
     if tipo_selecionado == "Condutor":
@@ -208,17 +212,13 @@ if modo == "Painel do Jurado":
       competidores_ordenados = sorted(
           categorias[categoria_escolhida]["Condutores"]
       )
-      competidor_escolhido = st.selectbox(
-          "Selecionar Condutor:", competidores_ordenados
-      )
+      competidor_escolhido = st.selectbox("Condutor:", competidores_ordenados)
     else:
       papel_escolhido = "Conduzidas"
       competidores_ordenados = sorted(
           categorias[categoria_escolhida]["Conduzidas"]
       )
-      competidor_escolhido = st.selectbox(
-          "Selecionar Conduzida:", competidores_ordenados
-      )
+      competidor_escolhido = st.selectbox("Conduzida:", competidores_ordenados)
 
     st.divider()
     st.subheader(
@@ -276,7 +276,7 @@ if modo == "Painel do Jurado":
 elif modo == "Painel da Organização":
   st.title("📋 Painel da Organização (Área Restrita)")
   senha_digitada = st.text_input(
-      "Digite a senha de acesso da organização:", type="password"
+      "Senha de acesso da organização:", type="password"
   )
   SENHA_MESTRE = "danca123"
 
