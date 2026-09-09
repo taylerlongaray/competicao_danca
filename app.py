@@ -14,30 +14,51 @@ if "revelado" not in st.session_state:
 if "jurado_logado" not in st.session_state:
   st.session_state.jurado_logado = None
 
-# Categorias atualizadas com os nomes em verde da imagem (Diamante mantido)
+# Listas oficiais atualizadas por categoria
 categorias = {
     "Aprendendo a Voar": {
-        "Condutores": ["Bruno"],
-        "Conduzidas": ["Sheila", "Carla"],
+        "Condutores": ["Bruno", "Ivan", "Luis"],
+        "Conduzidas": ["Pati", "Sheila", "Michelle", "Carla"],
     },
     "Prata": {
-        "Condutores": ["Michel", "Alisson"],
-        "Conduzidas": ["Franciele"],
+        "Condutores": [
+            "Marcão",
+            "Léo",
+            "Rogério F",
+            "Cleiton",
+            "Michel",
+            "Alisson",
+        ],
+        "Conduzidas": [
+            "Sabrina",
+            "Lolo",
+            "Nathalia",
+            "Anachris",
+            "Ge",
+            "Daiane",
+            "Lidiana",
+            "Dienifer",
+            "Shay",
+            "Lilica",
+        ],
     },
     "Ouro": {
-        "Condutores": [
-            "Jonatan Santos",
-            "Edilson**",
-            "Lukas",
-            "Welisson",
-            "Duarte",
-            "Diego Dom",
+        "Condutores": ["Isma", "Jonatan Santos", "Ciro", "Lukas"],
+        "Conduzidas": [
+            "Joice",
+            "Fran",
+            "Daia",
+            "Marcia",
+            "Juliana",
+            "Thaizete",
+            "Andreza",
+            "Julia",
+            "Michele",
         ],
-        "Conduzidas": ["Marcia", "Juliana", "Thaizete", "Michele"],
     },
     "Platina": {
-        "Condutores": ["Anderson", "Douglas Clo"],
-        "Conduzidas": ["Nanda", "Cassi"],
+        "Condutores": ["Jean", "Deivid", "Catriel", "Douglas Clo"],
+        "Conduzidas": ["Fabi", "Tefynha", "Nanda", "Cassi"],
     },
     "Diamante": {
         "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
