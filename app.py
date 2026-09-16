@@ -418,7 +418,7 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Template seguro ajustado para o canto superior direito exato (círculo vermelho)
+      # Template seguro com injeção persistente no body via JS
       avatar_template = """
             <style>
             html, body, [data-testid="stAppViewContainer"], .main {
@@ -503,25 +503,24 @@ if modo == "Painel do Jurado":
             }
             </style>
 
-            <div id="avatar-container-source" style="display:none;">
-                <a href="?LOGOUT_PARAM_REPLACE" title="Sair da Conta" style="text-decoration: none; display: block;">
-                    AVATAR_HTML_REPLACE
-                </a>
-            </div>
-
             <script>
-                const src = document.getElementById('avatar-container-source');
-                if (src && !document.getElementById('fixed-top-right-avatar-global')) {
-                    src.id = 'fixed-top-right-avatar-global';
-                    src.style.display = 'block';
-                    src.style.position = 'fixed';
-                    src.style.top = '25px';
-                    src.style.right = '25px';
-                    src.style.zIndex = '9999999';
-                    document.body.appendChild(src);
-                } else if (src) {
-                    src.remove();
-                }
+                (function() {
+                    let avatarElem = document.getElementById('fixed-top-right-avatar-global');
+                    if (!avatarElem) {
+                        avatarElem = document.createElement('a');
+                        avatarElem.id = 'fixed-top-right-avatar-global';
+                        avatarElem.style.position = 'fixed';
+                        avatarElem.style.top = '15px';
+                        avatarElem.style.right = '20px';
+                        avatarElem.style.zIndex = '9999999';
+                        avatarElem.style.textDecoration = 'none';
+                        avatarElem.style.display = 'block';
+                        document.body.appendChild(avatarElem);
+                    }
+                    avatarElem.href = '?LOGOUT_PARAM_REPLACE';
+                    avatarElem.title = 'Sair da Conta';
+                    avatarElem.innerHTML = 'AVATAR_HTML_REPLACE';
+                })();
             </script>
             """
 
@@ -780,8 +779,8 @@ else:
                     indices_para_ignorar = []
                     for comp in df_papel["competidor"].unique():
                       temp_df = df_papel[df_papel["competidor"] == comp]
-                    if not temp_df.empty:
-                      indices_para_ignorar.append(temp_df.index[-1])
+                      if not temp_df.empty:
+                        indices_para_ignorar.append(temp_df.index[-1])
                     df_calculo = df_papel.drop(indices_para_ignorar)
                   else:
                     df_calculo = df_papel.copy()
