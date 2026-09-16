@@ -309,8 +309,16 @@ def formatar_fase(fase):
   return fase.upper(), "ETAPA ÚNICA"
 
 
-def registrar_voto(jurado, categoria, fase, papel, competidor, criterio, nota,
-                   justificativa):
+def registrar_voto(
+    jurado,
+    categoria,
+    fase,
+    papel,
+    competidor,
+    criterio,
+    nota,
+    justificativa,
+):
   """Grava a nota; se já existir voto igual do mesmo jurado, atualiza."""
   for voto in st.session_state.votos:
     if (
@@ -399,7 +407,7 @@ st.markdown(
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-
+    
     .block-container {
         padding-top: 1.2rem !important;
         max-width: 600px !important;
@@ -425,8 +433,8 @@ st.markdown(
     }
 
     div[data-testid="column"]:has(input[type="password"]) {
-        max-width: 320px !important;
-        margin: 0 auto !important;
+        max-width: 320px !important; 
+        margin: 0 auto !important; 
         float: none !important;
         background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.5) !important;
@@ -440,7 +448,7 @@ st.markdown(
         border: 1px solid rgba(212, 175, 55, 0.45) !important;
         border-radius: 8px !important;
     }
-
+    
     .stTextInput div[data-baseweb="input"]:focus-within {
         border: 1px solid rgba(212, 175, 55, 1.0) !important;
         box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
@@ -452,7 +460,7 @@ st.markdown(
         padding: 10px 15px !important;
         font-size: 14px !important;
     }
-
+    
     .stTextInput input::placeholder {
         color: rgba(243, 229, 171, 0.4) !important;
     }
@@ -503,7 +511,7 @@ st.markdown(
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
-    /* ====== TELA DE VOTAÇÃO (layout do mockup) ====== */
+    /* ====== TELA DE VOTAÇÃO ====== */
     .jj-card {
         background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
         border: 1px solid rgba(212, 175, 55, 0.45);
@@ -777,14 +785,14 @@ if modo == "Painel do Jurado":
               gap: 15px;
           }
           .card-icon {
-              width: 28px !important;
+              width: 28px !important; 
               height: 28px !important;
               object-fit: contain;
           }
           .card-title {
               color: #f3e5ab;
               font-family: 'Georgia', serif;
-              font-size: 13px !important;
+              font-size: 13px !important; 
               font-weight: 600;
               letter-spacing: 2px;
           }
@@ -833,34 +841,31 @@ if modo == "Painel do Jurado":
         )
 
     else:
-      # =================================================================
-      # TELA DE VOTAÇÃO (layout do mockup)
-      # =================================================================
       categoria_escolhida = st.session_state.categoria_selecionada
 
       st.markdown(
           """
           <style>
           .top-pill-btn {
-              display: inline-flex;
+              display: flex;
               align-items: center;
               justify-content: center;
-              gap: 8px;
               background: linear-gradient(135deg, rgba(18, 13, 9, 0.95) 0%, rgba(35, 25, 15, 0.98) 100%);
               border: 1px solid rgba(212, 175, 55, 0.7);
               color: #f3e5ab;
               text-decoration: none;
-              padding: 8px 16px;
+              padding: 9px 12px;
               border-radius: 30px;
               font-family: 'Helvetica Neue', sans-serif;
-              font-size: 10px;
+              font-size: 11px;
               font-weight: 600;
               text-transform: uppercase;
-              letter-spacing: 1.5px;
-              line-height: 1.25;
+              letter-spacing: 1.2px;
               box-shadow: 0 4px 12px rgba(0,0,0,0.7);
               transition: all 0.3s ease;
-              white-space: nowrap;
+              width: 100%;
+              text-align: center;
+              box-sizing: border-box;
           }
           .top-pill-btn:hover {
               border-color: rgba(212, 175, 55, 1.0);
@@ -872,26 +877,15 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # ---------- Barra superior ----------
-      col_btn_l, col_logo, col_btn_r = st.columns([1.2, 2.2, 1.4])
+      # ---------- Barra superior com os botões alinhados ----------
+      col_btn_l, col_btn_r = st.columns(2)
 
       with col_btn_l:
         logout_url = (
             "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
         )
         st.markdown(
-            f'<a href="{logout_url}" class="top-pill-btn">←&nbsp; SAIR</a>',
-            unsafe_allow_html=True,
-        )
-
-      with col_logo:
-        st.markdown(
-            """
-            <div style="text-align: center; line-height: 1.2;">
-                <div style="font-family: 'Cinzel', 'Georgia', serif; font-size: 17px; color: #e5c158; font-weight: bold; letter-spacing: 1.5px;">JACK <span style="font-size: 10px; color: #b39b6b; font-weight: normal;">AND</span> JILL</div>
-                <div style="font-size: 8px; color: #b39b6b; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px;">✦ NOITE NAS ARÁBIAS ✦</div>
-            </div>
-            """,
+            f'<a href="{logout_url}" class="top-pill-btn">← SAIR</a>',
             unsafe_allow_html=True,
         )
 
@@ -900,8 +894,7 @@ if modo == "Painel do Jurado":
         jurado_str = f"jurado={st.session_state.jurado_logado}&"
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
         st.markdown(
-            f'<div style="text-align: right;"><a href="{trocar_url}"'
-            ' class="top-pill-btn">⇄&nbsp; TROCAR<br>CATEGORIA</a></div>',
+            f'<a href="{trocar_url}" class="top-pill-btn">⇄ TROCAR CATEGORIA</a>',
             unsafe_allow_html=True,
         )
 
