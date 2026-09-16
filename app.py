@@ -78,7 +78,7 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
   st.session_state.categoria_selecionada = None
 
-# Recuperação automática de estado via URL para evitar novo login ao trocar de tela
+# Recuperação automática de estado via URL
 try:
   qp = st.query_params
   if "jurado" in qp and not st.session_state.jurado_logado:
@@ -259,8 +259,14 @@ else:
       label_visibility="collapsed",
   )
 
-if modo == "Painel do Jurado" and st.session_state.jurado_logado is None:
-  st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
+# Gerenciamento dinâmico dos fundos de tela por etapa
+if modo == "Painel do Jurado":
+  if st.session_state.jurado_logado is None:
+    st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
+  elif st.session_state.categoria_selecionada is None:
+    st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
+  else:
+    st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 elif modo == "Telão (Público)":
   st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
 else:
@@ -285,7 +291,6 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Caixa de login elegante */
     div[data-testid="column"]:has(input[type="password"]) {
         max-width: 330px !important; 
         margin: 0 auto !important; 
@@ -318,7 +323,6 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
-    /* Cards de Categoria idênticos à referência */
     .category-card {
         display: flex;
         align-items: center;
@@ -361,7 +365,6 @@ st.markdown("""
         font-weight: bold;
     }
 
-    /* Botões padrão pílula */
     .stButton > button {
         background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(70,55,30,0.9) 50%, rgba(40,30,18,0.9) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.5) !important;
@@ -376,7 +379,7 @@ st.markdown("""
         transition: all 0.3s ease !important;
     }
     .stButton > button:hover {
-        background: linear-gradient(180deg, rgba(60,45,25,1) 0%, rgba(100,80,45,1) 50%, rgba(60,45,25,1) 100%) !important;
+        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 50%, rgba(80,60,30,1) 100%) !important;
         color: #ffffff !important;
         border: 1px solid rgba(212, 175, 55, 0.9) !important;
     }
