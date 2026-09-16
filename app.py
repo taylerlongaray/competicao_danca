@@ -358,12 +358,11 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # BLOQUEIO TOTAL DE SCROLL E POSICIONAMENTO FIXO EM 32vh
+      # TRAVAMENTO EM PIXELS FIXOS (230px) - Não sofre alteração da barra móvel
       # =======================================================================
       st.markdown(
           """
           <style>
-          /* Trava completamente a rolagem e o arrastar na tela de categorias */
           html, body, [data-testid="stAppViewContainer"], .main {
               overflow: hidden !important;
               touch-action: none !important;
@@ -375,10 +374,10 @@ if modo == "Painel do Jurado":
               padding: 0 !important;
           }
 
-          /* Trava o container principal na posição exata de 32vh para nunca descer */
+          /* Usando pixels fixos (px) em vez de vh para ficar estático independentemente da barra do celular */
           .block-container {
               position: fixed !important;
-              top: 32vh !important;
+              top: 230px !important; /* Se precisar subir mais, mude para 210px. Se precisar descer, 250px */
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
