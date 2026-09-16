@@ -358,37 +358,11 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # TRAVAMENTO RIGOROSO FIXADO NO 32vh
+      # RESET DE ROLAGEM INTERNA DO STREAMLIT + ESPAÇADOR DE 20vh
       # =======================================================================
       st.markdown(
           """
           <style>
-          html, body, [data-testid="stAppViewContainer"], .main, .block-container, [data-testid="stVerticalBlock"] {
-              overflow: hidden !important;
-              touch-action: none !important;
-              overscroll-behavior: none !important;
-          }
-          
-          html, body {
-              position: fixed !important;
-              width: 100vw !important;
-              height: 100vh !important;
-              margin: 0 !important;
-              padding: 0 !important;
-          }
-
-          /* Força a caixa principal a ficar rigidamente na posição 32vh */
-          .block-container {
-              position: fixed !important;
-              top: 32vh !important;
-              left: 50% !important;
-              transform: translateX(-50%) !important;
-              width: 100% !important;
-              max-width: 320px !important;
-              padding: 0 !important;
-              margin: 0 !important;
-          }
-          
           .category-card {
               display: flex;
               align-items: center;
@@ -447,11 +421,19 @@ if modo == "Painel do Jurado":
           </style>
           
           <script>
+              // Força o container interno de scroll do Streamlit a voltar ao topo exato
+              const container = document.querySelector('[data-testid="stAppViewContainer"]');
+              if (container) {
+                  container.scrollTop = 0;
+              }
               window.scrollTo(0, 0);
           </script>
           """,
           unsafe_allow_html=True,
       )
+
+      # Ajuste a altura aqui se quiser subir mais (ex: 15vh) ou descer (ex: 25vh)
+      st.markdown('<div style="height: 20vh;"></div>', unsafe_allow_html=True)
 
       cats_info = [
           ("Diamante", "diamante.png", "💎"),
