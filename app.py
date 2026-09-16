@@ -90,7 +90,6 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
   st.session_state.categoria_selecionada = None
 
-# Tratamento seguro de query_params na ordem correta
 try:
   qp = st.query_params
   link_jurado_exclusivo = qp.get("view") == "jurado"
@@ -306,7 +305,6 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* BLOCO DE LOGIN */
     div[data-testid="column"]:has(input[type="password"]) {
         max-width: 320px !important; 
         margin: 0 auto !important; 
@@ -408,18 +406,16 @@ if modo == "Painel do Jurado":
           st.error("❌ Usuário não encontrado.")
   else:
     if st.session_state.categoria_selecionada is None:
-      # =======================================================================
-      # TELA DE CATEGORIAS: AVATAR FIXO NO CANTO SUPERIOR DIREITO + 200px
-      # =======================================================================
       avatar_html = obter_avatar_html()
       logout_param = (
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
+      # CSS separado sem conflito de f-string
       st.markdown(
-          f"""
+          """
           <style>
-          html, body, [data-testid="stAppViewContainer"], .main {{
+          html, body, [data-testid="stAppViewContainer"], .main {
               overflow: hidden !important;
               touch-action: none !important;
               overscroll-behavior: none !important;
@@ -428,9 +424,9 @@ if modo == "Painel do Jurado":
               height: 100vh !important;
               margin: 0 !important;
               padding: 0 !important;
-          }}
+          }
 
-          .block-container {{
+          .block-container {
               position: fixed !important;
               top: 200px !important;
               left: 50% !important;
@@ -439,9 +435,9 @@ if modo == "Painel do Jurado":
               max-width: 320px !important;
               padding: 0 !important;
               margin: 0 !important;
-          }}
+          }
 
-          .welcome-title {{
+          .welcome-title {
               color: #f3e5ab;
               font-family: 'Georgia', serif;
               font-size: 20px;
@@ -449,9 +445,9 @@ if modo == "Painel do Jurado":
               font-weight: normal;
               margin-bottom: 6px;
               letter-spacing: 0.5px;
-          }}
+          }
 
-          .welcome-subtitle {{
+          .welcome-subtitle {
               color: #f3e5ab;
               font-family: 'Helvetica Neue', sans-serif;
               font-size: 11.5px;
@@ -459,9 +455,9 @@ if modo == "Painel do Jurado":
               margin-bottom: 15px;
               opacity: 0.9;
               letter-spacing: 0.3px;
-          }}
+          }
 
-          .category-card {{
+          .category-card {
               display: flex;
               align-items: center;
               justify-content: space-between;
@@ -474,43 +470,47 @@ if modo == "Painel do Jurado":
               box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
               transition: all 0.3s ease;
           }
-          .category-card:hover {{
+          .category-card:hover {
               border-color: rgba(212, 175, 55, 1.0);
               background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
-          }}
-          .card-left {{
+          }
+          .card-left {
               display: flex;
               align-items: center;
               gap: 15px;
-          }}
-          .card-icon {{
+          }
+          .card-icon {
               width: 28px !important; 
               height: 28px !important;
               object-fit: contain;
-          }}
-          .card-title {{
+          }
+          .card-title {
               color: #f3e5ab;
               font-family: 'Georgia', serif;
               font-size: 13px !important; 
               font-weight: 600;
               letter-spacing: 2px;
-          }}
-          .card-arrow {{
+          }
+          .card-arrow {
               color: #d4af37;
               font-size: 16px !important;
-          }}
+          }
 
-          /* BOTÃO DE AVATAR FIXO NO CANTO SUPERIOR DIREITO */
-          .top-right-avatar {{
+          .top-right-avatar {
               position: fixed !important;
               top: 15px !important;
               right: 15px !important;
               z-index: 99999 !important;
               text-decoration: none !important;
               cursor: pointer;
-          }}
+          }
           </style>
+          """,
+          unsafe_allow_html=True,
+      )
 
+      st.markdown(
+          f"""
           <a href="?{logout_param}" class="top-right-avatar" title="Sair da Conta">
               {avatar_html}
           </a>
@@ -808,13 +808,52 @@ else:
                     indices_para_mascarar = []
                     for comp in df_exibicao_papel["competidor"].unique():
                       temp_df = df_exibicao_papel[
-                          df_exibicao_papeis := df_exibicao_papel[
-                              df_exibicao_papel["competidor"] == comp
-                          ]
-                      ] if False else df_exibicao_papel[df_exibicao_papel["competidor"] == comp] # keeping it clean
-                      # wait, let's keep the original logic from the block
-                      # The original block:
-                      # for comp in df_exibicao_papel["competidor"].unique():
-                      #   temp_df = df_exibicao_papel[df_exibicao_papel["competidor"] == comp]
-                      #   if not temp_df.empty:
-                      #     indices_para_mascarar.append(temp_df.index[-1])
+                          df_exibicao_papel["competidor"] == comp
+                      ]
+                      if not temp_df.empty:
+                        indices_para_mascarar.append(temp_df.index[-1])
+
+                    df_exibicao_papel["nota"] = df_exibicao_papel["nota"].astype(
+                        str
+                    )
+                    df_exibicao_papel.loc[indices_para_mascarar, "nota"] = (
+                        "🔒 [Nota Secreta Oculta]"
+                    )
+
+                  st.dataframe(df_exibicao_papel, use_container_width=True)
+
+        if categoria_nome in ["Platina", "Diamante"]:
+          st.divider()
+          st.markdown(
+              "### 🌟 Classificação Geral Acumulada (Fase 1 + Fase 2 Somadas)"
+          )
+          df_cat_geral = df_cat.copy()
+          if not df_cat_geral.empty:
+            sub_abas_geral = st.tabs(
+                ["Condutores Geral", "Conduzidas Geral"]
+            )
+            for g_idx, g_papel in enumerate(["Condutores", "Conduzidas"]):
+              with sub_abas_geral[g_idx]:
+                df_g = df_cat_geral[df_cat_geral["papel"] == g_papel]
+                if not df_g.empty:
+                  fase_means = (
+                      df_g.groupby(["competidor", "fase"])["nota"]
+                      .mean()
+                      .reset_index()
+                  )
+                  total_score = (
+                      fase_means.groupby("competidor")["nota"]
+                      .sum()
+                      .reset_index()
+                  )
+                  total_score.columns = [
+                      "Competidor",
+                      "Pontuação Total Acumulada",
+                  ]
+                  total_score = total_score.sort_values(
+                      by="Pontuação Total Acumulada", ascending=False
+                  ).reset_index(drop=True)
+                  total_score.index = total_score.index + 1
+                  st.dataframe(total_score, use_container_width=True)
+                else:
+                  st.info("Aguardando votos em ambas as fases.")
