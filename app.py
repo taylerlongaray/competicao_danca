@@ -38,7 +38,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.02), rgba(5, 4, 3, 0.10)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.05), rgba(5, 4, 3, 0.10)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: top center !important;
             background-attachment: fixed;
@@ -279,10 +279,18 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
+    /* CSS Geral (sem travar tudo para não estragar a tela de votação) */
     .block-container {
         padding-top: 1rem !important;
         max-width: 650px !important;
         margin: 0 auto !important;
+    }
+
+    h1, h2, h3 {
+        color: #e5c158 !important;
+        font-family: 'Georgia', serif;
+        text-align: center;
+        letter-spacing: 1px;
     }
 
     div[data-testid="column"]:has(input[type="password"]) {
@@ -308,17 +316,6 @@ st.markdown("""
         font-size: 14px !important;
     }
 
-    .stButton > button {
-        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 12px !important;
-        color: #f3e5ab !important;
-        text-transform: uppercase !important;
-        letter-spacing: 2px !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease !important;
-    }
-    
     [data-testid="stSidebar"] {
         background-color: rgba(14, 10, 8, 0.96);
         border-right: 1px solid rgba(212, 175, 55, 0.15);
@@ -362,31 +359,40 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # INJEÇÃO DE CSS QUE TRAVA O SCROLL E FIXA A POSIÇÃO NA TELA
+      # MÁGICA AQUI: Trava completamente o scroll SOMENTE nesta tela
       # =======================================================================
       st.markdown(
           """
           <style>
-          /* 1. Desativa a rolagem da página inteira */
-          html, body, [data-testid="stAppViewContainer"], .stApp {
+          /* Bloqueia qualquer rolagem de tela e toque de arrastar */
+          html, body, [data-testid="stAppViewContainer"], .main, .block-container, [data-testid="stVerticalBlock"] {
               overflow: hidden !important;
+              touch-action: none !important; /* Desativa o swipe do celular */
+              overscroll-behavior: none !important;
+          }
+          
+          /* Gruda o app na tela */
+          html, body {
               position: fixed !important;
               width: 100vw !important;
               height: 100vh !important;
+              margin: 0 !important;
+              padding: 0 !important;
           }
-          
-          /* 2. Fixa e centraliza o bloco principal contendo os botões */
+
+          /* Fixa o bloco contendo os botões na coordenada EXATA */
           .block-container {
               position: absolute !important;
-              top: 45vh !important; /* SE PRECISAR SUBIR/DESCER OS BOTÕES, MUDE AQUI! (ex: 42vh sobe, 48vh desce) */
+              top: 46vh !important; /* SE PRECISAR SUBIR, MUDE PARA 44vh. SE PRECISAR DESCER, 48vh */
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
-              max-width: 310px !important; /* Tamanho fixo limitando a largura dos cards */
-              padding-top: 0 !important;
+              max-width: 320px !important;
+              padding: 0 !important;
+              margin: 0 !important;
           }
           
-          /* 3. Estilização dos Cards - Ainda Menores */
+          /* Estilização dos Cards - Tamanho idêntico à sua arte */
           .category-card {
               display: flex;
               align-items: center;
@@ -394,8 +400,8 @@ if modo == "Painel do Jurado":
               background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
               border: 1px solid rgba(212, 175, 55, 0.45);
               border-radius: 8px !important;
-              padding: 8px 16px !important; /* Mais fino */
-              margin-bottom: 8px !important; /* Espaço menor entre eles */
+              padding: 10px 18px !important;
+              margin-bottom: 10px !important;
               text-decoration: none !important;
               box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
               transition: all 0.3s ease;
@@ -407,39 +413,47 @@ if modo == "Painel do Jurado":
           .card-left {
               display: flex;
               align-items: center;
-              gap: 12px;
+              gap: 15px;
           }
           .card-icon {
-              width: 26px !important; /* Ícone menor */
-              height: 26px !important;
+              width: 28px !important; 
+              height: 28px !important;
               object-fit: contain;
           }
           .card-title {
               color: #f3e5ab;
               font-family: 'Georgia', serif;
-              font-size: 13px !important; /* Fonte menor */
+              font-size: 13px !important; 
               font-weight: 600;
-              letter-spacing: 1.5px;
+              letter-spacing: 2px;
           }
           .card-arrow {
               color: #d4af37;
-              font-size: 14px !important;
+              font-size: 16px !important;
           }
           
-          /* Botão Sair - Menor e centralizado */
+          /* Botão Sair - Mesmo tamanho e estilo dos cards */
           .stButton > button {
-              padding: 8px 16px !important;
-              font-size: 12px !important;
-              margin-top: 10px !important;
+              background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
+              border: 1px solid rgba(212, 175, 55, 0.5) !important;
               border-radius: 8px !important;
+              color: #f3e5ab !important;
+              text-transform: uppercase !important;
+              letter-spacing: 2px !important;
+              font-weight: 600 !important;
+              padding: 10px 18px !important;
               width: 100% !important;
+              margin-top: 5px !important;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
+          }
+          .stButton > button:hover {
+              border: 1px solid rgba(212, 175, 55, 1.0) !important;
           }
           </style>
           """,
           unsafe_allow_html=True,
       )
 
-      # Sem o texto duplicado gerado por código, apenas o design puro fixado
       cats_info = [
           ("Diamante", "diamante.png", "💎"),
           ("Platina", "platina.png", "🥈"),
@@ -456,7 +470,7 @@ if modo == "Painel do Jurado":
         if img_b64:
           icon_html = f'<img src="{img_b64}" class="card-icon"/>'
         else:
-          icon_html = f'<span style="font-size: 22px;">{emoji_fallback}</span>'
+          icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
 
         target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
 
@@ -661,7 +675,7 @@ else:
         else:
           fases_iter = [(fases_da_cat[0], None)]
 
-        for fase_nome, fase_aba in fases_iter:
+        for fase_nome, fase_aba in iter(fases_iter):
           if fase_aba is not None:
             container = fase_aba
           else:
