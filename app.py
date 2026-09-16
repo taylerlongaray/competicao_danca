@@ -46,8 +46,6 @@ def obter_fundo_css(tipo_tela):
             background-attachment: fixed;
             color: #f3e5ab;
             font-family: 'Helvetica Neue', sans-serif;
-            overflow: hidden !important;
-            height: 100vh !important;
         }}
         </style>
         """
@@ -57,8 +55,6 @@ def obter_fundo_css(tipo_tela):
         .stApp {
             background-color: #090706;
             color: #f3e5ab;
-            overflow: hidden !important;
-            height: 100vh !important;
         }
         </style>
         """
@@ -86,6 +82,9 @@ if "jurado_logado" not in st.session_state:
 
 if "categoria_selecionada" not in st.session_state:
   st.session_state.categoria_selecionada = None
+
+if "competidor_index" not in st.session_state:
+  st.session_state.competidor_index = 0
 
 try:
   qp = st.query_params
@@ -317,10 +316,9 @@ st.markdown(
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 0.5rem !important;
+        padding-top: 1rem !important;
         max-width: 600px !important;
         margin: 0 auto !important;
-        overflow: hidden !important;
     }
 
     h1, h2, h3 {
@@ -472,7 +470,6 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Espaçamento superior ajustado para 205px
       st.markdown('<div style="height: 205px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
@@ -509,23 +506,23 @@ if modo == "Painel do Jurado":
           .card-left {
               display: flex;
               align-items: center;
-              gap: 12px;
+              gap: 15px;
           }
           .card-icon {
-              width: 24px !important; 
-              height: 24px !important;
+              width: 28px !important; 
+              height: 28px !important;
               object-fit: contain;
           }
           .card-title {
               color: #f3e5ab;
               font-family: 'Georgia', serif;
-              font-size: 12px !important; 
+              font-size: 13px !important; 
               font-weight: 600;
               letter-spacing: 2px;
           }
           .card-arrow {
               color: #d4af37;
-              font-size: 14px !important;
+              font-size: 16px !important;
           }
           </style>
           """,
@@ -550,7 +547,7 @@ if modo == "Painel do Jurado":
         if img_b64:
           icon_html = f'<img src="{img_b64}" class="card-icon"/>'
         else:
-          icon_html = f'<span style="font-size: 20px;">{emoji_fallback}</span>'
+          icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
 
         target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
 
@@ -570,29 +567,62 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      col_info, col_voltar = st.columns([2.5, 1.5])
-      with col_info:
-        st.success(
-            f"✨ **{st.session_state.jurado_logado}** | Categoria:"
-            f" **{categoria_escolhida}**"
-        )
-      with col_voltar:
-        if st.button("⬅️ Trocar Categoria"):
+      # Top Navigation Bar matching mockup: [← SAIR] and [⇄ TROCAR CATEGORIA]
+      col_btn_1, col_btn_2 = st.columns(2)
+      with col_btn_1:
+        if st.button("← SAIR", use_container_width=True):
+          st.session_state.jurado_logado = None
+          st.session_state.categoria_selecionada = None
+          st.query_params.clear()
+          if link_jurado_exclusivo:
+            st.query_params["view"] = "jurado"
+          st.rerun()
+      with col_btn_2:
+        if st.button("⇄ TROCAR CATEGORIA", use_container_width=True):
           st.session_state.categoria_selecionada = None
           if "cat" in st.query_params:
             del st.query_params["cat"]
           st.rerun()
 
-      st.markdown("---")
+      st.markdown("<br>", unsafe_allow_html=True)
 
       fases_disponiveis = fases_por_categoria[categoria_escolhida]
       if len(fases_disponiveis) > 1:
-        fase_escolhida = st.selectbox("Fase / Etapa", fases_disponiveis)
+        fase_escolhida = st.selectbox(
+            "Fase / Etapa", fases_disponiveis, label_visibility="collapsed"
+        )
       else:
         fase_escolhida = fases_disponiveis[0]
-        st.text_input("Fase / Etapa", value=fase_escolhida, disabled=True)
 
-      st.markdown("##### Selecione o Grupo")
+      # Category Banner Card matching mockup
+      st.markdown(
+          f"""
+          <div style="
+              background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(35, 25, 15, 0.95) 100%);
+              border: 1px solid rgba(212, 175, 55, 0.6);
+              border-radius: 12px;
+              padding: 15px 20px;
+              margin-bottom: 20px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+          ">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 28px;">💎</span>
+                  <div>
+                      <div style="font-size: 10px; color: #b39b6b; letter-spacing: 2px; text-transform: uppercase;">Categoria</div>
+                      <div style="font-family: 'Georgia', serif; font-size: 18px; color: #e5c158; font-weight: bold; letter-spacing: 1px;">{categoria_escolhida.upper()}</div>
+                  </div>
+              </div>
+              <div style="text-align: right;">
+                  <div style="font-family: 'Georgia', serif; font-size: 14px; color: #e5c158; font-weight: bold;">{fase_escolhida.upper()}</div>
+              </div>
+          </div>
+          """,
+          unsafe_allow_html=True,
+      )
+
       tipo_selecionado = st.radio(
           "Grupo",
           ["Condutor", "Conduzida"],
@@ -629,67 +659,124 @@ if modo == "Painel do Jurado":
 
       if competidores_qualificados:
         competidores_ordenados = sorted(competidores_qualificados)
-        competidor_escolhido = st.selectbox(
-            "Competidor", competidores_ordenados, label_visibility="collapsed"
-        )
 
-        st.markdown("---")
-        st.markdown(
-            f"<h3>Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
-            f" <i>{fase_escolhida}</i></h3>",
-            unsafe_allow_html=True,
-        )
+        if st.session_state.competidor_index >= len(competidores_ordenados):
+          st.session_state.competidor_index = 0
+
+        current_comp = competidores_ordenados[st.session_state.competidor_index]
+
+        # Competitor Navigation Card matching mockup with arrows
+        col_prev, col_name, col_next = st.columns([1, 5, 1])
+        with col_prev:
+          if st.button("〈", use_container_width=True, key="btn_prev_comp"):
+            if st.session_state.competidor_index > 0:
+              st.session_state.competidor_index -= 1
+            else:
+              st.session_state.competidor_index = (
+                  len(competidores_ordenados) - 1
+              )
+            st.rerun()
+        with col_name:
+          st.markdown(
+              f"""
+              <div style="
+                  background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(35, 25, 15, 0.95) 100%);
+                  border: 1px solid rgba(212, 175, 55, 0.5);
+                  border-radius: 12px;
+                  padding: 12px;
+                  text-align: center;
+                  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+              ">
+                  <div style="font-size: 10px; color: #b39b6b; letter-spacing: 2px; text-transform: uppercase;">Avaliando</div>
+                  <div style="font-family: 'Georgia', serif; font-size: 22px; color: #e5c158; font-weight: bold; margin: 2px 0;">{current_comp}</div>
+                  <div style="display: inline-block; background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.4); padding: 2px 10px; border-radius: 20px; font-size: 10px; color: #f3e5ab; text-transform: uppercase; letter-spacing: 1px;">{tipo_selecionado} ({st.session_state.competidor_index + 1}/{len(competidores_ordenados)})</div>
+              </div>
+              """,
+              unsafe_allow_html=True,
+          )
+        with col_next:
+          if st.button("〉", use_container_width=True, key="btn_next_comp"):
+            if (
+                st.session_state.competidor_index
+                < len(competidores_ordenados) - 1
+            ):
+              st.session_state.competidor_index += 1
+            else:
+              st.session_state.competidor_index = 0
+            st.rerun()
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        criterios = criterios_por_categoria[categoria_escolhida]
+        total_criterios = len(criterios)
 
         notas_jurado = {}
         justificativas_jurado = {}
 
-        for criterio_nome, descricao in criterios_por_categoria[
-            categoria_escolhida
-        ].items():
-          with st.container(border=True):
-            st.markdown(f"<h4>{criterio_nome}</h4>", unsafe_allow_html=True)
-            st.info(f"💡 **O que avaliar:** {descricao}")
+        for idx, (criterio_nome, descricao) in enumerate(criterios.items(), 1):
+          st.markdown(
+              f"""
+              <div style="
+                  background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(35, 25, 15, 0.95) 100%);
+                  border: 1px solid rgba(212, 175, 55, 0.5);
+                  border-radius: 12px;
+                  padding: 18px;
+                  margin-bottom: 15px;
+                  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+              ">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                          <span style="font-size: 18px;">🎵</span>
+                          <span style="font-size: 11px; color: #b39b6b; letter-spacing: 1.5px; text-transform: uppercase;">Critério {idx} / {total_criterios}</span>
+                      </div>
+                  </div>
+                  <div style="font-family: 'Georgia', serif; font-size: 16px; color: #e5c158; font-weight: bold; margin-bottom: 6px;">{criterio_nome}</div>
+                  <div style="font-size: 12px; color: #d4af37; opacity: 0.9; line-height: 1.4; margin-bottom: 12px;"><b>O que avaliar:</b> {descricao}</div>
+              """,
+              unsafe_allow_html=True,
+          )
 
-            chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
+          chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{current_comp}_{criterio_nome}"
 
-            col_nota, col_just = st.columns([1, 2])
-            with col_nota:
-              nota_str = st.text_input(
-                  f"Nota (0 a 10) - {criterio_nome}",
-                  value="5.0",
-                  key=f"input_{chave_base}",
-              )
-              try:
-                nota_val = float(nota_str.replace(",", "."))
-              except ValueError:
-                nota_val = 0.0
-              notas_jurado[criterio_nome] = nota_val
+          col_nota_input, col_just_input = st.columns([1, 2])
+          with col_nota_input:
+            nota_str = st.text_input(
+                f"Nota (0 a 10) - {criterio_nome}",
+                value="5.0",
+                key=f"input_{chave_base}",
+            )
+            try:
+              nota_val = float(nota_str.replace(",", "."))
+            except ValueError:
+              nota_val = 0.0
+            notas_jurado[criterio_nome] = nota_val
 
-            with col_just:
-              justificativas_jurado[criterio_nome] = st.text_area(
-                  "Justificativa (Opcional)",
-                  key=f"just_{chave_base}",
-                  height=70,
-              )
+          with col_just_input:
+            justificativas_jurado[criterio_nome] = st.text_area(
+                "Comentários (Opcional)",
+                key=f"just_{chave_base}",
+                height=70,
+                placeholder="Deixe seu comentário aqui...",
+            )
+          st.markdown("</div>", unsafe_allow_html=True)
 
-        st.write("")
-        if st.button("ENVIAR TODAS AS NOTAS", type="primary"):
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("✈️ ENVIAR AVALIAÇÃO", type="primary", use_container_width=True):
           for criterio_nome, nota_val in notas_jurado.items():
             novo_voto = {
                 "jurado": st.session_state.jurado_logado,
                 "categoria": categoria_escolhida,
                 "fase": fase_escolhida,
                 "papel": papel_escolhido,
-                "competidor": competidor_escolhido,
+                "competidor": current_comp,
                 "criterio": criterio_nome,
                 "nota": nota_val,
                 "justificativa": justificativas_jurado[criterio_nome],
             }
             st.session_state.votos.append(novo_voto)
-
           st.success(
-              f"✨ Notas enviadas com sucesso por {st.session_state.jurado_logado}"
-              f" para **{competidor_escolhido}** ({fase_escolhida})!"
+              f"✨ Avaliação enviada com sucesso para **{current_comp}**"
+              f" ({fase_escolhida})!"
           )
       else:
         st.warning(
