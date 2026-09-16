@@ -358,7 +358,7 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # MÁGICA REFORÇADA: Trava o scroll e força o topo com JS para não descer
+      # TRAVAMENTO RIGOROSO FIXADO NO 32vh
       # =======================================================================
       st.markdown(
           """
@@ -377,9 +377,9 @@ if modo == "Painel do Jurado":
               padding: 0 !important;
           }
 
-          /* Mantido em 32vh como estava perfeito na sua primeira imagem */
+          /* Força a caixa principal a ficar rigidamente na posição 32vh */
           .block-container {
-              position: absolute !important;
+              position: fixed !important;
               top: 32vh !important;
               left: 50% !important;
               transform: translateX(-50%) !important;
@@ -447,7 +447,6 @@ if modo == "Painel do Jurado":
           </style>
           
           <script>
-              // Força o navegador a travar no topo ao carregar a tela
               window.scrollTo(0, 0);
           </script>
           """,
