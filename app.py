@@ -90,6 +90,19 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
   st.session_state.categoria_selecionada = None
 
+# --- Estado da navegação da tela de votação ---
+if "idx_comp" not in st.session_state:
+  st.session_state.idx_comp = 0
+
+if "idx_crit" not in st.session_state:
+  st.session_state.idx_crit = 0
+
+if "fase_atual" not in st.session_state:
+  st.session_state.fase_atual = None
+
+if "grupo_atual" not in st.session_state:
+  st.session_state.grupo_atual = "Condutor"
+
 try:
   qp = st.query_params
   link_jurado_exclusivo = qp.get("view") == "jurado"
@@ -104,6 +117,9 @@ try:
 
   if "trocar_cat" in qp:
     st.session_state.categoria_selecionada = None
+    st.session_state.fase_atual = None
+    st.session_state.idx_comp = 0
+    st.session_state.idx_crit = 0
     if "cat" in st.query_params:
       del st.query_params["cat"]
     if "trocar_cat" in st.query_params:
@@ -246,6 +262,14 @@ criterios_por_categoria = {
     },
 }
 
+icones_categoria = {
+    "Diamante": ("diamante.png", "💎"),
+    "Platina": ("platina.png", "🥈"),
+    "Ouro": ("ouro.png", "🥇"),
+    "Prata": ("prata.png", "🥈"),
+    "Aprendendo a Voar": ("asas.png", "🕊️"),
+}
+
 senhas_jurados = {
     "alisson (teste)": "1234",
     "Jurado 1": "1234",
@@ -275,6 +299,56 @@ def obter_classificados(categoria, papel):
   ranking = df_class.groupby("competidor")["nota"].mean().reset_index()
   ranking = ranking.sort_values(by="nota", ascending=False)
   return ranking.head(limite)["competidor"].tolist()
+
+
+def formatar_fase(fase):
+  """Separa 'Fase 1 (Música 1)' em ('FASE 1', 'MÚSICA 1')."""
+  if "(" in fase:
+    principal, secundaria = fase.split("(", 1)
+    return principal.strip().upper(), secundaria.replace(")", "").strip().upper()
+  return fase.upper(), "ETAPA ÚNICA"
+
+
+def registrar_voto(jurado, categoria, fase, papel, competidor, criterio, nota,
+                   justificativa):
+  """Grava a nota; se já existir voto igual do mesmo jurado, atualiza."""
+  for voto in st.session_state.votos:
+    if (
+        voto["jurado"] == jurado
+        and voto["categoria"] == categoria
+        and voto["fase"] == fase
+        and voto["papel"] == papel
+        and voto["competidor"] == competidor
+        and voto["criterio"] == criterio
+    ):
+      voto["nota"] = nota
+      voto["justificativa"] = justificativa
+      return
+
+  st.session_state.votos.append({
+      "jurado": jurado,
+      "categoria": categoria,
+      "fase": fase,
+      "papel": papel,
+      "competidor": competidor,
+      "criterio": criterio,
+      "nota": nota,
+      "justificativa": justificativa,
+  })
+
+
+def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
+  for voto in st.session_state.votos:
+    if (
+        voto["jurado"] == jurado
+        and voto["categoria"] == categoria
+        and voto["fase"] == fase
+        and voto["papel"] == papel
+        and voto["competidor"] == competidor
+        and voto["criterio"] == criterio
+    ):
+      return voto["nota"]
+  return None
 
 
 if link_jurado_exclusivo:
@@ -325,7 +399,7 @@ st.markdown(
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    
+
     .block-container {
         padding-top: 1.2rem !important;
         max-width: 600px !important;
@@ -351,8 +425,8 @@ st.markdown(
     }
 
     div[data-testid="column"]:has(input[type="password"]) {
-        max-width: 320px !important; 
-        margin: 0 auto !important; 
+        max-width: 320px !important;
+        margin: 0 auto !important;
         float: none !important;
         background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.5) !important;
@@ -366,7 +440,7 @@ st.markdown(
         border: 1px solid rgba(212, 175, 55, 0.45) !important;
         border-radius: 8px !important;
     }
-    
+
     .stTextInput div[data-baseweb="input"]:focus-within {
         border: 1px solid rgba(212, 175, 55, 1.0) !important;
         box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
@@ -378,7 +452,7 @@ st.markdown(
         padding: 10px 15px !important;
         font-size: 14px !important;
     }
-    
+
     .stTextInput input::placeholder {
         color: rgba(243, 229, 171, 0.4) !important;
     }
@@ -401,6 +475,19 @@ st.markdown(
         color: #ffffff !important;
     }
 
+    /* Botão dourado (nota selecionada / enviar avaliação / login) */
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
+        border: 1px solid #e5c158 !important;
+        color: #1a1208 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25) !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
+        color: #1a1208 !important;
+    }
+
     div[data-testid="stAlert"] {
         background-color: rgba(20, 15, 10, 0.95) !important;
         border: 1px solid rgba(212, 175, 55, 0.6) !important;
@@ -414,6 +501,175 @@ st.markdown(
     [data-testid="stSidebar"] {
         background-color: rgba(14, 10, 8, 0.96);
         border-right: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    /* ====== TELA DE VOTAÇÃO (layout do mockup) ====== */
+    .jj-card {
+        background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.75);
+        padding: 16px 18px;
+        margin-bottom: 14px;
+    }
+
+    .jj-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+    }
+    .jj-banner-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .jj-banner-icon { font-size: 30px; line-height: 1; }
+    .jj-banner-icon img { width: 34px; height: 34px; object-fit: contain; }
+    .jj-label {
+        color: #b39b6b;
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+    }
+    .jj-categoria {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        line-height: 1.1;
+    }
+    .jj-banner-right {
+        text-align: right;
+        border-left: 1px solid rgba(212, 175, 55, 0.3);
+        padding-left: 16px;
+    }
+    .jj-fase {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+    .jj-musica {
+        color: #b39b6b;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .jj-avaliando { text-align: center; }
+    .jj-nome {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin: 2px 0 8px 0;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .jj-badge {
+        display: inline-block;
+        border: 1px solid rgba(212, 175, 55, 0.8);
+        border-radius: 20px;
+        padding: 5px 22px;
+        color: #e5c158;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .jj-crit-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .jj-crit-icon {
+        width: 46px; height: 46px; min-width: 46px;
+        border-radius: 50%;
+        border: 1px solid rgba(212, 175, 55, 0.7);
+        background: rgba(0,0,0,0.35);
+        display: flex; align-items: center; justify-content: center;
+        color: #e5c158; font-size: 20px;
+    }
+    .jj-contador {
+        border: 1px solid rgba(212, 175, 55, 0.7);
+        border-radius: 20px;
+        padding: 4px 14px;
+        color: #e5c158;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    .jj-crit-nome {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-top: 2px;
+    }
+    .jj-divisor {
+        border: none;
+        border-top: 1px solid rgba(212, 175, 55, 0.25);
+        margin: 12px 0 10px 0;
+    }
+    .jj-crit-desc {
+        color: #ded2b4;
+        font-size: 14px;
+        line-height: 1.55;
+    }
+    .jj-crit-desc b { color: #e5c158; }
+
+    .jj-secao-label {
+        color: #f3e5ab;
+        font-size: 12px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .jj-footer {
+        text-align: center;
+        margin-top: 26px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .jj-footer-marca {
+        color: #e5c158;
+        font-size: 13px;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+    }
+    .jj-footer-sub {
+        color: #8d7a52;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+
+    .stTextArea textarea {
+        background-color: rgba(10, 7, 5, 0.9) !important;
+        border: 1px solid rgba(212, 175, 55, 0.35) !important;
+        border-radius: 10px !important;
+        color: #f3e5ab !important;
+        font-size: 14px !important;
+    }
+    .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
+
+    div[data-testid="stExpander"] {
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        border-radius: 10px !important;
+        background: rgba(12, 9, 6, 0.85) !important;
+    }
+    div[data-testid="stExpander"] summary p {
+        color: #e5c158 !important;
+        font-size: 11px !important;
+        letter-spacing: 2px !important;
+        text-transform: uppercase !important;
     }
     </style>
 """,
@@ -521,14 +777,14 @@ if modo == "Painel do Jurado":
               gap: 15px;
           }
           .card-icon {
-              width: 28px !important; 
+              width: 28px !important;
               height: 28px !important;
               object-fit: contain;
           }
           .card-title {
               color: #f3e5ab;
               font-family: 'Georgia', serif;
-              font-size: 13px !important; 
+              font-size: 13px !important;
               font-weight: 600;
               letter-spacing: 2px;
           }
@@ -577,9 +833,11 @@ if modo == "Painel do Jurado":
         )
 
     else:
+      # =================================================================
+      # TELA DE VOTAÇÃO (layout do mockup)
+      # =================================================================
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # Estilo CSS para os botões em pílula do topo
       st.markdown(
           """
           <style>
@@ -595,10 +853,11 @@ if modo == "Painel do Jurado":
               padding: 8px 16px;
               border-radius: 30px;
               font-family: 'Helvetica Neue', sans-serif;
-              font-size: 11px;
+              font-size: 10px;
               font-weight: 600;
               text-transform: uppercase;
               letter-spacing: 1.5px;
+              line-height: 1.25;
               box-shadow: 0 4px 12px rgba(0,0,0,0.7);
               transition: all 0.3s ease;
               white-space: nowrap;
@@ -613,15 +872,15 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Top Bar com botões em pílula e logo central
-      col_btn_l, col_logo, col_btn_r = st.columns([1.2, 2.2, 1.2])
+      # ---------- Barra superior ----------
+      col_btn_l, col_logo, col_btn_r = st.columns([1.2, 2.2, 1.4])
 
       with col_btn_l:
         logout_url = (
             "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
         )
         st.markdown(
-            f'<a href="{logout_url}" class="top-pill-btn">← SAIR</a>',
+            f'<a href="{logout_url}" class="top-pill-btn">←&nbsp; SAIR</a>',
             unsafe_allow_html=True,
         )
 
@@ -629,8 +888,8 @@ if modo == "Painel do Jurado":
         st.markdown(
             """
             <div style="text-align: center; line-height: 1.2;">
-                <div style="font-family: 'Georgia', serif; font-size: 15px; color: #e5c158; font-weight: bold; letter-spacing: 1.5px;">JACK <span style="font-size: 10px; color: #b39b6b; font-weight: normal;">AND</span> JILL</div>
-                <div style="font-size: 8px; color: #b39b6b; letter-spacing: 2px; text-transform: uppercase; margin-top: 1px;">NOITE NAS ARÁBIAS</div>
+                <div style="font-family: 'Cinzel', 'Georgia', serif; font-size: 17px; color: #e5c158; font-weight: bold; letter-spacing: 1.5px;">JACK <span style="font-size: 10px; color: #b39b6b; font-weight: normal;">AND</span> JILL</div>
+                <div style="font-size: 8px; color: #b39b6b; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px;">✦ NOITE NAS ARÁBIAS ✦</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -642,141 +901,295 @@ if modo == "Painel do Jurado":
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
         st.markdown(
             f'<div style="text-align: right;"><a href="{trocar_url}"'
-            ' class="top-pill-btn">⇄ TROCAR</a></div>',
+            ' class="top-pill-btn">⇄&nbsp; TROCAR<br>CATEGORIA</a></div>',
             unsafe_allow_html=True,
         )
 
-      st.markdown(
-          "<div style='margin-top: 20px;'></div>", unsafe_allow_html=True
-      )
+      st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
 
-      # Layout clássico de votação abaixo
-      col_info, col_voltar = st.columns([2.5, 1.5])
-      with col_info:
-        st.success(
-            f"✨ **{st.session_state.jurado_logado}** | Categoria:"
-            f" **{categoria_escolhida}**"
-        )
-      with col_voltar:
-        if st.button("⬅️ Trocar Categoria"):
-          st.session_state.categoria_selecionada = None
-          if "cat" in st.query_params:
-            del st.query_params["cat"]
+      # ---------- Fase e grupo ----------
+      fases_disponiveis = fases_por_categoria[categoria_escolhida]
+      if st.session_state.fase_atual not in fases_disponiveis:
+        st.session_state.fase_atual = fases_disponiveis[0]
+        st.session_state.idx_comp = 0
+        st.session_state.idx_crit = 0
+
+      with st.expander("⚙ Ajustar fase e grupo"):
+        col_fase, col_grupo = st.columns(2)
+        with col_fase:
+          nova_fase = st.selectbox(
+              "Fase / Etapa",
+              fases_disponiveis,
+              index=fases_disponiveis.index(st.session_state.fase_atual),
+          )
+        with col_grupo:
+          nova_grupo = st.radio(
+              "Grupo",
+              ["Condutor", "Conduzida"],
+              horizontal=True,
+              index=0 if st.session_state.grupo_atual == "Condutor" else 1,
+          )
+
+        if (
+            nova_fase != st.session_state.fase_atual
+            or nova_grupo != st.session_state.grupo_atual
+        ):
+          st.session_state.fase_atual = nova_fase
+          st.session_state.grupo_atual = nova_grupo
+          st.session_state.idx_comp = 0
+          st.session_state.idx_crit = 0
           st.rerun()
 
-      st.markdown("---")
-
-      fases_disponiveis = fases_por_categoria[categoria_escolhida]
-      if len(fases_disponiveis) > 1:
-        fase_escolhida = st.selectbox("Fase / Etapa", fases_disponiveis)
-      else:
-        fase_escolhida = fases_disponiveis[0]
-        st.text_input("Fase / Etapa", value=fase_escolhida, disabled=True)
-
-      st.markdown("##### Selecione o Grupo")
-      tipo_selecionado = st.radio(
-          "Grupo",
-          ["Condutor", "Conduzida"],
-          horizontal=True,
-          label_visibility="collapsed",
+      fase_escolhida = st.session_state.fase_atual
+      tipo_selecionado = st.session_state.grupo_atual
+      papel_escolhido = (
+          "Condutores" if tipo_selecionado == "Condutor" else "Conduzidas"
       )
 
+      # ---------- Banner da categoria ----------
+      arquivo_icone, emoji_icone = icones_categoria.get(
+          categoria_escolhida, ("", "✦")
+      )
+      icone_b64 = img_to_base64(
+          os.path.join(os.path.dirname(__file__), arquivo_icone)
+      )
+      if icone_b64:
+        icone_html = f'<img src="{icone_b64}"/>'
+      else:
+        icone_html = emoji_icone
+
+      fase_titulo, fase_sub = formatar_fase(fase_escolhida)
+
+      st.markdown(
+          f"""
+          <div class="jj-card jj-banner">
+              <div class="jj-banner-left">
+                  <div class="jj-banner-icon">{icone_html}</div>
+                  <div>
+                      <div class="jj-label">Categoria</div>
+                      <div class="jj-categoria">{categoria_escolhida.upper()}</div>
+                  </div>
+              </div>
+              <div class="jj-banner-right">
+                  <div class="jj-fase">{fase_titulo}</div>
+                  <div class="jj-musica">{fase_sub}</div>
+              </div>
+          </div>
+          """,
+          unsafe_allow_html=True,
+      )
+
+      # ---------- Lista de competidores ----------
       precisa_filtrar_classificados = (
           fase_escolhida == "Fase Final"
           and categoria_escolhida in ["Prata", "Ouro"]
       )
 
-      if tipo_selecionado == "Condutor":
-        papel_escolhido = "Condutores"
-        if precisa_filtrar_classificados:
-          competidores_qualificados = obter_classificados(
-              categoria_escolhida, papel_escolhido
-          )
-        else:
-          competidores_qualificados = categorias[categoria_escolhida][
-              "Condutores"
-          ]
-      else:
-        papel_escolhido = "Conduzidas"
-        if precisa_filtrar_classificados:
-          competidores_qualificados = obter_classificados(
-              categoria_escolhida, papel_escolhido
-          )
-        else:
-          competidores_qualificados = categorias[categoria_escolhida][
-              "Conduzidas"
-          ]
-
-      if competidores_qualificados:
-        competidores_ordenados = sorted(competidores_qualificados)
-        competidor_escolhido = st.selectbox(
-            "Competidor", competidores_ordenados, label_visibility="collapsed"
+      if precisa_filtrar_classificados:
+        competidores_qualificados = obter_classificados(
+            categoria_escolhida, papel_escolhido
         )
-
-        st.markdown("---")
-        st.markdown(
-            f"<h3>Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
-            f" <i>{fase_escolhida}</i></h3>",
-            unsafe_allow_html=True,
-        )
-
-        notas_jurado = {}
-        justificativas_jurado = {}
-
-        for criterio_nome, descricao in criterios_por_categoria[
-            categoria_escolhida
-        ].items():
-          with st.container(border=True):
-            st.markdown(f"<h4>{criterio_nome}</h4>", unsafe_allow_html=True)
-            st.info(f"💡 **O que avaliar:** {descricao}")
-
-            chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
-
-            col_nota, col_just = st.columns([1, 2])
-            with col_nota:
-              nota_str = st.text_input(
-                  f"Nota (0 a 10) - {criterio_nome}",
-                  value="5.0",
-                  key=f"input_{chave_base}",
-                  placeholder="Ex: 8.5",
-              )
-              try:
-                nota_val = float(nota_str.replace(",", "."))
-              except ValueError:
-                nota_val = 0.0
-              notas_jurado[criterio_nome] = nota_val
-
-            with col_just:
-              justificativas_jurado[criterio_nome] = st.text_area(
-                  "Justificativa (Opcional)",
-                  key=f"just_{chave_base}",
-                  height=70,
-              )
-
-        st.write("")
-        if st.button("ENVIAR TODAS AS NOTAS", type="primary"):
-          for criterio_nome, nota_val in notas_jurado.items():
-            novo_voto = {
-                "jurado": st.session_state.jurado_logado,
-                "categoria": categoria_escolhida,
-                "fase": fase_escolhida,
-                "papel": papel_escolhido,
-                "competidor": competidor_escolhido,
-                "criterio": criterio_nome,
-                "nota": nota_val,
-                "justificativa": justificativas_jurado[criterio_nome],
-            }
-            st.session_state.votos.append(novo_voto)
-
-          st.success(
-              f"✨ Notas enviadas com sucesso por {st.session_state.jurado_logado}"
-              f" para **{competidor_escolhido}** ({fase_escolhida})!"
-          )
       else:
+        competidores_qualificados = categorias[categoria_escolhida][
+            papel_escolhido
+        ]
+
+      if not competidores_qualificados:
         st.warning(
             f"⚠️ A Fase Classificatória para {papel_escolhido} em"
             f" {categoria_escolhida} ainda não possui votos suficientes para"
             " definir automaticamente os classificados da Fase Final."
+        )
+      else:
+        competidores_ordenados = sorted(competidores_qualificados)
+        total_comp = len(competidores_ordenados)
+
+        if st.session_state.idx_comp >= total_comp:
+          st.session_state.idx_comp = 0
+        competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
+
+        # ---------- Card de navegação (avaliando) ----------
+        col_ant, col_nome, col_prox = st.columns([1, 4, 1])
+
+        with col_ant:
+          st.markdown("<div style='height: 26px;'></div>", unsafe_allow_html=True)
+          if st.button("‹", key="btn_anterior", use_container_width=True):
+            st.session_state.idx_comp = (
+                st.session_state.idx_comp - 1
+            ) % total_comp
+            st.session_state.idx_crit = 0
+            st.rerun()
+          st.markdown(
+              "<div style='text-align:center; color:#8d7a52; font-size:9px;"
+              " letter-spacing:2px;'>ANTERIOR</div>",
+              unsafe_allow_html=True,
+          )
+
+        with col_nome:
+          st.markdown(
+              f"""
+              <div class="jj-avaliando">
+                  <div class="jj-label">Avaliando</div>
+                  <div class="jj-nome">{competidor_escolhido}</div>
+                  <span class="jj-badge">{tipo_selecionado}</span>
+                  <div style="color:#8d7a52; font-size:9px; letter-spacing:2px; margin-top:8px;">
+                      {st.session_state.idx_comp + 1} DE {total_comp}
+                  </div>
+              </div>
+              """,
+              unsafe_allow_html=True,
+          )
+
+        with col_prox:
+          st.markdown("<div style='height: 26px;'></div>", unsafe_allow_html=True)
+          if st.button("›", key="btn_proximo", use_container_width=True):
+            st.session_state.idx_comp = (
+                st.session_state.idx_comp + 1
+            ) % total_comp
+            st.session_state.idx_crit = 0
+            st.rerun()
+          st.markdown(
+              "<div style='text-align:center; color:#8d7a52; font-size:9px;"
+              " letter-spacing:2px;'>PRÓXIMO</div>",
+              unsafe_allow_html=True,
+          )
+
+        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+
+        # ---------- Card do critério atual ----------
+        criterios = criterios_por_categoria[categoria_escolhida]
+        lista_criterios = list(criterios.items())
+        total_crit = len(lista_criterios)
+
+        if st.session_state.idx_crit >= total_crit:
+          st.session_state.idx_crit = 0
+
+        criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
+
+        st.markdown(
+            f"""
+            <div class="jj-card">
+                <div class="jj-crit-head">
+                    <div class="jj-crit-icon">♪</div>
+                    <div style="flex: 1; padding: 0 14px;">
+                        <div class="jj-label">Critério</div>
+                        <div class="jj-crit-nome">{criterio_nome}</div>
+                    </div>
+                    <div class="jj-contador">{st.session_state.idx_crit + 1} / {total_crit}</div>
+                </div>
+                <hr class="jj-divisor"/>
+                <div class="jj-crit-desc"><b>O que avaliar:</b> {criterio_desc}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # ---------- Notas 1 a 10 ----------
+        chave_base = (
+            f"{st.session_state.jurado_logado}|{categoria_escolhida}|"
+            f"{fase_escolhida}|{papel_escolhido}|{competidor_escolhido}|"
+            f"{criterio_nome}"
+        )
+        chave_nota = f"nota_sel_{chave_base}"
+
+        if chave_nota not in st.session_state:
+          nota_salva = buscar_nota_salva(
+              st.session_state.jurado_logado,
+              categoria_escolhida,
+              fase_escolhida,
+              papel_escolhido,
+              competidor_escolhido,
+              criterio_nome,
+          )
+          st.session_state[chave_nota] = (
+              int(nota_salva) if nota_salva is not None else None
+          )
+
+        st.markdown(
+            '<div class="jj-card" style="padding-bottom: 6px;">'
+            '<div class="jj-secao-label">Sua nota</div>',
+            unsafe_allow_html=True,
+        )
+
+        colunas_notas = st.columns(10, gap="small")
+        for i, coluna in enumerate(colunas_notas, start=1):
+          with coluna:
+            selecionada = st.session_state[chave_nota] == i
+            if st.button(
+                str(i),
+                key=f"nota_{i}_{chave_base}",
+                use_container_width=True,
+                type="primary" if selecionada else "secondary",
+            ):
+              st.session_state[chave_nota] = i
+              st.rerun()
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        # ---------- Comentários ----------
+        chave_comentario = f"coment_{chave_base}"
+        comentario = st.text_area(
+            "COMENTÁRIOS (OPCIONAL)",
+            key=chave_comentario,
+            placeholder="Deixe seu comentário aqui...",
+            max_chars=300,
+            height=110,
+        )
+        st.markdown(
+            f"<div style='text-align:right; color:#8d7a52; font-size:11px;"
+            f" margin-top:-8px;'>{len(comentario)}/300</div>",
+            unsafe_allow_html=True,
+        )
+
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+
+        # ---------- Enviar avaliação ----------
+        if st.button(
+            "➤  ENVIAR AVALIAÇÃO",
+            type="primary",
+            use_container_width=True,
+            key=f"enviar_{chave_base}",
+        ):
+          if st.session_state[chave_nota] is None:
+            st.error("❌ Selecione uma nota de 1 a 10 antes de enviar.")
+          else:
+            registrar_voto(
+                st.session_state.jurado_logado,
+                categoria_escolhida,
+                fase_escolhida,
+                papel_escolhido,
+                competidor_escolhido,
+                criterio_nome,
+                float(st.session_state[chave_nota]),
+                comentario,
+            )
+
+            if st.session_state.idx_crit + 1 < total_crit:
+              st.session_state.idx_crit += 1
+              st.toast(
+                  f"✨ Nota registrada para {competidor_escolhido} —"
+                  f" {criterio_nome}"
+              )
+            else:
+              st.session_state.idx_crit = 0
+              st.session_state.idx_comp = (
+                  st.session_state.idx_comp + 1
+              ) % total_comp
+              st.toast(
+                  f"🏅 Avaliação de {competidor_escolhido} concluída!"
+              )
+            st.rerun()
+
+        # ---------- Rodapé ----------
+        st.markdown(
+            """
+            <div class="jj-footer">
+                <div style="color:#b39b6b; font-size:13px;">✦</div>
+                <div class="jj-footer-marca">Passion Dance</div>
+                <div class="jj-footer-sub">Jack and Jill · Noite nas Arábias</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
 elif modo == "Painel da Organização":
