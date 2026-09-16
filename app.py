@@ -723,21 +723,21 @@ if modo == "Painel do Jurado":
           f"""
           <a href="?{logout_param}" style="
               position: fixed;
-              top: 20px;
-              right: 20px;
+              top: 10px;
+              right: 12px;
               z-index: 99999;
-              background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
+              background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(60,45,25,0.9) 100%);
               color: #f3e5ab;
               text-decoration: none;
-              padding: 7px 14px;
-              border-radius: 6px;
-              border: 1px solid rgba(212,175,55,0.7);
-              font-size: 11px;
-              font-weight: 600;
+              padding: 3px 8px;
+              border-radius: 4px;
+              border: 1px solid rgba(212,175,55,0.5);
+              font-size: 9px;
+              font-weight: 500;
               text-transform: uppercase;
-              letter-spacing: 1px;
-              box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-          ">Sair da Conta</a>
+              letter-spacing: 0.5px;
+              box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+          ">Sair</a>
           """,
           unsafe_allow_html=True,
       )
@@ -839,7 +839,7 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # ---------- Botões fixos em cada lado da tela (Esquerda: Sair | Direita: Trocar Categoria) ----------
+      # ---------- Botões fixos pequenos e discretos nos cantos superiores (Esquerda: Sair | Direita: Trocar Categoria) ----------
       logout_url = (
           "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
       )
@@ -849,35 +849,35 @@ if modo == "Painel do Jurado":
 
       st.markdown(
           f"""
-          <div style="position: fixed; top: 18px; left: 18px; z-index: 99999;">
+          <div style="position: fixed; top: 10px; left: 12px; z-index: 99999;">
               <a href="{logout_url}" style="
-                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
+                  background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(60,45,25,0.9) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
-                  padding: 7px 14px;
-                  border-radius: 6px;
-                  border: 1px solid rgba(212,175,55,0.7);
-                  font-size: 11px;
-                  font-weight: 600;
+                  padding: 3px 8px;
+                  border-radius: 4px;
+                  border: 1px solid rgba(212,175,55,0.5);
+                  font-size: 9px;
+                  font-weight: 500;
                   text-transform: uppercase;
-                  letter-spacing: 1px;
-                  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+                  letter-spacing: 0.5px;
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
                   display: inline-block;
               ">← Sair</a>
           </div>
-          <div style="position: fixed; top: 18px; right: 18px; z-index: 99999;">
+          <div style="position: fixed; top: 10px; right: 12px; z-index: 99999;">
               <a href="{trocar_url}" style="
-                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
+                  background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(60,45,25,0.9) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
-                  padding: 7px 14px;
-                  border-radius: 6px;
-                  border: 1px solid rgba(212,175,55,0.7);
-                  font-size: 11px;
-                  font-weight: 600;
+                  padding: 3px 8px;
+                  border-radius: 4px;
+                  border: 1px solid rgba(212,175,55,0.5);
+                  font-size: 9px;
+                  font-weight: 500;
                   text-transform: uppercase;
-                  letter-spacing: 1px;
-                  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+                  letter-spacing: 0.5px;
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
                   display: inline-block;
               ">Trocar Categoria →</a>
           </div>
