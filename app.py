@@ -292,7 +292,7 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* BLOCO DE LOGIN ESTILIZADO COM O PADRÃO DOS CARDS */
+    /* BLOCO DE LOGIN */
     div[data-testid="column"]:has(input[type="password"]) {
         max-width: 320px !important; 
         margin: 0 auto !important; 
@@ -304,7 +304,6 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7) !important;
     }
 
-    /* INPUTS DE TEXTO E SENHA */
     .stTextInput div[data-baseweb="input"] {
         background-color: rgba(10, 8, 7, 0.9) !important;
         border: 1px solid rgba(212, 175, 55, 0.4) !important;
@@ -327,7 +326,6 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
-    /* BOTÃO DE LOGIN EM FORMATO DOURADO HARMONIZADO */
     .stButton > button[kind="primary"] {
         background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.6) !important;
@@ -344,7 +342,6 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* SUBSTITUI OS AVISOS VERMELHOS POR TONS ESCUROS COM BORDA DOURADA */
     div[data-testid="stAlert"] {
         background-color: rgba(20, 15, 10, 0.95) !important;
         border: 1px solid rgba(212, 175, 55, 0.6) !important;
@@ -398,7 +395,7 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # TELA DE CATEGORIAS MANTIDA EXATAMENTE COM O 250px FIXO QUE JÁ ESTAVA PERFEITO
+      # TELA DE CATEGORIAS COM O TEXTO DINÂMICO E POSIÇÃO FIXA EM 250px
       # =======================================================================
       st.markdown(
           """
@@ -416,13 +413,24 @@ if modo == "Painel do Jurado":
 
           .block-container {
               position: fixed !important;
-              top: 250px !important;
+              top: 250px !important; /* Se precisar subir ou descer o conjunto do texto + cards, ajuste aqui */
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
               max-width: 320px !important;
               padding: 0 !important;
               margin: 0 !important;
+          }
+
+          /* Estilo para o texto de saudação idêntico à arte */
+          .welcome-text {
+              color: #f3e5ab;
+              font-family: 'Georgia', serif;
+              font-size: 13px;
+              text-align: center;
+              margin-bottom: 12px;
+              line-height: 1.4;
+              letter-spacing: 0.5px;
           }
 
           .category-card {
@@ -481,6 +489,17 @@ if modo == "Painel do Jurado":
               border: 1px solid rgba(212, 175, 55, 1.0) !important;
           }
           </style>
+          """,
+          unsafe_allow_html=True,
+      )
+
+      # Renderiza dinamicamente o texto personalizado com o nome do jurado logado
+      nome_jurado = st.session_state.jurado_logado
+      st.markdown(
+          f"""
+          <div class="welcome-text">
+              Olá, <b>{nome_jurado}</b>!<br>Selecione a categoria que você irá avaliar:
+          </div>
           """,
           unsafe_allow_html=True,
       )
