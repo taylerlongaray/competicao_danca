@@ -358,7 +358,7 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # RESET DE ROLAGEM INTERNA DO STREAMLIT + ESPAÇADOR DE 32vh
+      # ESPAÇAMENTO COM 32vh CONFIGURADO
       # =======================================================================
       st.markdown(
           """
@@ -421,7 +421,6 @@ if modo == "Painel do Jurado":
           </style>
           
           <script>
-              // Força o container interno de scroll do Streamlit a voltar ao topo exato
               const container = document.querySelector('[data-testid="stAppViewContainer"]');
               if (container) {
                   container.scrollTop = 0;
@@ -432,8 +431,7 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Ajuste a altura aqui se quiser subir mais (ex: 15vh) ou descer (ex: 25vh)
-      st.markdown('<div style="height: 20vh;"></div>', unsafe_allow_html=True)
+      st.markdown('<div style="height: 32vh;"></div>', unsafe_allow_html=True)
 
       cats_info = [
           ("Diamante", "diamante.png", "💎"),
