@@ -1323,7 +1323,7 @@ if modo == "Painel do Jurado":
 
       st.markdown(
           f"""
-          <div style="position: fixed; top: 45px; right: 12px; z-index: 99999;">
+          <div style="position: fixed; top: 40px; right: 12px; z-index: 99999;">
               <a href="?{logout_param}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
