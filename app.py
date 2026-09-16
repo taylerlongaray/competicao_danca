@@ -71,7 +71,6 @@ def img_to_base64(file_path):
 
 def obter_avatar_html():
   arquivos = os.listdir(".") if os.path.exists(".") else []
-  # Procura automaticamente por qualquer imagem de perfil/jurado na pasta
   for f in arquivos:
     if f.lower().startswith(
         ("avatar", "perfil", "jurado", "user", "icone", "foto")
@@ -415,116 +414,117 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # CSS e Script para forçar o avatar perfeitamente no canto superior direito da tela
-      st.markdown(
-          f"""
-          <style>
-          html, body, [data-testid="stAppViewContainer"], .main {{
-              overflow: hidden !important;
-              touch-action: none !important;
-              overscroll-behavior: none !important;
-              position: fixed !important;
-              width: 100vw !important;
-              height: 100vh !important;
-              margin: 0 !important;
-              padding: 0 !important;
-          }}
+      # Template seguro usando .replace() para evitar problemas com chaves em f-strings
+      avatar_template = """
+            <style>
+            html, body, [data-testid="stAppViewContainer"], .main {
+                overflow: hidden !important;
+                touch-action: none !important;
+                overscroll-behavior: none !important;
+                position: fixed !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
 
-          .block-container {{
-              position: fixed !important;
-              top: 200px !important;
-              left: 50% !important;
-              transform: translateX(-50%) !important;
-              width: 100% !important;
-              max-width: 320px !important;
-              padding: 0 !important;
-              margin: 0 !important;
-          }}
+            .block-container {
+                position: fixed !important;
+                top: 200px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 100% !important;
+                max-width: 320px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
 
-          .welcome-title {{
-              color: #f3e5ab;
-              font-family: 'Georgia', serif;
-              font-size: 20px;
-              text-align: center;
-              font-weight: normal;
-              margin-bottom: 6px;
-              letter-spacing: 0.5px;
-          }}
+            .welcome-title {
+                color: #f3e5ab;
+                font-family: 'Georgia', serif;
+                font-size: 20px;
+                text-align: center;
+                font-weight: normal;
+                margin-bottom: 6px;
+                letter-spacing: 0.5px;
+            }
 
-          .welcome-subtitle {{
-              color: #f3e5ab;
-              font-family: 'Helvetica Neue', sans-serif;
-              font-size: 11.5px;
-              text-align: center;
-              margin-bottom: 15px;
-              opacity: 0.9;
-              letter-spacing: 0.3px;
-          }}
+            .welcome-subtitle {
+                color: #f3e5ab;
+                font-family: 'Helvetica Neue', sans-serif;
+                font-size: 11.5px;
+                text-align: center;
+                margin-bottom: 15px;
+                opacity: 0.9;
+                letter-spacing: 0.3px;
+            }
 
-          .category-card {{
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
-              border: 1px solid rgba(212, 175, 55, 0.45);
-              border-radius: 8px !important;
-              padding: 10px 18px !important;
-              margin-bottom: 10px !important;
-              text-decoration: none !important;
-              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
-              transition: all 0.3s ease;
-          }
-          .category-card:hover {{
-              border-color: rgba(212, 175, 55, 1.0);
-              background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
-          }}
-          .card-left {{
-              display: flex;
-              align-items: center;
-              gap: 15px;
-          }}
-          .card-icon {{
-              width: 28px !important; 
-              height: 28px !important;
-              object-fit: contain;
-          }}
-          .card-title {{
-              color: #f3e5ab;
-              font-family: 'Georgia', serif;
-              font-size: 13px !important; 
-              font-weight: 600;
-              letter-spacing: 2px;
-          }}
-          .card-arrow {{
-              color: #d4af37;
-              font-size: 16px !important;
-          }}
-          </style>
+            .category-card {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
+                border: 1px solid rgba(212, 175, 55, 0.45);
+                border-radius: 8px !important;
+                padding: 10px 18px !important;
+                margin-bottom: 10px !important;
+                text-decoration: none !important;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+                transition: all 0.3s ease;
+            }
+            .category-card:hover {
+                border-color: rgba(212, 175, 55, 1.0);
+                background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
+            }
+            .card-left {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            .card-icon {
+                width: 28px !important; 
+                height: 28px !important;
+                object-fit: contain;
+            }
+            .card-title {
+                color: #f3e5ab;
+                font-family: 'Georgia', serif;
+                font-size: 13px !important; 
+                font-weight: 600;
+                letter-spacing: 2px;
+            }
+            .card-arrow {
+                color: #d4af37;
+                font-size: 16px !important;
+            }
+            </style>
 
-          <div id="avatar-container-source" style="display:none;">
-              <a href="?{logout_param}" title="Sair da Conta" style="text-decoration: none; display: block;">
-                  {avatar_html}
-              </a>
-          </div>
+            <div id="avatar-container-source" style="display:none;">
+                <a href="?LOGOUT_PARAM_REPLACE" title="Sair da Conta" style="text-decoration: none; display: block;">
+                    AVATAR_HTML_REPLACE
+                </a>
+            </div>
 
-          <script>
-              // Move o avatar para a raiz do body, escapando de qualquer transform do Streamlit
-              const src = document.getElementById('avatar-container-source');
-              if (src && !document.getElementById('fixed-top-right-avatar-global')) {
-                  src.id = 'fixed-top-right-avatar-global';
-                  src.style.display = 'block';
-                  src.style.position = 'fixed';
-                  src.style.top = '15px';
-                  src.style.right = '15px';
-                  src.style.zIndex = '9999999';
-                  document.body.appendChild(src);
-              } else if (src) {
-                  src.remove();
-              }
-          </script>
-          """,
-          unsafe_allow_html=True,
-      )
+            <script>
+                const src = document.getElementById('avatar-container-source');
+                if (src && !document.getElementById('fixed-top-right-avatar-global')) {
+                    src.id = 'fixed-top-right-avatar-global';
+                    src.style.display = 'block';
+                    src.style.position = 'fixed';
+                    src.style.top = '15px';
+                    src.style.right = '15px';
+                    src.style.zIndex = '9999999';
+                    document.body.appendChild(src);
+                } else if (src) {
+                    src.remove();
+                }
+            </script>
+            """
+
+      avatar_html_final = avatar_template.replace(
+          "LOGOUT_PARAM_REPLACE", logout_param
+      ).replace("AVATAR_HTML_REPLACE", avatar_html)
+      st.markdown(avatar_html_final, unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
