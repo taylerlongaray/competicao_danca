@@ -1676,7 +1676,7 @@ if modo == "Painel do Jurado":
             unsafe_allow_html=True,
         )
 
-        # ---------- Notas 1 a 10 ----------
+        # ---------- Notas (Campo Numérico) ----------
         chave_base = (
             f"{st.session_state.jurado_logado}|{categoria_escolhida}|"
             f"{fase_escolhida}|{papel_escolhido}|{competidor_escolhido}|"
@@ -1694,27 +1694,24 @@ if modo == "Painel do Jurado":
               criterio_nome,
           )
           st.session_state[chave_nota] = (
-              int(nota_salva) if nota_salva is not None else None
+              float(nota_salva) if nota_salva is not None else None
           )
 
         st.markdown(
-            '<div class="jj-card" style="padding-bottom: 6px;">'
-            '<div class="jj-secao-label">Sua nota</div>',
+            '<div class="jj-card" style="padding-bottom: 14px;">'
+            '<div class="jj-secao-label" style="margin-bottom: 8px;">Digite sua nota (Ex: 8.5)</div>',
             unsafe_allow_html=True,
         )
 
-        colunas_notas = st.columns(10, gap="small")
-        for i, coluna in enumerate(colunas_notas, start=1):
-          with coluna:
-            selecionada = st.session_state[chave_nota] == i
-            if st.button(
-                str(i),
-                key=f"nota_{i}_{chave_base}",
-                use_container_width=True,
-                type="primary" if selecionada else "secondary",
-            ):
-              st.session_state[chave_nota] = i
-              st.rerun()
+        st.number_input(
+            "Sua nota",
+            min_value=0.0,
+            max_value=10.0,
+            step=0.1,
+            format="%.1f",
+            key=chave_nota,
+            label_visibility="collapsed"
+        )
 
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -1743,7 +1740,7 @@ if modo == "Painel do Jurado":
             key=f"enviar_{chave_base}",
         ):
           if st.session_state[chave_nota] is None:
-            st.error("❌ Selecione uma nota de 1 a 10 antes de enviar.")
+            st.error("❌ Digite uma nota de 0 a 10 antes de enviar.")
           else:
             registrar_voto(
                 st.session_state.jurado_logado,
