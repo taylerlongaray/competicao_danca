@@ -418,11 +418,20 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Ícone do avatar posicionado fixo de forma absoluta no topo direito (altura do Passion Dance)
+      # Verifica se o menu flutuante do jurado está aberto
+      menu_aberto = qp.get("menu") == "aberto"
+      view_param_str = "view=jurado&" if link_jurado_exclusivo else ""
+      jurado_param_str = f"jurado={st.session_state.jurado_logado}&"
+
+      # Se o menu estiver aberto, o clique fecha; se fechado, o clique abre
+      next_menu_state = "" if menu_aberto else "menu=aberto&"
+      avatar_link_url = f"?{view_param_str}{jurado_param_str}{next_menu_state}"
+
+      # Ícone do avatar posicionado em 40px no topo direito
       st.markdown(
           f"""
           <div style="position: fixed; top: 40px; right: 18px; z-index: 99999;">
-              <a href="?{logout_param}" title="Sair da Conta" style="text-decoration: none; display: inline-block;">
+              <a href="{avatar_link_url}" title="Menu do Jurado" style="text-decoration: none; display: inline-block;">
                   {avatar_html}
               </a>
           </div>
@@ -430,7 +439,49 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Espaçamento para empurrar o texto e as categorias para baixo, exatamente como antes
+      # Se o menu estiver aberto, exibe o quadrinho flutuante logo abaixo do avatar
+      if menu_aberto:
+        st.markdown(
+            f"""
+            <div style="
+                position: fixed;
+                top: 92px;
+                right: 18px;
+                background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(35, 25, 15, 0.98) 100%);
+                border: 1px solid rgba(212, 175, 55, 0.7);
+                border-radius: 10px;
+                padding: 14px 16px;
+                width: 210px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.85);
+                z-index: 99998;
+                color: #f3e5ab;
+                font-family: 'Helvetica Neue', sans-serif;
+                text-align: center;
+            ">
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #e5c158; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 6px; letter-spacing: 0.5px;">
+                    Jurado: {st.session_state.jurado_logado}
+                </div>
+                <a href="?{logout_param}" style="
+                    display: block;
+                    background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
+                    color: #f3e5ab;
+                    text-decoration: none;
+                    padding: 8px 10px;
+                    border-radius: 6px;
+                    border: 1px solid rgba(212,175,55,0.5);
+                    font-size: 11.5px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                ">
+                    Sair / Mudar Login
+                </a>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+      # Espaçamento original mantido para empurrar o texto e as categorias para baixo
       st.markdown('<div style="height: 160px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
