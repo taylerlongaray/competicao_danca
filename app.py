@@ -418,10 +418,10 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Menu flutuante controlado puramente por JavaScript (abre e fecha instantaneamente sem recarregar a página)
+      # Menu flutuante controlado com listener JavaScript seguro
       st.markdown(
           f"""
-          <div style="position: fixed; top: 40px; right: 18px; z-index: 99999; cursor: pointer;" onclick="toggleJuradoMenu(event)">
+          <div id="jurado-avatar-btn" style="position: fixed; top: 40px; right: 18px; z-index: 99999; cursor: pointer;">
               <div title="Menu do Jurado" style="display: inline-block;">
                   {avatar_html}
               </div>
@@ -464,20 +464,32 @@ if modo == "Painel do Jurado":
           </div>
 
           <script>
-              function toggleJuradoMenu(event) {{
-                  event.stopPropagation();
+              setTimeout(function() {{
+                  const btn = document.getElementById('jurado-avatar-btn');
                   const menu = document.getElementById('jurado-popup-menu');
-                  if (menu) {{
-                      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+                  
+                  if (btn && menu) {{
+                      btn.onclick = function(event) {{
+                          event.stopPropagation();
+                          if (menu.style.display === 'block') {{
+                              menu.style.display = 'none';
+                          }} else {{
+                              menu.style.display = 'block';
+                          }}
+                      }};
                   }}
-              }}
+              }}, 200);
 
-              document.addEventListener('click', function(event) {{
-                  const menu = document.getElementById('jurado-popup-menu');
-                  if (menu && menu.style.display === 'block') {{
-                      menu.style.display = 'none';
-                  }}
-              }});
+              if (!window.juradoMenuGlobalListener) {{
+                  window.juradoMenuGlobalListener = true;
+                  document.addEventListener('click', function(event) {{
+                      const menu = document.getElementById('jurado-popup-menu');
+                      const btn = document.getElementById('jurado-avatar-btn');
+                      if (menu && btn && !menu.contains(event.target) && !btn.contains(event.target)) {{
+                          menu.style.display = 'none';
+                      }}
+                  }});
+              }}
           </script>
           """,
           unsafe_allow_html=True,
