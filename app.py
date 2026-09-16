@@ -69,6 +69,15 @@ def img_to_base64(file_path):
   return ""
 
 
+def obter_avatar_html():
+  candidatos = ["avatar.png", "avatar.jpg", "jurado.png", "jurado.jpg"]
+  for arquivo in candidatos:
+    if os.path.exists(arquivo):
+      b64 = img_to_base64(arquivo)
+      return f'<img src="{b64}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; box-shadow: 0 3px 10px rgba(0,0,0,0.8); background-color: #150f0a;">'
+  return '<div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #1f150b, #3d2b16); border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; color: #f3e5ab; font-size: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.8);">👤</div>'
+
+
 if "votos" not in st.session_state:
   st.session_state.votos = []
 
@@ -83,6 +92,13 @@ if "categoria_selecionada" not in st.session_state:
 
 try:
   qp = st.query_params
+  if "logout" in qp:
+    st.session_state.jurado_logado = None
+    st.session_state.categoria_selecionada = None
+    st.query_params.clear()
+    if link_jurado_exclusivo:
+      st.query_params["view"] = "jurado"
+    st.rerun()
   if "jurado" in qp and not st.session_state.jurado_logado:
     st.session_state.jurado_logado = qp["jurado"]
   if "cat" in qp and not st.session_state.categoria_selecionada:
@@ -395,12 +411,17 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # TELA DE CATEGORIAS: POSIÇÃO SUBIDA PARA 145px (Logo abaixo do logo)
+      # TELA DE CATEGORIAS: AVATAR FIXO NO CANTO SUPERIOR DIREITO + 200px
       # =======================================================================
+      avatar_html = obter_avatar_html()
+      logout_param = (
+          "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
+      )
+
       st.markdown(
-          """
+          f"""
           <style>
-          html, body, [data-testid="stAppViewContainer"], .main {
+          html, body, [data-testid="stAppViewContainer"], .main {{
               overflow: hidden !important;
               touch-action: none !important;
               overscroll-behavior: none !important;
@@ -409,21 +430,20 @@ if modo == "Painel do Jurado":
               height: 100vh !important;
               margin: 0 !important;
               padding: 0 !important;
-          }
+          }}
 
-          .block-container {
+          .block-container {{
               position: fixed !important;
-              top: 200px !important; /* Posição bem no alto, logo abaixo da logo */
+              top: 200px !important;
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
               max-width: 320px !important;
               padding: 0 !important;
               margin: 0 !important;
-          }
+          }}
 
-          /* Estilização idêntica à arte da foto enviada */
-          .welcome-title {
+          .welcome-title {{
               color: #f3e5ab;
               font-family: 'Georgia', serif;
               font-size: 20px;
@@ -431,9 +451,9 @@ if modo == "Painel do Jurado":
               font-weight: normal;
               margin-bottom: 6px;
               letter-spacing: 0.5px;
-          }
+          }}
 
-          .welcome-subtitle {
+          .welcome-subtitle {{
               color: #f3e5ab;
               font-family: 'Helvetica Neue', sans-serif;
               font-size: 11.5px;
@@ -441,9 +461,9 @@ if modo == "Painel do Jurado":
               margin-bottom: 15px;
               opacity: 0.9;
               letter-spacing: 0.3px;
-          }
+          }}
 
-          .category-card {
+          .category-card {{
               display: flex;
               align-items: center;
               justify-content: space-between;
@@ -456,54 +476,50 @@ if modo == "Painel do Jurado":
               box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
               transition: all 0.3s ease;
           }
-          .category-card:hover {
+          .category-card:hover {{
               border-color: rgba(212, 175, 55, 1.0);
               background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
-          }
-          .card-left {
+          }}
+          .card-left {{
               display: flex;
               align-items: center;
               gap: 15px;
-          }
-          .card-icon {
+          }}
+          .card-icon {{
               width: 28px !important; 
               height: 28px !important;
               object-fit: contain;
-          }
-          .card-title {
+          }}
+          .card-title {{
               color: #f3e5ab;
               font-family: 'Georgia', serif;
               font-size: 13px !important; 
               font-weight: 600;
               letter-spacing: 2px;
-          }
-          .card-arrow {
+          }}
+          .card-arrow {{
               color: #d4af37;
               font-size: 16px !important;
-          }
-          
-          .stButton > button {
-              background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
-              border: 1px solid rgba(212, 175, 55, 0.5) !important;
-              border-radius: 8px !important;
-              color: #f3e5ab !important;
-              text-transform: uppercase !important;
-              letter-spacing: 2px !important;
-              font-weight: 600 !important;
-              padding: 10px 18px !important;
-              width: 100% !important;
-              margin-top: 5px !important;
-              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
-          }
-          .stButton > button:hover {
-              border: 1px solid rgba(212, 175, 55, 1.0) !important;
-          }
+          }}
+
+          /* BOTÃO DE AVATAR FIXO NO CANTO SUPERIOR DIREITO */
+          .top-right-avatar {{
+              position: fixed !important;
+              top: 15px !important;
+              right: 15px !important;
+              z-index: 99999 !important;
+              text-decoration: none !important;
+              cursor: pointer;
+          }}
           </style>
+
+          <a href="?{logout_param}" class="top-right-avatar" title="Sair da Conta">
+              {avatar_html}
+          </a>
           """,
           unsafe_allow_html=True,
       )
 
-      # Renderiza o texto idêntico à arte, puxando o nome dinâmico do jurado
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
           f"""
@@ -545,14 +561,6 @@ if modo == "Painel do Jurado":
                 """,
             unsafe_allow_html=True,
         )
-
-      if st.button("Sair da Conta"):
-        st.session_state.jurado_logado = None
-        st.session_state.categoria_selecionada = None
-        st.query_params.clear()
-        if link_jurado_exclusivo:
-          st.query_params["view"] = "jurado"
-        st.rerun()
 
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
