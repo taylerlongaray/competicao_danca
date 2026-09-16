@@ -292,27 +292,39 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
+    /* ESTILIZAÇÃO DO BLOCO DE LOGIN HARMONIZADO COM OS CARDS DE CATEGORIA */
     div[data-testid="column"]:has(input[type="password"]) {
-        max-width: 330px !important; 
+        max-width: 320px !important; 
         margin: 0 auto !important; 
         float: none !important;
-        background-color: transparent !important; 
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
-        border-radius: 6px !important;
-        padding: 30px 25px 25px 25px !important;
+        background: linear-gradient(135deg, rgba(15, 11, 7, 0.92) 0%, rgba(30, 21, 12, 0.96) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.45) !important;
+        border-radius: 12px !important;
+        padding: 25px 20px 20px 20px !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7) !important;
     }
 
+    /* Inputs de texto e senha com visual refinado */
     .stTextInput div[data-baseweb="input"] {
-        background-color: rgba(10, 8, 7, 0.8) !important;
-        border: 1px solid rgba(212, 175, 55, 0.35) !important;
-        border-radius: 30px !important;
+        background-color: rgba(10, 8, 7, 0.9) !important;
+        border: 1px solid rgba(212, 175, 55, 0.4) !important;
+        border-radius: 8px !important;
     }
     
+    .stTextInput div[data-baseweb="input"]:focus-within {
+        border: 1px solid rgba(212, 175, 55, 1.0) !important;
+        box-shadow: 0 0 8px rgba(212, 175, 55, 0.3) !important;
+    }
+
     .stTextInput input {
         color: #f3e5ab !important;
         background-color: transparent !important;
-        padding: 12px 20px !important;
-        font-size: 14px !important;
+        padding: 10px 15px !important;
+        font-size: 13px !important;
+    }
+    
+    .stTextInput input::placeholder {
+        color: rgba(243, 229, 171, 0.4) !important;
     }
 
     [data-testid="stSidebar"] {
@@ -324,7 +336,8 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    st.markdown('<div style="height: 43vh;"></div>', unsafe_allow_html=True)
+    # Altura ajustada para a tela de login casar com o espaço reservado na arte
+    st.markdown('<div style="height: 38vh;"></div>', unsafe_allow_html=True)
     col_esq, col_login, col_dir = st.columns([1, 10, 1])
     with col_login:
       login_digitado = st.text_input(
@@ -340,7 +353,7 @@ if modo == "Painel do Jurado":
           placeholder="🔒   Senha",
           label_visibility="collapsed",
       )
-      st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
+      st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
       if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
         usuario_limpo = login_digitado.strip()
         if usuario_limpo in senhas_jurados:
@@ -358,7 +371,7 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # TRAVAMENTO EM PIXELS FIXOS (230px) - Não sofre alteração da barra móvel
+      # BLOQUEIO TOTAL DE SCROLL E POSICIONAMENTO FIXO EM 250px (EXATAMENTE COMO ESTAVA)
       # =======================================================================
       st.markdown(
           """
@@ -374,10 +387,9 @@ if modo == "Painel do Jurado":
               padding: 0 !important;
           }
 
-          /* Usando pixels fixos (px) em vez de vh para ficar estático independentemente da barra do celular */
           .block-container {
               position: fixed !important;
-              top: 250px !important; /* Se precisar subir mais, mude para 210px. Se precisar descer, 250px */
+              top: 250px !important;
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
