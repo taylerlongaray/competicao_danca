@@ -7,7 +7,7 @@ st.set_page_config(
     page_title="Jack & Jill - Noite nas Arábias",
     page_icon="🌙",
     layout="wide",
-    initial_sidebar_state="expanded",  # Mantém a barra lateral aberta por padrão para o administrador
+    initial_sidebar_state="expanded",
 )
 
 
@@ -35,7 +35,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.15), rgba(5, 4, 3, 0.25)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: top center !important;
             background-attachment: fixed;
@@ -64,10 +64,31 @@ if "revelado" not in st.session_state:
 if "jurado_logado" not in st.session_state:
   st.session_state.jurado_logado = None
 
+if "categoria_selecionada" not in st.session_state:
+  st.session_state.categoria_selecionada = None
+
 categorias = {
-    "Aprendendo a Voar": {
-        "Condutores": ["Bruno", "Ivan", "Luis"],
-        "Conduzidas": ["Pati", "Sheila", "Michelle", "Carla"],
+    "Diamante": {
+        "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
+        "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
+    },
+    "Platina": {
+        "Condutores": ["Jean", "Deivid", "Catriel", "Douglas Clo"],
+        "Conduzidas": ["Fabi", "Tefynha", "Nanda", "Cassi"],
+    },
+    "Ouro": {
+        "Condutores": ["Isma", "Jonatan Santos", "Ciro", "Lukas"],
+        "Conduzidas": [
+            "Joice",
+            "Fran",
+            "Daia",
+            "Marcia",
+            "Juliana",
+            "Thaizete",
+            "Andreza",
+            "Julia",
+            "Michele",
+        ],
     },
     "Prata": {
         "Condutores": [
@@ -91,27 +112,9 @@ categorias = {
             "Lilica",
         ],
     },
-    "Ouro": {
-        "Condutores": ["Isma", "Jonatan Santos", "Ciro", "Lukas"],
-        "Conduzidas": [
-            "Joice",
-            "Fran",
-            "Daia",
-            "Marcia",
-            "Juliana",
-            "Thaizete",
-            "Andreza",
-            "Julia",
-            "Michele",
-        ],
-    },
-    "Platina": {
-        "Condutores": ["Jean", "Deivid", "Catriel", "Douglas Clo"],
-        "Conduzidas": ["Fabi", "Tefynha", "Nanda", "Cassi"],
-    },
-    "Diamante": {
-        "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
-        "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
+    "Aprendendo a Voar": {
+        "Condutores": ["Bruno", "Ivan", "Luis"],
+        "Conduzidas": ["Pati", "Sheila", "Michelle", "Carla"],
     },
 }
 
@@ -201,9 +204,12 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
-# Verificação limpa e direta dos parâmetros de URL
-query_params = st.query_params
-link_jurado_exclusivo = query_params.get("view") == "jurado"
+# Verificação segura de parâmetros de URL
+try:
+  query_params = st.query_params
+  link_jurado_exclusivo = query_params.get("view") == "jurado"
+except Exception:
+  link_jurado_exclusivo = False
 
 if link_jurado_exclusivo:
   modo = "Painel do Jurado"
@@ -248,6 +254,8 @@ st.markdown("""
     
     .block-container {
         padding-top: 1rem !important;
+        max-width: 700px !important;
+        margin: 0 auto !important;
     }
 
     h1, h2, h3 {
@@ -257,6 +265,7 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
+    /* Caixa de login elegante */
     div[data-testid="column"]:has(input[type="password"]) {
         max-width: 330px !important; 
         margin: 0 auto !important; 
@@ -289,24 +298,27 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
+    /* Botões estilo pílula com borda dourada para o menu de categorias */
     .stButton > button {
-        background: linear-gradient(180deg, rgba(60,45,25,1) 0%, rgba(120,95,50,1) 50%, rgba(60,45,25,1) 100%) !important;
+        background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(70,55,30,0.9) 50%, rgba(40,30,18,0.9) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 30px !important;
+        border-radius: 12px !important;
         color: #f3e5ab !important;
         text-transform: uppercase !important;
-        letter-spacing: 4px !important;
-        font-weight: 500 !important;
-        padding: 12px !important;
-        margin-top: 15px !important;
+        letter-spacing: 2px !important;
+        font-weight: 600 !important;
+        padding: 14px 20px !important;
+        margin-bottom: 12px !important;
         width: 100% !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
         transition: all 0.3s ease !important;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 50%, rgba(80,60,30,1) 100%) !important;
+        background: linear-gradient(180deg, rgba(60,45,25,1) 0%, rgba(100,80,45,1) 50%, rgba(60,45,25,1) 100%) !important;
         color: #ffffff !important;
         border: 1px solid rgba(212, 175, 55, 0.9) !important;
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3) !important;
     }
     
     [data-testid="stSidebar"] {
@@ -319,7 +331,6 @@ st.markdown("""
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
     st.markdown('<div style="height: 43vh;"></div>', unsafe_allow_html=True)
-
     col_esq, col_login, col_dir = st.columns([1, 10, 1])
     with col_login:
       login_digitado = st.text_input(
@@ -340,119 +351,170 @@ if modo == "Painel do Jurado":
         if usuario_limpo in senhas_jurados:
           if senha_digitada == senhas_jurados[usuario_limpo]:
             st.session_state.jurado_logado = usuario_limpo
+            st.session_state.categoria_selecionada = None
             st.rerun()
           else:
             st.error("❌ Senha incorreta!")
         else:
           st.error("❌ Usuário não encontrado.")
   else:
-    col_info, col_sair = st.columns([3, 1])
-    with col_info:
-      st.success(f"✨ Conectado: **{st.session_state.jurado_logado}**")
-    with col_sair:
-      if st.button("Sair"):
-        st.session_state.jurado_logado = None
-        st.rerun()
+    # Se o jurado está logado MAS não escolheu a categoria ainda, mostra a tela de escolha (Estilo Image2)
+    if st.session_state.categoria_selecionada is None:
+      st.markdown('<div style="height: 5vh;"></div>', unsafe_allow_html=True)
 
-    st.markdown("---")
+      # Cabeçalho com identificação do Jurado no canto superior direito
+      col_top1, col_top2 = st.columns([3, 1])
+      with col_top1:
+        st.markdown(
+            "<h2 style='text-align: left; color: #f3e5ab; margin-bottom: 0;'>Olá,"
+            f" {st.session_state.jurado_logado}!</h2>",
+            unsafe_allow_html=True,
+        )
+      with col_top2:
+        st.markdown(
+            "<p style='text-align: right; color: #d4af37; font-size: 13px;"
+            " font-weight: bold; margin-top: 10px;'>👤 JURADO</p>",
+            unsafe_allow_html=True,
+        )
 
-    col_cat, col_fase = st.columns(2)
-    with col_cat:
-      categoria_escolhida = st.selectbox(
-          "Categoria", list(categorias.keys())
+      st.markdown(
+          "<p style='text-align: center; color: #b39b6b; font-size: 14px;"
+          " margin-top: 20px; margin-bottom: 30px;'>Selecione a categoria que"
+          " você irá avaliar:</p>",
+          unsafe_allow_html=True,
       )
 
-    fases_disponiveis = fases_por_categoria[categoria_escolhida]
-    with col_fase:
+      # Botões de Categorias com ícones idênticos ao layout solicitado
+      cats_info = [
+          ("Diamante", "💎"),
+          ("Platina", "🥈"),
+          ("Ouro", "🥇"),
+          ("Prata", "🥈"),
+          ("Aprendendo a Voar", "🕊️"),
+      ]
+
+      for cat_nome, icone in cats_info:
+        if st.button(
+            f"{icone}   &nbsp; {cat_nome.upper()}   &nbsp; ›",
+            key=f"btn_cat_{cat_nome}",
+            use_container_width=True,
+        ):
+          st.session_state.categoria_selecionada = cat_nome
+          st.rerun()
+
+      st.markdown("<br>", unsafe_allow_html=True)
+      if st.button("Sair da Conta", use_container_width=True):
+        st.session_state.jurado_logado = None
+        st.session_state.categoria_selecionada = None
+        st.rerun()
+
+    else:
+      # Se a categoria já foi escolhida, exibe o painel de notas daquela categoria
+      categoria_escolhida = st.session_state.categoria_selecionada
+
+      col_info, col_voltar = st.columns([2.5, 1.5])
+      with col_info:
+        st.success(
+            f"✨ **{st.session_state.jurado_logado}** | Categoria:"
+            f" **{categoria_escolhida}**"
+        )
+      with col_voltar:
+        if st.button("⬅️ Trocar Categoria"):
+          st.session_state.categoria_selecionada = None
+          st.rerun()
+
+      st.markdown("---")
+
+      fases_disponiveis = fases_por_categoria[categoria_escolhida]
       if len(fases_disponiveis) > 1:
         fase_escolhida = st.selectbox("Fase / Etapa", fases_disponiveis)
       else:
         fase_escolhida = fases_disponiveis[0]
         st.text_input("Fase / Etapa", value=fase_escolhida, disabled=True)
 
-    st.markdown("##### Selecione o Grupo")
-    tipo_selecionado = st.radio(
-        "Grupo",
-        ["Condutor", "Conduzida"],
-        horizontal=True,
-        label_visibility="collapsed",
-    )
-
-    if tipo_selecionado == "Condutor":
-      papel_escolhido = "Condutores"
-      competidores_ordenados = sorted(
-          categorias[categoria_escolhida]["Condutores"]
-      )
-      competidor_escolhido = st.selectbox(
-          "Condutor", competidores_ordenados, label_visibility="collapsed"
-      )
-    else:
-      papel_escolhido = "Conduzidas"
-      competidores_ordenados = sorted(
-          categorias[categoria_escolhida]["Conduzidas"]
-      )
-      competidor_escolhido = st.selectbox(
-          "Conduzida", competidores_ordenados, label_visibility="collapsed"
+      st.markdown("##### Selecione o Grupo")
+      tipo_selecionado = st.radio(
+          "Grupo",
+          ["Condutor", "Conduzida"],
+          horizontal=True,
+          label_visibility="collapsed",
       )
 
-    st.markdown("---")
-    st.markdown(
-        f"<h3>Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
-        f" <i>{fase_escolhida}</i></h3>",
-        unsafe_allow_html=True,
-    )
+      if tipo_selecionado == "Condutor":
+        papel_escolhido = "Condutores"
+        competidores_ordenados = sorted(
+            categorias[categoria_escolhida]["Condutores"]
+        )
+        competidor_escolhido = st.selectbox(
+            "Condutor", competidores_ordenados, label_visibility="collapsed"
+        )
+      else:
+        papel_escolhido = "Conduzidas"
+        competidores_ordenados = sorted(
+            categorias[categoria_escolhida]["Conduzidas"]
+        )
+        competidor_escolhido = st.selectbox(
+            "Conduzida", competidores_ordenados, label_visibility="collapsed"
+        )
 
-    notas_jurado = {}
-    justificativas_jurado = {}
-
-    for criterio_nome, descricao in criterios_por_categoria[
-        categoria_escolhida
-    ].items():
-      with st.container(border=True):
-        st.markdown(f"<h4>{criterio_nome}</h4>", unsafe_allow_html=True)
-        st.info(f"💡 **O que avaliar:** {descricao}")
-
-        chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
-
-        col_nota, col_just = st.columns([1, 2])
-        with col_nota:
-          nota_str = st.text_input(
-              f"Nota (0 a 10) - {criterio_nome}",
-              value="5.0",
-              key=f"input_{chave_base}",
-          )
-          try:
-            nota_val = float(nota_str.replace(",", "."))
-          except ValueError:
-            nota_val = 0.0
-          notas_jurado[criterio_nome] = nota_val
-
-        with col_just:
-          justificativas_jurado[criterio_nome] = st.text_area(
-              "Justificativa (Opcional)",
-              key=f"just_{chave_base}",
-              height=70,
-          )
-
-    st.write("")
-    if st.button("ENVIAR TODAS AS NOTAS", type="primary"):
-      for criterio_nome, nota_val in notas_jurado.items():
-        novo_voto = {
-            "jurado": st.session_state.jurado_logado,
-            "categoria": categoria_escolhida,
-            "fase": fase_escolhida,
-            "papel": papel_escolhido,
-            "competidor": competidor_escolhido,
-            "criterio": criterio_nome,
-            "nota": nota_val,
-            "justificativa": justificativas_jurado[criterio_nome],
-        }
-        st.session_state.votos.append(novo_voto)
-
-      st.success(
-          f"✨ Notas enviadas com sucesso por {st.session_state.jurado_logado} para"
-          f" **{competidor_escolhido}** ({fase_escolhida})!"
+      st.markdown("---")
+      st.markdown(
+          f"<h3>Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
+          f" <i>{fase_escolhida}</i></h3>",
+          unsafe_allow_html=True,
       )
+
+      notas_jurado = {}
+      justificativas_jurado = {}
+
+      for criterio_nome, descricao in criterios_por_categoria[
+          categoria_escolhida
+      ].items():
+        with st.container(border=True):
+          st.markdown(f"<h4>{criterio_nome}</h4>", unsafe_allow_html=True)
+          st.info(f"💡 **O que avaliar:** {descricao}")
+
+          chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
+
+          col_nota, col_just = st.columns([1, 2])
+          with col_nota:
+            nota_str = st.text_input(
+                f"Nota (0 a 10) - {criterio_nome}",
+                value="5.0",
+                key=f"input_{chave_base}",
+            )
+            try:
+              nota_val = float(nota_str.replace(",", "."))
+            except ValueError:
+              nota_val = 0.0
+            notas_jurado[criterio_nome] = nota_val
+
+          with col_just:
+            justificativas_jurado[criterio_nome] = st.text_area(
+                "Justificativa (Opcional)",
+                key=f"just_{chave_base}",
+                height=70,
+            )
+
+      st.write("")
+      if st.button("ENVIAR TODAS AS NOTAS", type="primary"):
+        for criterio_nome, nota_val in notas_jurado.items():
+          novo_voto = {
+              "jurado": st.session_state.jurado_logado,
+              "categoria": categoria_escolhida,
+              "fase": fase_escolhida,
+              "papel": papel_escolhido,
+              "competidor": competidor_escolhido,
+              "criterio": criterio_nome,
+              "nota": nota_val,
+              "justificativa": justificativas_jurado[criterio_nome],
+          }
+          st.session_state.votos.append(novo_voto)
+
+        st.success(
+            f"✨ Notas enviadas com sucesso por {st.session_state.jurado_logado}"
+            f" para **{competidor_escolhido}** ({fase_escolhida})!"
+        )
 
 elif modo == "Painel da Organização":
   st.title("📋 Painel da Organização")
