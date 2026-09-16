@@ -12,7 +12,6 @@ st.set_page_config(
 
 
 def obter_fundo_css(tipo_tela):
-  # Procura primeiro pelo específico da tela, depois tenta fallbacks comuns
   candidatos = [
       f"fundo_{tipo_tela}.png",
       f"fundo_{tipo_tela}.jpg",
@@ -39,7 +38,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.15), rgba(5, 4, 3, 0.25)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.05), rgba(5, 4, 3, 0.15)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: top center !important;
             background-attachment: fixed;
@@ -82,7 +81,6 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
   st.session_state.categoria_selecionada = None
 
-# Recuperação automática de estado via URL
 try:
   qp = st.query_params
   if "jurado" in qp and not st.session_state.jurado_logado:
@@ -263,7 +261,6 @@ else:
       label_visibility="collapsed",
   )
 
-# Gerenciamento dinâmico dos fundos
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
     st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
@@ -327,23 +324,24 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
+    /* Cards de Categoria - Design idêntico e ajustado */
     .category-card {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: linear-gradient(135deg, rgba(15, 11, 7, 0.85) 0%, rgba(30, 21, 12, 0.92) 100%);
-        border: 1px solid rgba(212, 175, 55, 0.45);
+        background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.6);
         border-radius: 12px;
         padding: 14px 22px;
         margin-bottom: 14px;
         text-decoration: none !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
         transition: all 0.3s ease;
     }
     .category-card:hover {
-        border-color: rgba(212, 175, 55, 0.95);
-        background: linear-gradient(135deg, rgba(25, 18, 12, 0.92) 0%, rgba(45, 33, 19, 0.98) 100%);
-        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        border-color: rgba(212, 175, 55, 1.0);
+        background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
         transform: translateY(-2px);
     }
     .card-left {
@@ -370,8 +368,8 @@ st.markdown("""
     }
 
     .stButton > button {
-        background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(70,55,30,0.9) 50%, rgba(40,30,18,0.9) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.5) !important;
+        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.6) !important;
         border-radius: 12px !important;
         color: #f3e5ab !important;
         text-transform: uppercase !important;
@@ -379,13 +377,13 @@ st.markdown("""
         font-weight: 600 !important;
         padding: 12px 20px !important;
         width: 100% !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6) !important;
         transition: all 0.3s ease !important;
     }
     .stButton > button:hover {
         background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 50%, rgba(80,60,30,1) 100%) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(212, 175, 55, 0.9) !important;
+        border: 1px solid rgba(212, 175, 55, 1.0) !important;
     }
     
     [data-testid="stSidebar"] {
@@ -429,18 +427,19 @@ if modo == "Painel do Jurado":
           st.error("❌ Usuário não encontrado.")
   else:
     if st.session_state.categoria_selecionada is None:
-      st.markdown('<div style="height: 2vh;"></div>', unsafe_allow_html=True)
-
+      # =======================================================================
+      # AJUSTE DE ESPAÇAMENTO AQUI!
+      # Mude o "300px" abaixo se precisar que os botões subam ou desçam mais.
+      # =======================================================================
+      st.markdown('<div style="height: 300px;"></div>', unsafe_allow_html=True)
+      
+      # Exibe quem está logado de forma elegante bem perto dos botões
       st.markdown(
           f"""
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: #f3e5ab; font-family: 'Georgia', serif; margin: 0; font-size: 22px; text-align: left;">Olá, Jurado!</h2>
-                <div style="text-align: right; color: #d4af37; font-size: 12px; font-weight: bold; letter-spacing: 1px; line-height: 1.2;">
-                    👤 JURADO<br><span style="font-size: 11px; opacity: 0.8;">{st.session_state.jurado_logado.upper()}</span>
-                </div>
-            </div>
-            <p style="color: #b39b6b; font-size: 13px; text-align: center; margin-bottom: 25px; letter-spacing: 0.5px;">Selecione a categoria que você irá avaliar:</p>
-            """,
+          <div style="text-align: center; color: #d4af37; font-size: 13px; font-weight: bold; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+              ✨ BEM-VINDO, {st.session_state.jurado_logado.upper()} ✨
+          </div>
+          """,
           unsafe_allow_html=True,
       )
 
