@@ -358,11 +358,35 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # ESPAÇAMENTO COM 32vh CONFIGURADO
+      # BLOQUEIO TOTAL DE SCROLL E POSICIONAMENTO FIXO EM 32vh
       # =======================================================================
       st.markdown(
           """
           <style>
+          /* Trava completamente a rolagem e o arrastar na tela de categorias */
+          html, body, [data-testid="stAppViewContainer"], .main {
+              overflow: hidden !important;
+              touch-action: none !important;
+              overscroll-behavior: none !important;
+              position: fixed !important;
+              width: 100vw !important;
+              height: 100vh !important;
+              margin: 0 !important;
+              padding: 0 !important;
+          }
+
+          /* Trava o container principal na posição exata de 32vh para nunca descer */
+          .block-container {
+              position: fixed !important;
+              top: 32vh !important;
+              left: 50% !important;
+              transform: translateX(-50%) !important;
+              width: 100% !important;
+              max-width: 320px !important;
+              padding: 0 !important;
+              margin: 0 !important;
+          }
+
           .category-card {
               display: flex;
               align-items: center;
@@ -419,19 +443,9 @@ if modo == "Painel do Jurado":
               border: 1px solid rgba(212, 175, 55, 1.0) !important;
           }
           </style>
-          
-          <script>
-              const container = document.querySelector('[data-testid="stAppViewContainer"]');
-              if (container) {
-                  container.scrollTop = 0;
-              }
-              window.scrollTo(0, 0);
-          </script>
           """,
           unsafe_allow_html=True,
       )
-
-      st.markdown('<div style="height: 32vh;"></div>', unsafe_allow_html=True)
 
       cats_info = [
           ("Diamante", "diamante.png", "💎"),
