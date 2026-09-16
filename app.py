@@ -38,7 +38,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.05), rgba(5, 4, 3, 0.15)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.05), rgba(5, 4, 3, 0.10)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: top center !important;
             background-attachment: fixed;
@@ -324,60 +324,64 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
-    /* Cards de Categoria - Design idêntico e ajustado */
+    /* Cards de Categoria MENORES e com TAMANHO FIXO CENTRALIZADO */
     .category-card {
         display: flex;
         align-items: center;
         justify-content: space-between;
         background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
-        border: 1px solid rgba(212, 175, 55, 0.6);
-        border-radius: 12px;
-        padding: 14px 22px;
-        margin-bottom: 14px;
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        border-radius: 10px;
+        padding: 10px 18px; /* Mais fino verticalmente */
+        margin: 0 auto 10px auto; /* Centraliza o card e dá um espaço entre eles */
+        max-width: 340px; /* Mantém a largura fixa e elegante */
         text-decoration: none !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
         transition: all 0.3s ease;
     }
     .category-card:hover {
         border-color: rgba(212, 175, 55, 1.0);
         background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
-        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        box-shadow: 0 6px 15px rgba(212, 175, 55, 0.5);
         transform: translateY(-2px);
     }
     .card-left {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 15px;
     }
     .card-icon {
-        width: 38px;
-        height: 38px;
+        width: 32px; /* Ícone um pouco menor */
+        height: 32px;
         object-fit: contain;
     }
     .card-title {
         color: #f3e5ab;
         font-family: 'Georgia', serif;
-        font-size: 15px;
+        font-size: 14px; /* Fonte levemente ajustada */
         font-weight: 600;
         letter-spacing: 2px;
     }
     .card-arrow {
         color: #d4af37;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
     }
 
+    /* Botão Sair da conta fixo e centralizado para acompanhar os cards */
     .stButton > button {
         background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.6) !important;
-        border-radius: 12px !important;
+        border: 1px solid rgba(212, 175, 55, 0.5) !important;
+        border-radius: 10px !important;
         color: #f3e5ab !important;
         text-transform: uppercase !important;
         letter-spacing: 2px !important;
         font-weight: 600 !important;
-        padding: 12px 20px !important;
-        width: 100% !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6) !important;
+        padding: 10px 18px !important;
+        max-width: 340px !important;
+        margin: 0 auto !important;
+        display: block !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
         transition: all 0.3s ease !important;
     }
     .stButton > button:hover {
@@ -428,20 +432,12 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # AJUSTE DE ESPAÇAMENTO AQUI!
-      # Mude o "300px" abaixo se precisar que os botões subam ou desçam mais.
+      # 💡 AJUSTE DE ALTURA DOS BOTÕES AQUI!
+      # Esse 36vh empurra os botões para baixo na tela. 
+      # Se quiser os botões mais para cima, diminua para 30vh.
+      # Se quiser os botões mais para baixo, aumente para 40vh ou 45vh.
       # =======================================================================
-      st.markdown('<div style="height: 300px;"></div>', unsafe_allow_html=True)
-      
-      # Exibe quem está logado de forma elegante bem perto dos botões
-      st.markdown(
-          f"""
-          <div style="text-align: center; color: #d4af37; font-size: 13px; font-weight: bold; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
-              ✨ BEM-VINDO, {st.session_state.jurado_logado.upper()} ✨
-          </div>
-          """,
-          unsafe_allow_html=True,
-      )
+      st.markdown('<div style="height: 36vh;"></div>', unsafe_allow_html=True)
 
       cats_info = [
           ("Diamante", "diamante.png", "💎"),
@@ -459,7 +455,7 @@ if modo == "Painel do Jurado":
         if img_b64:
           icon_html = f'<img src="{img_b64}" class="card-icon"/>'
         else:
-          icon_html = f'<span style="font-size: 26px;">{emoji_fallback}</span>'
+          icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
 
         target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
 
@@ -477,13 +473,17 @@ if modo == "Painel do Jurado":
         )
 
       st.markdown("<br>", unsafe_allow_html=True)
-      if st.button("Sair da Conta", use_container_width=True):
-        st.session_state.jurado_logado = None
-        st.session_state.categoria_selecionada = None
-        st.query_params.clear()
-        if link_jurado_exclusivo:
-          st.query_params["view"] = "jurado"
-        st.rerun()
+      
+      # Envolvemos o botão "Sair" em colunas para forçar o alinhamento
+      col_sair1, col_sair2, col_sair3 = st.columns([1, 10, 1])
+      with col_sair2:
+          if st.button("Sair da Conta", use_container_width=True):
+            st.session_state.jurado_logado = None
+            st.session_state.categoria_selecionada = None
+            st.query_params.clear()
+            if link_jurado_exclusivo:
+              st.query_params["view"] = "jurado"
+            st.rerun()
 
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
