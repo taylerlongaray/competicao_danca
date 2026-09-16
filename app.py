@@ -397,6 +397,7 @@ elif modo == "Telão (Público)":
 else:
   st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
+# ----------------- CSS GLOBAL (RESTAURADO EXATAMENTE COMO ERA ANTES) -----------------
 st.markdown(
     """
     <style>
@@ -407,8 +408,7 @@ st.markdown(
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 1.2rem !important; /* Espaçamento global reduzido */
-        padding-bottom: 1.0rem !important;
+        padding-top: 2.2rem !important; /* MANTIDO ORIGINAL */
         max-width: 600px !important;
         margin: 0 auto !important;
     }
@@ -473,8 +473,8 @@ st.markdown(
         letter-spacing: 1.5px !important;
         font-weight: 600 !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
-        padding: 4px 14px !important; /* Mais compacto */
-        font-size: 11px !important; /* Mais compacto */
+        padding: 8px 14px !important; /* MANTIDO ORIGINAL */
+        font-size: 12px !important; /* MANTIDO ORIGINAL */
     }
     .stButton > button:hover {
         background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
@@ -509,59 +509,58 @@ st.markdown(
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
-    /* CARD DE VOTAÇÃO EXTREMAMENTE COMPACTO */
     .jj-card {
         background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
         border: 1px solid rgba(212, 175, 55, 0.45);
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-        padding: 10px 12px;
-        margin-bottom: 8px; /* Margem bem menor */
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.75);
+        padding: 16px 18px; /* MANTIDO ORIGINAL */
+        margin-bottom: 14px; /* MANTIDO ORIGINAL */
     }
 
     .jj-banner {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 10px;
+        gap: 14px;
     }
     .jj-banner-left {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
     }
-    .jj-banner-icon { font-size: 26px; line-height: 1; }
-    .jj-banner-icon img { width: 28px; height: 28px; object-fit: contain; }
+    .jj-banner-icon { font-size: 30px; line-height: 1; }
+    .jj-banner-icon img { width: 34px; height: 34px; object-fit: contain; }
     .jj-label {
         color: #b39b6b;
-        font-size: 9px;
+        font-size: 10px;
         letter-spacing: 3px;
         text-transform: uppercase;
-        margin-bottom: 0px;
+        margin-bottom: 2px;
     }
     .jj-categoria {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #f3e5ab;
-        font-size: 20px;
+        font-size: 26px;
         font-weight: 700;
-        letter-spacing: 2px;
+        letter-spacing: 3px;
         line-height: 1.1;
     }
     .jj-banner-right {
         text-align: right;
         border-left: 1px solid rgba(212, 175, 55, 0.3);
-        padding-left: 12px;
+        padding-left: 16px;
     }
     .jj-fase {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #f3e5ab;
-        font-size: 15px;
+        font-size: 19px;
         font-weight: 700;
         letter-spacing: 2px;
     }
     .jj-musica {
         color: #b39b6b;
-        font-size: 9px;
+        font-size: 10px;
         letter-spacing: 2px;
         text-transform: uppercase;
     }
@@ -570,19 +569,19 @@ st.markdown(
     .jj-nome {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #ffffff;
-        font-size: 26px;
+        font-size: 34px;
         font-weight: 700;
         line-height: 1.1;
-        margin: 0 0 4px 0;
+        margin: 2px 0 8px 0;
         text-shadow: 0 2px 8px rgba(0,0,0,0.8);
     }
     .jj-badge {
         display: inline-block;
         border: 1px solid rgba(212, 175, 55, 0.8);
         border-radius: 20px;
-        padding: 3px 16px;
+        padding: 5px 22px;
         color: #e5c158;
-        font-size: 9px;
+        font-size: 11px;
         letter-spacing: 2px;
         text-transform: uppercase;
     }
@@ -591,138 +590,97 @@ st.markdown(
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 8px;
+        gap: 12px;
     }
     .jj-crit-icon {
-        width: 36px; height: 36px; min-width: 36px;
+        width: 46px; height: 46px; min-width: 46px;
         border-radius: 50%;
         border: 1px solid rgba(212, 175, 55, 0.7);
         background: rgba(0,0,0,0.35);
         display: flex; align-items: center; justify-content: center;
-        color: #e5c158; font-size: 16px;
+        color: #e5c158; font-size: 20px;
     }
     .jj-contador {
         border: 1px solid rgba(212, 175, 55, 0.7);
         border-radius: 20px;
-        padding: 2px 10px;
+        padding: 4px 14px;
         color: #e5c158;
-        font-size: 10px;
+        font-size: 12px;
         white-space: nowrap;
     }
     .jj-crit-nome {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #f3e5ab;
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 700;
         line-height: 1.2;
-        margin-top: 0px;
+        margin-top: 2px;
     }
     .jj-divisor {
         border: none;
         border-top: 1px solid rgba(212, 175, 55, 0.25);
-        margin: 8px 0 6px 0;
+        margin: 12px 0 10px 0;
     }
     .jj-crit-desc {
         color: #ded2b4;
-        font-size: 12px;
-        line-height: 1.3;
+        font-size: 14px;
+        line-height: 1.55;
     }
     .jj-crit-desc b { color: #e5c158; }
 
     .jj-secao-label {
         color: #f3e5ab;
-        font-size: 10px;
+        font-size: 12px;
         letter-spacing: 3px;
         text-transform: uppercase;
-        margin-bottom: 4px;
+        margin-bottom: 8px;
     }
 
     .jj-footer {
         text-align: center;
-        margin-top: 8px;
-        padding-top: 6px;
+        margin-top: 26px;
+        padding-top: 14px;
         border-top: 1px solid rgba(212, 175, 55, 0.2);
     }
     .jj-footer-marca {
         color: #e5c158;
-        font-size: 11px;
-        letter-spacing: 4px;
+        font-size: 13px;
+        letter-spacing: 5px;
         text-transform: uppercase;
     }
     .jj-footer-sub {
         color: #8d7a52;
-        font-size: 8px;
-        letter-spacing: 1.5px;
+        font-size: 10px;
+        letter-spacing: 2px;
         text-transform: uppercase;
-        margin-top: 2px;
+        margin-top: 4px;
     }
 
-    /* FORÇA A COMPACTAÇÃO DOS CAMPOS DE INPUT NA TELA DE VOTAÇÃO */
-    div.stNumberInput {
-        margin-bottom: -15px !important;
-    }
-    div[data-testid="stNumberInput"] input {
-        text-align: center !important;
-        font-size: 22px !important;
-        font-weight: 700 !important;
-        color: #e5c158 !important;
-        background-color: rgba(12, 9, 7, 0.95) !important;
-        border: 1px solid rgba(212, 175, 55, 0.45) !important;
-        border-radius: 8px !important;
-        padding: 6px !important;
-    }
-    div[data-testid="stNumberInput"] input:focus-within {
-        border: 1px solid rgba(212, 175, 55, 1.0) !important;
-        box-shadow: 0 0 8px rgba(212, 175, 55, 0.4) !important;
-    }
-
-    div.stTextArea {
-        margin-bottom: -10px !important;
-    }
     .stTextArea textarea {
         background-color: rgba(10, 7, 5, 0.9) !important;
         border: 1px solid rgba(212, 175, 55, 0.35) !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
         color: #f3e5ab !important;
-        font-size: 13px !important;
-        min-height: 60px !important;
-        height: 60px !important;
+        font-size: 14px !important;
     }
     .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
 
     div[data-testid="stExpander"] {
         border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
         background: rgba(12, 9, 6, 0.85) !important;
-        margin-bottom: 8px !important;
-    }
-    div[data-testid="stExpander"] summary {
-        padding-top: 5px !important;
-        padding-bottom: 5px !important;
     }
     div[data-testid="stExpander"] summary p {
         color: #e5c158 !important;
-        font-size: 10px !important;
+        font-size: 11px !important;
         letter-spacing: 2px !important;
         text-transform: uppercase !important;
-        margin: 0 !important;
     }
     </style>
 """,
     unsafe_allow_html=True,
 )
 
-if modo == "Painel do Jurado":
-  if st.session_state.jurado_logado is None:
-    st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
-  elif st.session_state.categoria_selecionada is None:
-    st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
-  else:
-    st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
-elif modo == "Telão (Público)":
-  st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
-else:
-  st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
@@ -763,7 +721,7 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # MANTIDO INTACTO COMO VOCÊ PEDIU - APENAS O BOTÃO DE SAIR
+      # MANTIDO INTACTO EXATAMENTE DO JEITO QUE ESTAVA NA SUA CONFIGURAÇÃO PERFEITA
       st.markdown(
           f"""
           <div style="position: fixed; top: 10px; right: 12px; z-index: 99999;">
@@ -790,7 +748,7 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # MANTIDO O SEU ESPAÇAMENTO PERFEITO DE 40PX
+      # ESPAÇAMENTO EXATO QUE VOCÊ AJUSTOU PARA 40px
       st.markdown('<div style="height: 40px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
@@ -887,6 +845,55 @@ if modo == "Painel do Jurado":
 
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
+
+      # -------------------------------------------------------------------------------------
+      # AQUI ESTÁ O SEGREDO! Este bloco de CSS SÓ É LIDO quando a TELA DE VOTAÇÃO está aberta.
+      # Ele compacta a tela atual sem afetar a tela das categorias que ficou lá atrás.
+      # -------------------------------------------------------------------------------------
+      st.markdown(
+          """
+          <style>
+          .block-container {
+              padding-top: 1.0rem !important;
+              padding-bottom: 1.0rem !important;
+          }
+          .jj-card {
+              padding: 10px 12px !important;
+              margin-bottom: 8px !important;
+              border-radius: 10px !important;
+          }
+          .jj-banner-icon { font-size: 26px !important; }
+          .jj-banner-icon img { width: 28px !important; height: 28px !important; }
+          .jj-categoria { font-size: 20px !important; }
+          .jj-fase { font-size: 15px !important; }
+          .jj-nome { font-size: 26px !important; margin: 0 0 4px 0 !important; }
+          .jj-badge { padding: 3px 16px !important; font-size: 9px !important; }
+          .jj-crit-icon { width: 36px !important; height: 36px !important; min-width: 36px !important; font-size: 16px !important; }
+          .jj-contador { padding: 2px 10px !important; font-size: 10px !important; }
+          .jj-crit-nome { font-size: 18px !important; }
+          .jj-divisor { margin: 8px 0 6px 0 !important; }
+          .jj-crit-desc { font-size: 12px !important; line-height: 1.3 !important; }
+          .jj-secao-label { font-size: 10px !important; margin-bottom: 4px !important; }
+          
+          div.stNumberInput { margin-bottom: -15px !important; }
+          div[data-testid="stNumberInput"] input {
+              text-align: center !important; font-size: 22px !important; font-weight: 700 !important;
+              padding: 6px !important;
+          }
+          div.stTextArea { margin-bottom: -10px !important; }
+          .stTextArea textarea { min-height: 60px !important; height: 60px !important; }
+          div[data-testid="stExpander"] { margin-bottom: 8px !important; }
+          div[data-testid="stExpander"] summary { padding-top: 5px !important; padding-bottom: 5px !important; }
+          
+          .stButton > button {
+              padding: 4px 14px !important;
+              font-size: 11px !important;
+          }
+          </style>
+          """,
+          unsafe_allow_html=True
+      )
+      # -------------------------------------------------------------------------------------
 
       # ---------- Cabeçalho fixo com barra sticky unificada (Sair e Trocar Categoria) ----------
       logout_url = (
