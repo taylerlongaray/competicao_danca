@@ -279,8 +279,11 @@ elif modo == "Telão (Público)":
 else:
   st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(
+    """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
+
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -296,6 +299,18 @@ st.markdown("""
         font-family: 'Georgia', serif;
         text-align: center;
         letter-spacing: 1px;
+    }
+
+    /* Estilo customizado para o saudação do jurado */
+    .saudacao-jurado {
+        font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
+        color: #f3e5ab !important;
+        font-size: 24px !important;
+        font-weight: 700 !important;
+        text-align: center;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        letter-spacing: 1.5px;
+        margin-bottom: 4px;
     }
 
     div[data-testid="column"]:has(input[type="password"]) {
@@ -362,7 +377,9 @@ st.markdown("""
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
     </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
@@ -434,7 +451,7 @@ if modo == "Painel do Jurado":
       st.markdown(
           f"""
           <div style="text-align: center; margin-bottom: 6px;">
-              <h3 style="color: #f3e5ab; font-family: 'Georgia', serif; font-size: 20px; font-weight: normal; margin-bottom: 4px;">Olá, {nome_jurado}!</h3>
+              <div class="saudacao-jurado">Olá, {nome_jurado}!</div>
               <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
           </div>
           """,
