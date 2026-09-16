@@ -46,6 +46,8 @@ def obter_fundo_css(tipo_tela):
             background-attachment: fixed;
             color: #f3e5ab;
             font-family: 'Helvetica Neue', sans-serif;
+            overflow: hidden !important;
+            height: 100vh !important;
         }}
         </style>
         """
@@ -55,6 +57,8 @@ def obter_fundo_css(tipo_tela):
         .stApp {
             background-color: #090706;
             color: #f3e5ab;
+            overflow: hidden !important;
+            height: 100vh !important;
         }
         </style>
         """
@@ -289,9 +293,10 @@ st.markdown(
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 1rem !important;
+        padding-top: 0.5rem !important;
         max-width: 600px !important;
         margin: 0 auto !important;
+        overflow: hidden !important;
     }
 
     h1, h2, h3 {
@@ -304,12 +309,12 @@ st.markdown(
     .saudacao-jurado {
         font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
         color: #f3e5ab !important;
-        font-size: 24px !important;
+        font-size: 22px !important;
         font-weight: 700 !important;
         text-align: center;
         text-shadow: 0 2px 6px rgba(0,0,0,0.8);
         letter-spacing: 1.5px;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
     }
 
     div[data-testid="column"]:has(input[type="password"]) {
@@ -419,21 +424,21 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Botão de Logout fixo no topo direito (na altura 40px)
+      # Botão de Logout fixo no topo direito
       st.markdown(
           f"""
           <a href="?{logout_param}" style="
               position: fixed;
-              top: 40px;
+              top: 35px;
               right: 18px;
               z-index: 99999;
               background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
               color: #f3e5ab;
               text-decoration: none;
-              padding: 8px 14px;
+              padding: 7px 12px;
               border-radius: 6px;
               border: 1px solid rgba(212,175,55,0.6);
-              font-size: 12px;
+              font-size: 11px;
               font-weight: 600;
               text-transform: uppercase;
               letter-spacing: 1px;
@@ -443,15 +448,15 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Espaçamento superior
-      st.markdown('<div style="height: 200px;"></div>', unsafe_allow_html=True)
+      # Espaçamento superior reduzido para ajustar perfeitamente ao viewport sem scroll
+      st.markdown('<div style="height: 120px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
           f"""
-          <div style="text-align: center; margin-bottom: 6px;">
+          <div style="text-align: center; margin-bottom: 2px;">
               <div class="saudacao-jurado">Olá, {nome_jurado}!</div>
-              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; position: relative; top: 15px; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
+              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; position: relative; top: 15px; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p>
           </div>
           """,
           unsafe_allow_html=True,
@@ -467,8 +472,8 @@ if modo == "Painel do Jurado":
               background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
               border: 1px solid rgba(212, 175, 55, 0.45);
               border-radius: 8px !important;
-              padding: 10px 18px !important;
-              margin-bottom: 10px !important;
+              padding: 8px 16px !important;
+              margin-bottom: 8px !important;
               text-decoration: none !important;
               box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
               transition: all 0.3s ease;
@@ -480,23 +485,23 @@ if modo == "Painel do Jurado":
           .card-left {
               display: flex;
               align-items: center;
-              gap: 15px;
+              gap: 12px;
           }
           .card-icon {
-              width: 28px !important; 
-              height: 28px !important;
+              width: 24px !important; 
+              height: 24px !important;
               object-fit: contain;
           }
           .card-title {
               color: #f3e5ab;
               font-family: 'Georgia', serif;
-              font-size: 13px !important; 
+              font-size: 12px !important; 
               font-weight: 600;
               letter-spacing: 2px;
           }
           .card-arrow {
               color: #d4af37;
-              font-size: 16px !important;
+              font-size: 14px !important;
           }
           </style>
           """,
@@ -521,7 +526,7 @@ if modo == "Painel do Jurado":
         if img_b64:
           icon_html = f'<img src="{img_b64}" class="card-icon"/>'
         else:
-          icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
+          icon_html = f'<span style="font-size: 20px;">{emoji_fallback}</span>'
 
         target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
 
