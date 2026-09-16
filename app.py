@@ -243,6 +243,30 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
+
+def obter_classificados(categoria, papel):
+  if not st.session_state.votos:
+    return []
+  df = pd.DataFrame(st.session_state.votos)
+  if df.empty:
+    return []
+
+  df_class = df[
+      (df["categoria"] == categoria)
+      & (df["fase"] == "Fase Classificatória")
+      & (df["papel"] == papel)
+  ]
+  if df_class.empty:
+    return []
+
+  # Prata classifica 8, Ouro classifica 7
+  limite = 8 if categoria == "Prata" else 7
+
+  ranking = df_class.groupby("competidor")["nota"].mean().reset_index()
+  ranking = ranking.sort_values(by="nota", ascending=False)
+  return ranking.head(limite)["competidor"].tolist()
+
+
 if link_jurado_exclusivo:
   modo = "Painel do Jurado"
   st.markdown(
@@ -576,80 +600,102 @@ if modo == "Painel do Jurado":
           label_visibility="collapsed",
       )
 
-      if tipo_selecionado == "Condutor":
-        papel_escolhido = "Condutores"
-        competidores_ordenados = sorted(
-            categorias[categoria_escolhida]["Condutores"]
-        )
-        competidor_escolhido = st.selectbox(
-            "Condutor", competidores_ordenados, label_visibility="collapsed"
-        )
-      else:
-        papel_escolhido = "Conduzidas"
-        competidores_ordenados = sorted(
-            categorias[categoria_escolhida]["Conduzidas"]
-        )
-        competidor_escolhido = st.selectbox(
-            "Conduzida", competidores_ordenados, label_visibility="collapsed"
-        )
-
-      st.markdown("---")
-      st.markdown(
-          f"<h3>Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
-          f" <i>{fase_escolhida}</i></h3>",
-          unsafe_allow_html=True,
+      # Lógica automática para filtrar os classificados na Fase Final para Prata e Ouro
+      precisa_filtrar_classificados = (
+          fase_escolhida == "Fase Final"
+          and categoria_escolhida in ["Prata", "Ouro"]
       )
 
-      notas_jurado = {}
-      justificativas_jurado = {}
+      if tipo_selecionado == "Condutor":
+        papel_escolhido = "Condutores"
+        if precisa_filtrar_classificados:
+          competidores_qualificados = obter_classificados(
+              categoria_escolhida, papel_escolhido
+          )
+        else:
+          competidores_qualificados = categorias[categoria_escolhida][
+              "Condutores"
+          ]
+      else:
+        papel_escolhido = "Conduzidas"
+        if precisa_filtrar_classificados:
+          competidores_qualificados = obter_classificados(
+              categoria_escolhida, papel_escolhido
+          )
+        else:
+          competidores_qualificados = categorias[categoria_escolhida][
+              "Conduzidas"
+          ]
 
-      for criterio_nome, descricao in criterios_por_categoria[
-          categoria_escolhida
-      ].items():
-        with st.container(border=True):
-          st.markdown(f"<h4>{criterio_nome}</h4>", unsafe_allow_html=True)
-          st.info(f"💡 **O que avaliar:** {descricao}")
+      if competidores_qualificados:
+        competidores_ordenados = sorted(competidores_qualificados)
+        competidor_escolhido = st.selectbox(
+            "Competidor", competidores_ordenados, label_visibility="collapsed"
+        )
 
-          chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
+        st.markdown("---")
+        st.markdown(
+            f"<h3>Avaliação para: {competidor_escolhido} ({tipo_selecionado}) —"
+            f" <i>{fase_escolhida}</i></h3>",
+            unsafe_allow_html=True,
+        )
 
-          col_nota, col_just = st.columns([1, 2])
-          with col_nota:
-            nota_str = st.text_input(
-                f"Nota (0 a 10) - {criterio_nome}",
-                value="5.0",
-                key=f"input_{chave_base}",
-            )
-            try:
-              nota_val = float(nota_str.replace(",", "."))
-            except ValueError:
-              nota_val = 0.0
-            notas_jurado[criterio_nome] = nota_val
+        notas_jurado = {}
+        justificativas_jurado = {}
 
-          with col_just:
-            justificativas_jurado[criterio_nome] = st.text_area(
-                "Justificativa (Opcional)",
-                key=f"just_{chave_base}",
-                height=70,
-            )
+        for criterio_nome, descricao in criterios_por_categoria[
+            categoria_escolhida
+        ].items():
+          with st.container(border=True):
+            st.markdown(f"<h4>{criterio_nome}</h4>", unsafe_allow_html=True)
+            st.info(f"💡 **O que avaliar:** {descricao}")
 
-      st.write("")
-      if st.button("ENVIAR TODAS AS NOTAS", type="primary"):
-        for criterio_nome, nota_val in notas_jurado.items():
-          novo_voto = {
-              "jurado": st.session_state.jurado_logado,
-              "categoria": categoria_escolhida,
-              "fase": fase_escolhida,
-              "papel": papel_escolhido,
-              "competidor": competidor_escolhido,
-              "criterio": criterio_nome,
-              "nota": nota_val,
-              "justificativa": justificativas_jurado[criterio_nome],
-          }
-          st.session_state.votos.append(novo_voto)
+            chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{competidor_escolhido}_{criterio_nome}"
 
-        st.success(
-            f"✨ Notas enviadas com sucesso por {st.session_state.jurado_logado}"
-            f" para **{competidor_escolhido}** ({fase_escolhida})!"
+            col_nota, col_just = st.columns([1, 2])
+            with col_nota:
+              nota_str = st.text_input(
+                  f"Nota (0 a 10) - {criterio_nome}",
+                  value="5.0",
+                  key=f"input_{chave_base}",
+              )
+              try:
+                nota_val = float(nota_str.replace(",", "."))
+              except ValueError:
+                nota_val = 0.0
+              notas_jurado[criterio_nome] = nota_val
+
+            with col_just:
+              justificativas_jurado[criterio_nome] = st.text_area(
+                  "Justificativa (Opcional)",
+                  key=f"just_{chave_base}",
+                  height=70,
+              )
+
+        st.write("")
+        if st.button("ENVIAR TODAS AS NOTAS", type="primary"):
+          for criterio_nome, nota_val in notas_jurado.items():
+            novo_voto = {
+                "jurado": st.session_state.jurado_logado,
+                "categoria": categoria_escolhida,
+                "fase": fase_escolhida,
+                "papel": papel_escolhido,
+                "competidor": competidor_escolhido,
+                "criterio": criterio_nome,
+                "nota": nota_val,
+                "justificativa": justificativas_jurado[criterio_nome],
+            }
+            st.session_state.votos.append(novo_voto)
+
+          st.success(
+              f"✨ Notas enviadas com sucesso por {st.session_state.jurado_logado}"
+              f" para **{competidor_escolhido}** ({fase_escolhida})!"
+          )
+      else:
+        st.warning(
+            f"⚠️ A Fase Classificatória para {papel_escolhido} em"
+            f" {categoria_escolhida} ainda não possui votos suficientes para"
+            " definir automaticamente os classificados da Fase Final."
         )
 
 elif modo == "Painel da Organização":
