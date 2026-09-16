@@ -377,7 +377,7 @@ if modo == "Painel do Jurado":
           /* Usando pixels fixos (px) em vez de vh para ficar estático independentemente da barra do celular */
           .block-container {
               position: fixed !important;
-              top: 230px !important; /* Se precisar subir mais, mude para 210px. Se precisar descer, 250px */
+              top: 240px !important; /* Se precisar subir mais, mude para 210px. Se precisar descer, 250px */
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
