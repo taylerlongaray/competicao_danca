@@ -413,7 +413,7 @@ if modo == "Painel do Jurado":
 
           .block-container {
               position: fixed !important;
-              top: 160px !important; /* Posição bem no alto, logo abaixo da logo */
+              top: 180px !important; /* Posição bem no alto, logo abaixo da logo */
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
