@@ -300,7 +300,7 @@ st.markdown("""
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 1.5rem !important;
+        padding-top: 0.5rem !important;
         max-width: 600px !important;
         margin: 0 auto !important;
     }
@@ -413,40 +413,33 @@ if modo == "Painel do Jurado":
           st.error("❌ Usuário não encontrado.")
   else:
     if st.session_state.categoria_selecionada is None:
-      st.markdown('<div style="height: 140px;"></div>', unsafe_allow_html=True)
+      avatar_html = obter_avatar_html()
+      logout_param = (
+          "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
+      )
 
-      # Topo nativo: usa 3 colunas para alinhar o avatar no canto superior direito
-      col_esq_espaco, col_centro_msg, col_dir_avatar = st.columns([1, 8, 2])
+      # Cabeçalho no topo absoluto, alinhando o avatar à direita na altura de Passion Dance
+      st.markdown(
+          f"""
+          <div style="display: flex; justify-content: flex-end; align-items: center; width: 100%; padding: 0 5px; margin-bottom: 10px;">
+              <a href="?{logout_param}" title="Sair da Conta" style="text-decoration: none; display: inline-block;">
+                  {avatar_html}
+              </a>
+          </div>
+          """,
+          unsafe_allow_html=True,
+      )
 
-      with col_dir_avatar:
-        avatar_html = obtaining_avatar_html = obter_avatar_html()
-        logout_param = (
-            "view=jurado&logout=true"
-            if link_jurado_exclusivo
-            else "logout=true"
-        )
-        st.markdown(
-            f"""
-            <div style="text-align: right; margin-top: -10px;">
-                <a href="?{logout_param}" title="Sair da Conta" style="text-decoration: none; display: inline-block;">
-                    {avatar_html}
-                </a>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-      with col_centro_msg:
-        nome_jurado = st.session_state.jurado_logado
-        st.markdown(
-            f"""
-            <div style="text-align: center;">
-                <h3 style="color: #f3e5ab; font-family: 'Georgia', serif; font-size: 20px; font-weight: normal; margin-bottom: 4px;">Olá, {nome_jurado}!</h3>
-                <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+      nome_jurado = st.session_state.jurado_logado
+      st.markdown(
+          f"""
+          <div style="text-align: center; margin-top: 5px;">
+              <h3 style="color: #f3e5ab; font-family: 'Georgia', serif; font-size: 20px; font-weight: normal; margin-bottom: 4px;">Olá, {nome_jurado}!</h3>
+              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
+          </div>
+          """,
+          unsafe_allow_html=True,
+      )
 
       st.markdown(
           """
