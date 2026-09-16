@@ -407,7 +407,7 @@ st.markdown(
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 1.2rem !important;
+        padding-top: 2.2rem !important;
         max-width: 600px !important;
         margin: 0 auto !important;
     }
@@ -839,7 +839,7 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # ---------- Botões fixos pequenos e discretos nos cantos superiores (Esquerda: Sair | Direita: Trocar Categoria) ----------
+      # ---------- Botões fixos em cada lado da tela (Esquerda: Sair | Direita: Trocar em cima / Categoria embaixo) ----------
       logout_url = (
           "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
       )
@@ -854,32 +854,34 @@ if modo == "Painel do Jurado":
                   background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(60,45,25,0.9) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
-                  padding: 3px 8px;
-                  border-radius: 4px;
-                  border: 1px solid rgba(212,175,55,0.5);
+                  padding: 4px 10px;
+                  border-radius: 5px;
+                  border: 1px solid rgba(212,175,55,0.6);
                   font-size: 9px;
-                  font-weight: 500;
+                  font-weight: 600;
                   text-transform: uppercase;
                   letter-spacing: 0.5px;
                   box-shadow: 0 2px 6px rgba(0,0,0,0.5);
                   display: inline-block;
+                  line-height: 1.2;
               ">← Sair</a>
           </div>
-          <div style="position: fixed; top: 10px; right: 12px; z-index: 99999;">
+          <div style="position: fixed; top: 10px; right: 12px; z-index: 99999; text-align: center;">
               <a href="{trocar_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(60,45,25,0.9) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
                   padding: 3px 8px;
-                  border-radius: 4px;
-                  border: 1px solid rgba(212,175,55,0.5);
-                  font-size: 9px;
-                  font-weight: 500;
+                  border-radius: 5px;
+                  border: 1px solid rgba(212,175,55,0.6);
+                  font-size: 8.5px;
+                  font-weight: 600;
                   text-transform: uppercase;
                   letter-spacing: 0.5px;
                   box-shadow: 0 2px 6px rgba(0,0,0,0.5);
                   display: inline-block;
-              ">Trocar Categoria →</a>
+                  line-height: 1.25;
+              ">Trocar<br>Categoria</a>
           </div>
           """,
           unsafe_allow_html=True,
@@ -1337,7 +1339,7 @@ else:
             )
             for g_idx, g_papel in enumerate(["Condutores", "Conduzidas"]):
               with sub_abas_geral[g_idx]:
-                df_g = df_cat_geral[df_cat_geral["papel"] == g_papel]
+                df_g = df_cat_geral[df_cat_gerall["papel"] == g_papel] if 'df_cat_gerall' in locals() else df_cat_geral[df_cat_geral["papel"] == g_papel]
                 if not df_g.empty:
                   fase_means = (
                       df_g.groupby(["competidor", "fase"])["nota"]
