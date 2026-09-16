@@ -14,7 +14,6 @@ st.set_page_config(
 def obter_fundo_css(tipo_tela):
   base_dir = os.path.dirname(os.path.abspath(__file__))
 
-  # Define os candidatos específicos baseados no tipo de tela
   if tipo_tela == "votacao":
     candidatos = [
         "fundo_votacao.png",
@@ -48,7 +47,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.05), rgba(5, 4, 3, 0.10)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.20), rgba(5, 4, 3, 0.35)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: top center !important;
             background-attachment: fixed;
@@ -307,9 +306,7 @@ if modo == "Painel do Jurado":
   elif st.session_state.categoria_selecionada is None:
     st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
   else:
-    st.markdown(
-        obter_fundo_css("votacao"), unsafe_allow_html=True
-    )  # Usa o fundo específico da votação
+    st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
 elif modo == "Telão (Público)":
   st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
 else:
@@ -325,8 +322,8 @@ st.markdown(
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 1rem !important;
-        max-width: 600px !important;
+        padding-top: 1.2rem !important;
+        max-width: 580px !important;
         margin: 0 auto !important;
     }
 
@@ -352,47 +349,49 @@ st.markdown(
         max-width: 320px !important; 
         margin: 0 auto !important; 
         float: none !important;
-        background: linear-gradient(135deg, rgba(15, 11, 7, 0.92) 0%, rgba(30, 21, 12, 0.96) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.45) !important;
-        border-radius: 12px !important;
+        background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.5) !important;
+        border-radius: 14px !important;
         padding: 25px 20px 20px 20px !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
     }
 
     .stTextInput div[data-baseweb="input"] {
-        background-color: rgba(10, 8, 7, 0.9) !important;
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
+        background-color: rgba(12, 9, 7, 0.95) !important;
+        border: 1px solid rgba(212, 175, 55, 0.45) !important;
         border-radius: 8px !important;
     }
     
     .stTextInput div[data-baseweb="input"]:focus-within {
         border: 1px solid rgba(212, 175, 55, 1.0) !important;
-        box-shadow: 0 0 8px rgba(212, 175, 55, 0.3) !important;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
     }
 
     .stTextInput input {
         color: #f3e5ab !important;
         background-color: transparent !important;
         padding: 10px 15px !important;
-        font-size: 13px !important;
+        font-size: 14px !important;
     }
     
     .stTextInput input::placeholder {
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
-    .stButton > button[kind="primary"] {
-        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
+    .stButton > button {
+        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.6) !important;
         border-radius: 8px !important;
         color: #f3e5ab !important;
         text-transform: uppercase !important;
-        letter-spacing: 2px !important;
+        letter-spacing: 1.5px !important;
         font-weight: 600 !important;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+        padding: 8px 14px !important;
+        font-size: 12px !important;
     }
-    .stButton > button[kind="primary"]:hover {
-        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 50%, rgba(80,60,30,1) 100%) !important;
+    .stButton > button:hover {
+        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 1.0) !important;
         color: #ffffff !important;
     }
@@ -434,7 +433,7 @@ if modo == "Painel do Jurado":
           placeholder="🔒   Senha",
           label_visibility="collapsed",
       )
-      st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
+      st.markdown('<div style="margin-top: 12px;"></div>', unsafe_allow_html=True)
       if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
         usuario_limpo = login_digitado.strip()
         if usuario_limpo in senhas_jurados:
@@ -455,7 +454,6 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Botão de Logout fixo no topo direito
       st.markdown(
           f"""
           <a href="?{logout_param}" style="
@@ -466,7 +464,7 @@ if modo == "Painel do Jurado":
               background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
               color: #f3e5ab;
               text-decoration: none;
-              padding: 7px 12px;
+              padding: 7px 14px;
               border-radius: 6px;
               border: 1px solid rgba(212,175,55,0.6);
               font-size: 11px;
@@ -499,18 +497,18 @@ if modo == "Painel do Jurado":
               display: flex;
               align-items: center;
               justify-content: space-between;
-              background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
-              border: 1px solid rgba(212, 175, 55, 0.45);
-              border-radius: 8px !important;
-              padding: 8px 16px !important;
-              margin-bottom: 8px !important;
+              background: linear-gradient(135deg, rgba(15, 11, 7, 0.92) 0%, rgba(30, 21, 12, 0.96) 100%);
+              border: 1px solid rgba(212, 175, 55, 0.5);
+              border-radius: 10px !important;
+              padding: 10px 18px !important;
+              margin-bottom: 10px !important;
               text-decoration: none !important;
-              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
               transition: all 0.3s ease;
           }
           .category-card:hover {
               border-color: rgba(212, 175, 55, 1.0);
-              background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
+              background: linear-gradient(135deg, rgba(25, 18, 12, 0.98) 0%, rgba(45, 33, 19, 1) 100%);
           }
           .card-left {
               display: flex;
@@ -576,6 +574,7 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
+      # Top Navigation Bar matching reference mockup
       col_btn_1, col_btn_2 = st.columns(2)
       with col_btn_1:
         if st.button("← SAIR", use_container_width=True):
@@ -592,7 +591,7 @@ if modo == "Painel do Jurado":
             del st.query_params["cat"]
           st.rerun()
 
-      st.markdown("<br>", unsafe_allow_html=True)
+      st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 
       fases_disponiveis = fases_por_categoria[categoria_escolhida]
       if len(fases_disponiveis) > 1:
@@ -602,28 +601,29 @@ if modo == "Painel do Jurado":
       else:
         fase_escolhida = fases_disponiveis[0]
 
+      # Category Banner Card matching mockup
       st.markdown(
           f"""
           <div style="
-              background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(35, 25, 15, 0.95) 100%);
-              border: 1px solid rgba(212, 175, 55, 0.6);
-              border-radius: 12px;
-              padding: 15px 20px;
+              background: linear-gradient(135deg, rgba(18, 13, 9, 0.95) 0%, rgba(38, 27, 16, 0.98) 100%);
+              border: 1px solid rgba(212, 175, 55, 0.65);
+              border-radius: 14px;
+              padding: 16px 20px;
               margin-bottom: 20px;
               display: flex;
               justify-content: space-between;
               align-items: center;
-              box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+              box-shadow: 0 6px 20px rgba(0,0,0,0.7);
           ">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                  <span style="font-size: 28px;">💎</span>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                  <span style="font-size: 30px;">💎</span>
                   <div>
-                      <div style="font-size: 10px; color: #b39b6b; letter-spacing: 2px; text-transform: uppercase;">Categoria</div>
-                      <div style="font-family: 'Georgia', serif; font-size: 18px; color: #e5c158; font-weight: bold; letter-spacing: 1px;">{categoria_escolhida.upper()}</div>
+                      <div style="font-size: 10px; color: #b39b6b; letter-spacing: 2.5px; text-transform: uppercase;">Categoria</div>
+                      <div style="font-family: 'Georgia', serif; font-size: 19px; color: #e5c158; font-weight: bold; letter-spacing: 1.5px;">{categoria_escolhida.upper()}</div>
                   </div>
               </div>
               <div style="text-align: right;">
-                  <div style="font-family: 'Georgia', serif; font-size: 14px; color: #e5c158; font-weight: bold;">{fase_escolhida.upper()}</div>
+                  <div style="font-family: 'Georgia', serif; font-size: 13px; color: #e5c158; font-weight: bold; letter-spacing: 1px;">{fase_escolhida.upper()}</div>
               </div>
           </div>
           """,
@@ -671,7 +671,8 @@ if modo == "Painel do Jurado":
 
         current_comp = competidores_ordenados[st.session_state.competidor_index]
 
-        col_prev, col_name, col_next = st.columns([1, 5, 1])
+        # Competitor Navigation Card with custom rounded side arrow buttons
+        col_prev, col_name, col_next = st.columns([1, 6, 1])
         with col_prev:
           if st.button("〈", use_container_width=True, key="btn_prev_comp"):
             if st.session_state.competidor_index > 0:
@@ -685,16 +686,16 @@ if modo == "Painel do Jurado":
           st.markdown(
               f"""
               <div style="
-                  background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(35, 25, 15, 0.95) 100%);
-                  border: 1px solid rgba(212, 175, 55, 0.5);
-                  border-radius: 12px;
-                  padding: 12px;
+                  background: linear-gradient(135deg, rgba(18, 13, 9, 0.95) 0%, rgba(38, 27, 16, 0.98) 100%);
+                  border: 1px solid rgba(212, 175, 55, 0.55);
+                  border-radius: 14px;
+                  padding: 14px;
                   text-align: center;
-                  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+                  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
               ">
-                  <div style="font-size: 10px; color: #b39b6b; letter-spacing: 2px; text-transform: uppercase;">Avaliando</div>
-                  <div style="font-family: 'Georgia', serif; font-size: 22px; color: #e5c158; font-weight: bold; margin: 2px 0;">{current_comp}</div>
-                  <div style="display: inline-block; background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.4); padding: 2px 10px; border-radius: 20px; font-size: 10px; color: #f3e5ab; text-transform: uppercase; letter-spacing: 1px;">{tipo_selecionado} ({st.session_state.competidor_index + 1}/{len(competidores_ordenados)})</div>
+                  <div style="font-size: 10px; color: #b39b6b; letter-spacing: 2.5px; text-transform: uppercase;">Avaliando</div>
+                  <div style="font-family: 'Georgia', serif; font-size: 24px; color: #e5c158; font-weight: bold; margin: 3px 0; letter-spacing: 1px;">{current_comp}</div>
+                  <div style="display: inline-block; background: rgba(212,175,55,0.18); border: 1px solid rgba(212,175,55,0.45); padding: 3px 12px; border-radius: 20px; font-size: 10px; color: #f3e5ab; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">{tipo_selecionado} ({st.session_state.competidor_index + 1}/{len(competidores_ordenados)})</div>
               </div>
               """,
               unsafe_allow_html=True,
@@ -710,7 +711,7 @@ if modo == "Painel do Jurado":
               st.session_state.competidor_index = 0
             st.rerun()
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 
         criterios = criterios_por_categoria[categoria_escolhida]
         total_criterios = len(criterios)
@@ -722,33 +723,34 @@ if modo == "Painel do Jurado":
           st.markdown(
               f"""
               <div style="
-                  background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(35, 25, 15, 0.95) 100%);
-                  border: 1px solid rgba(212, 175, 55, 0.5);
-                  border-radius: 12px;
-                  padding: 18px;
-                  margin-bottom: 15px;
-                  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+                  background: linear-gradient(135deg, rgba(18, 13, 9, 0.95) 0%, rgba(38, 27, 16, 0.98) 100%);
+                  border: 1px solid rgba(212, 175, 55, 0.55);
+                  border-radius: 14px;
+                  padding: 20px;
+                  margin-bottom: 18px;
+                  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
               ">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                       <div style="display: flex; align-items: center; gap: 10px;">
                           <span style="font-size: 18px;">🎵</span>
-                          <span style="font-size: 11px; color: #b39b6b; letter-spacing: 1.5px; text-transform: uppercase;">Critério {idx} / {total_criterios}</span>
+                          <span style="font-size: 11px; color: #b39b6b; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold;">Critério {idx} / {total_criterios}</span>
                       </div>
                   </div>
-                  <div style="font-family: 'Georgia', serif; font-size: 16px; color: #e5c158; font-weight: bold; margin-bottom: 6px;">{criterio_nome}</div>
-                  <div style="font-size: 12px; color: #d4af37; opacity: 0.9; line-height: 1.4; margin-bottom: 12px;"><b>O que avaliar:</b> {descricao}</div>
+                  <div style="font-family: 'Georgia', serif; font-size: 17px; color: #e5c158; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px;">{criterio_nome}</div>
+                  <div style="font-size: 12px; color: #d4af37; opacity: 0.95; line-height: 1.45; margin-bottom: 15px;"><b>O que avaliar:</b> {descricao}</div>
               """,
               unsafe_allow_html=True,
           )
 
           chave_base = f"{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}_{current_comp}_{criterio_nome}"
 
-          col_nota_input, col_just_input = st.columns([1, 2])
+          col_nota_input, col_just_input = st.columns([1.2, 2.2])
           with col_nota_input:
             nota_str = st.text_input(
                 f"Nota (0 a 10) - {criterio_nome}",
                 value="5.0",
                 key=f"input_{chave_base}",
+                placeholder="Ex: 8.5",
             )
             try:
               nota_val = float(nota_str.replace(",", "."))
@@ -760,12 +762,12 @@ if modo == "Painel do Jurado":
             justificativas_jurado[criterio_nome] = st.text_area(
                 "Comentários (Opcional)",
                 key=f"just_{chave_base}",
-                height=70,
+                height=74,
                 placeholder="Deixe seu comentário aqui...",
             )
           st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
         if st.button("✈️ ENVIAR AVALIAÇÃO", type="primary", use_container_width=True):
           for criterio_nome, nota_val in notas_jurado.items():
             novo_voto = {
