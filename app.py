@@ -302,7 +302,6 @@ def obter_classificados(categoria, papel):
 
 
 def formatar_fase(fase):
-  """Separa 'Fase 1 (Música 1)' em ('FASE 1', 'MÚSICA 1')."""
   if "(" in fase:
     principal, secundaria = fase.split("(", 1)
     return principal.strip().upper(), secundaria.replace(")", "").strip().upper()
@@ -319,7 +318,6 @@ def registrar_voto(
     nota,
     justificativa,
 ):
-  """Grava a nota; se já existir voto igual do mesmo jurado, atualiza."""
   for voto in st.session_state.votos:
     if (
         voto["jurado"] == jurado
@@ -483,7 +481,6 @@ st.markdown(
         color: #ffffff !important;
     }
 
-    /* Botão dourado (nota selecionada / enviar avaliação / login) */
     .stButton > button[kind="primary"] {
         background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
         border: 1px solid #e5c158 !important;
@@ -511,7 +508,6 @@ st.markdown(
         border-right: 1px solid rgba(212, 175, 55, 0.15);
     }
 
-    /* ====== TELA DE VOTAÇÃO ====== */
     .jj-card {
         background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
         border: 1px solid rgba(212, 175, 55, 0.45);
@@ -727,15 +723,15 @@ if modo == "Painel do Jurado":
           f"""
           <a href="?{logout_param}" style="
               position: fixed;
-              top: 35px;
-              right: 18px;
+              top: 20px;
+              right: 20px;
               z-index: 99999;
               background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
               color: #f3e5ab;
               text-decoration: none;
               padding: 7px 14px;
               border-radius: 6px;
-              border: 1px solid rgba(212,175,55,0.6);
+              border: 1px solid rgba(212,175,55,0.7);
               font-size: 11px;
               font-weight: 600;
               text-transform: uppercase;
@@ -843,62 +839,53 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
+      # ---------- Botões fixos em cada lado da tela (Esquerda: Sair | Direita: Trocar Categoria) ----------
+      logout_url = (
+          "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
+      )
+      view_str = "view=jurado&" if link_jurado_exclusivo else ""
+      jurado_str = f"jurado={st.session_state.jurado_logado}&"
+      trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
+
       st.markdown(
-          """
-          <style>
-          .top-pill-btn {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              background: linear-gradient(135deg, rgba(18, 13, 9, 0.95) 0%, rgba(35, 25, 15, 0.98) 100%);
-              border: 1px solid rgba(212, 175, 55, 0.7);
-              color: #f3e5ab;
-              text-decoration: none;
-              padding: 9px 12px;
-              border-radius: 30px;
-              font-family: 'Helvetica Neue', sans-serif;
-              font-size: 11px;
-              font-weight: 600;
-              text-transform: uppercase;
-              letter-spacing: 1.2px;
-              box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-              transition: all 0.3s ease;
-              width: 100%;
-              text-align: center;
-              box-sizing: border-box;
-          }
-          .top-pill-btn:hover {
-              border-color: rgba(212, 175, 55, 1.0);
-              background: linear-gradient(135deg, rgba(30, 21, 14, 1) 0%, rgba(55, 40, 24, 1) 100%);
-              color: #ffffff;
-          }
-          </style>
+          f"""
+          <div style="position: fixed; top: 18px; left: 18px; z-index: 99999;">
+              <a href="{logout_url}" style="
+                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
+                  color: #f3e5ab;
+                  text-decoration: none;
+                  padding: 7px 14px;
+                  border-radius: 6px;
+                  border: 1px solid rgba(212,175,55,0.7);
+                  font-size: 11px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+                  display: inline-block;
+              ">← Sair</a>
+          </div>
+          <div style="position: fixed; top: 18px; right: 18px; z-index: 99999;">
+              <a href="{trocar_url}" style="
+                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
+                  color: #f3e5ab;
+                  text-decoration: none;
+                  padding: 7px 14px;
+                  border-radius: 6px;
+                  border: 1px solid rgba(212,175,55,0.7);
+                  font-size: 11px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+                  display: inline-block;
+              ">Trocar Categoria →</a>
+          </div>
           """,
           unsafe_allow_html=True,
       )
 
-      # ---------- Barra superior com os botões alinhados ----------
-      col_btn_l, col_btn_r = st.columns(2)
-
-      with col_btn_l:
-        logout_url = (
-            "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
-        )
-        st.markdown(
-            f'<a href="{logout_url}" class="top-pill-btn">← SAIR</a>',
-            unsafe_allow_html=True,
-        )
-
-      with col_btn_r:
-        view_str = "view=jurado&" if link_jurado_exclusivo else ""
-        jurado_str = f"jurado={st.session_state.jurado_logado}&"
-        trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
-        st.markdown(
-            f'<a href="{trocar_url}" class="top-pill-btn">⇄ TROCAR CATEGORIA</a>',
-            unsafe_allow_html=True,
-        )
-
-      st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+      st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 
       # ---------- Fase e grupo ----------
       fases_disponiveis = fases_por_categoria[categoria_escolhida]
