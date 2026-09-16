@@ -682,657 +682,37 @@ st.markdown(
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
-  elif st.session_state.categoria_selecionada is None:
-    st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
-  else:
-    st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
-elif modo == "Telão (Público)":
-  st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
-else:
-  st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
-
-st.markdown(
-    """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
-
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    .block-container {
-        padding-top: 2.2rem !important;
-        max-width: 600px !important;
-        margin: 0 auto !important;
-    }
-
-    h1, h2, h3 {
-        color: #e5c158 !important;
-        font-family: 'Georgia', serif;
-        text-align: center;
-        letter-spacing: 1px;
-    }
-
-    .saudacao-jurado {
-        font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
-        color: #f3e5ab !important;
-        font-size: 22px !important;
-        font-weight: 700 !important;
-        text-align: center;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-        letter-spacing: 1.5px;
-        margin-bottom: 2px;
-    }
-
-    div[data-testid="column"]:has(input[type="password"]) {
-        max-width: 320px !important; 
-        margin: 0 auto !important; 
-        float: none !important;
-        background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 14px !important;
-        padding: 25px 20px 20px 20px !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
-    }
-
-    .stTextInput div[data-baseweb="input"] {
-        background-color: rgba(12, 9, 7, 0.95) !important;
-        border: 1px solid rgba(212, 175, 55, 0.45) !important;
-        border-radius: 8px !important;
-    }
-    
-    .stTextInput div[data-baseweb="input"]:focus-within {
-        border: 1px solid rgba(212, 175, 55, 1.0) !important;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
-    }
-
-    .stTextInput input {
-        color: #f3e5ab !important;
-        background-color: transparent !important;
-        padding: 10px 15px !important;
-        font-size: 14px !important;
-    }
-    
-    .stTextInput input::placeholder {
-        color: rgba(243, 229, 171, 0.4) !important;
-    }
-
-    .stButton > button {
-        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.6) !important;
-        border-radius: 8px !important;
-        color: #f3e5ab !important;
-        text-transform: uppercase !important;
-        letter-spacing: 1.5px !important;
-        font-weight: 600 !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
-        padding: 8px 14px !important;
-        font-size: 12px !important;
-    }
-    .stButton > button:hover {
-        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 1.0) !important;
-        color: #ffffff !important;
-    }
-
-    .stButton > button[kind="primary"] {
-        background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
-        border: 1px solid #e5c158 !important;
-        color: #1a1208 !important;
-        font-weight: 700 !important;
-        box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25) !important;
-    }
-    .stButton > button[kind="primary"]:hover {
-        background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
-        color: #1a1208 !important;
-    }
-
-    div[data-testid="stAlert"] {
-        background-color: rgba(20, 15, 10, 0.95) !important;
-        border: 1px solid rgba(212, 175, 55, 0.6) !important;
-        color: #f3e5ab !important;
-        border-radius: 8px !important;
-    }
-    div[data-testid="stAlert"] p {
-        color: #f3e5ab !important;
-    }
-
-    [data-testid="stSidebar"] {
-        background-color: rgba(14, 10, 8, 0.96);
-        border-right: 1px solid rgba(212, 175, 55, 0.15);
-    }
-
-    .jj-card {
-        background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
-        border: 1px solid rgba(212, 175, 55, 0.45);
-        border-radius: 14px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.75);
-        padding: 16px 18px;
-        margin-bottom: 14px;
-    }
-
-    .jj-banner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-    }
-    .jj-banner-left {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-    .jj-banner-icon { font-size: 30px; line-height: 1; }
-    .jj-banner-icon img { width: 34px; height: 34px; object-fit: contain; }
-    .jj-label {
-        color: #b39b6b;
-        font-size: 10px;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        margin-bottom: 2px;
-    }
-    .jj-categoria {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 26px;
-        font-weight: 700;
-        letter-spacing: 3px;
-        line-height: 1.1;
-    }
-    .jj-banner-right {
-        text-align: right;
-        border-left: 1px solid rgba(212, 175, 55, 0.3);
-        padding-left: 16px;
-    }
-    .jj-fase {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 19px;
-        font-weight: 700;
-        letter-spacing: 2px;
-    }
-    .jj-musica {
-        color: #b39b6b;
-        font-size: 10px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-    }
-
-    .jj-avaliando { text-align: center; }
-    .jj-nome {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #ffffff;
-        font-size: 34px;
-        font-weight: 700;
-        line-height: 1.1;
-        margin: 2px 0 8px 0;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-    }
-    .jj-badge {
-        display: inline-block;
-        border: 1px solid rgba(212, 175, 55, 0.8);
-        border-radius: 20px;
-        padding: 5px 22px;
-        color: #e5c158;
-        font-size: 11px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-    }
-
-    .jj-crit-head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 12px;
-    }
-    .jj-crit-icon {
-        width: 46px; height: 46px; min-width: 46px;
-        border-radius: 50%;
-        border: 1px solid rgba(212, 175, 55, 0.7);
-        background: rgba(0,0,0,0.35);
-        display: flex; align-items: center; justify-content: center;
-        color: #e5c158; font-size: 20px;
-    }
-    .jj-contador {
-        border: 1px solid rgba(212, 175, 55, 0.7);
-        border-radius: 20px;
-        padding: 4px 14px;
-        color: #e5c158;
-        font-size: 12px;
-        white-space: nowrap;
-    }
-    .jj-crit-nome {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 22px;
-        font-weight: 700;
-        line-height: 1.2;
-        margin-top: 2px;
-    }
-    .jj-divisor {
-        border: none;
-        border-top: 1px solid rgba(212, 175, 55, 0.25);
-        margin: 12px 0 10px 0;
-    }
-    .jj-crit-desc {
-        color: #ded2b4;
-        font-size: 14px;
-        line-height: 1.55;
-    }
-    .jj-crit-desc b { color: #e5c158; }
-
-    .jj-secao-label {
-        color: #f3e5ab;
-        font-size: 12px;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-    }
-
-    .jj-footer {
-        text-align: center;
-        margin-top: 26px;
-        padding-top: 14px;
-        border-top: 1px solid rgba(212, 175, 55, 0.2);
-    }
-    .jj-footer-marca {
-        color: #e5c158;
-        font-size: 13px;
-        letter-spacing: 5px;
-        text-transform: uppercase;
-    }
-    .jj-footer-sub {
-        color: #8d7a52;
-        font-size: 10px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        margin-top: 4px;
-    }
-
-    .stTextArea textarea {
-        background-color: rgba(10, 7, 5, 0.9) !important;
-        border: 1px solid rgba(212, 175, 55, 0.35) !important;
-        border-radius: 10px !important;
-        color: #f3e5ab !important;
-        font-size: 14px !important;
-    }
-    .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
-
-    div[data-testid="stExpander"] {
-        border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        border-radius: 10px !important;
-        background: rgba(12, 9, 6, 0.85) !important;
-    }
-    div[data-testid="stExpander"] summary p {
-        color: #e5c158 !important;
-        font-size: 11px !important;
-        letter-spacing: 2px !important;
-        text-transform: uppercase !important;
-    }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
-
-if modo == "Painel do Jurado":
-  if st.session_state.jurado_logado is None:
-    st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
-  elif st.session_state.categoria_selecionada is None:
-    st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
-  else:
-    st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
-elif modo == "Telão (Público)":
-  st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
-else:
-  st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
-
-st.markdown(
-    """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
-
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    .block-container {
-        padding-top: 2.2rem !important;
-        max-width: 600px !important;
-        margin: 0 auto !important;
-    }
-
-    h1, h2, h3 {
-        color: #e5c158 !important;
-        font-family: 'Georgia', serif;
-        text-align: center;
-        letter-spacing: 1px;
-    }
-
-    .saudacao-jurado {
-        font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
-        color: #f3e5ab !important;
-        font-size: 22px !important;
-        font-weight: 700 !important;
-        text-align: center;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-        letter-spacing: 1.5px;
-        margin-bottom: 2px;
-    }
-
-    div[data-testid="column"]:has(input[type="password"]) {
-        max-width: 320px !important; 
-        margin: 0 auto !important; 
-        float: none !important;
-        background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 14px !important;
-        padding: 25px 20px 20px 20px !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
-    }
-
-    .stTextInput div[data-baseweb="input"] {
-        background-color: rgba(12, 9, 7, 0.95) !important;
-        border: 1px solid rgba(212, 175, 55, 0.45) !important;
-        border-radius: 8px !important;
-    }
-    
-    .stTextInput div[data-baseweb="input"]:focus-within {
-        border: 1px solid rgba(212, 175, 55, 1.0) !important;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
-    }
-
-    .stTextInput input {
-        color: #f3e5ab !important;
-        background-color: transparent !important;
-        padding: 10px 15px !important;
-        font-size: 14px !important;
-    }
-    
-    .stTextInput input::placeholder {
-        color: rgba(243, 229, 171, 0.4) !important;
-    }
-
-    .stButton > button {
-        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.6) !important;
-        border-radius: 8px !important;
-        color: #f3e5ab !important;
-        text-transform: uppercase !important;
-        letter-spacing: 1.5px !important;
-        font-weight: 600 !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
-        padding: 8px 14px !important;
-        font-size: 12px !important;
-    }
-    .stButton > button:hover {
-        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 1.0) !important;
-        color: #ffffff !important;
-    }
-
-    .stButton > button[kind="primary"] {
-        background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
-        border: 1px solid #e5c158 !important;
-        color: #1a1208 !important;
-        font-weight: 700 !important;
-        box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25) !important;
-    }
-    .stButton > button[kind="primary"]:hover {
-        background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
-        color: #1a1208 !important;
-    }
-
-    div[data-testid="stAlert"] {
-        background-color: rgba(20, 15, 10, 0.95) !important;
-        border: 1px solid rgba(212, 175, 55, 0.6) !important;
-        color: #f3e5ab !important;
-        border-radius: 8px !important;
-    }
-    div[data-testid="stAlert"] p {
-        color: #f3e5ab !important;
-    }
-
-    [data-testid="stSidebar"] {
-        background-color: rgba(14, 10, 8, 0.96);
-        border-right: 1px solid rgba(212, 175, 55, 0.15);
-    }
-
-    .jj-card {
-        background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
-        border: 1px solid rgba(212, 175, 55, 0.45);
-        border-radius: 14px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.75);
-        padding: 16px 18px;
-        margin-bottom: 14px;
-    }
-
-    .jj-banner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-    }
-    .jj-banner-left {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-    .jj-banner-icon { font-size: 30px; line-height: 1; }
-    .jj-banner-icon img { width: 34px; height: 34px; object-fit: contain; }
-    .jj-label {
-        color: #b39b6b;
-        font-size: 10px;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        margin-bottom: 2px;
-    }
-    .jj-categoria {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 26px;
-        font-weight: 700;
-        letter-spacing: 3px;
-        line-height: 1.1;
-    }
-    .jj-banner-right {
-        text-align: right;
-        border-left: 1px solid rgba(212, 175, 55, 0.3);
-        padding-left: 16px;
-    }
-    .jj-fase {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 19px;
-        font-weight: 700;
-        letter-spacing: 2px;
-    }
-    .jj-musica {
-        color: #b39b6b;
-        font-size: 10px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-    }
-
-    .jj-avaliando { text-align: center; }
-    .jj-nome {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #ffffff;
-        font-size: 34px;
-        font-weight: 700;
-        line-height: 1.1;
-        margin: 2px 0 8px 0;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-    }
-    .jj-badge {
-        display: inline-block;
-        border: 1px solid rgba(212, 175, 55, 0.8);
-        border-radius: 20px;
-        padding: 5px 22px;
-        color: #e5c158;
-        font-size: 11px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-    }
-
-    .jj-crit-head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 12px;
-    }
-    .jj-crit-icon {
-        width: 46px; height: 46px; min-width: 46px;
-        border-radius: 50%;
-        border: 1px solid rgba(212, 175, 55, 0.7);
-        background: rgba(0,0,0,0.35);
-        display: flex; align-items: center; justify-content: center;
-        color: #e5c158; font-size: 20px;
-    }
-    .jj-contador {
-        border: 1px solid rgba(212, 175, 55, 0.7);
-        border-radius: 20px;
-        padding: 4px 14px;
-        color: #e5c158;
-        font-size: 12px;
-        white-space: nowrap;
-    }
-    .jj-crit-nome {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 22px;
-        font-weight: 700;
-        line-height: 1.2;
-        margin-top: 2px;
-    }
-    .jj-divisor {
-        border: none;
-        border-top: 1px solid rgba(212, 175, 55, 0.25);
-        margin: 12px 0 10px 0;
-    }
-    .jj-crit-desc {
-        color: #ded2b4;
-        font-size: 14px;
-        line-height: 1.55;
-    }
-    .jj-crit-desc b { color: #e5c158; }
-
-    .jj-secao-label {
-        color: #f3e5ab;
-        font-size: 12px;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-    }
-
-    .jj-footer {
-        text-align: center;
-        margin-top: 26px;
-        padding-top: 14px;
-        border-top: 1px solid rgba(212, 175, 55, 0.2);
-    }
-    .jj-footer-marca {
-        color: #e5c158;
-        font-size: 13px;
-        letter-spacing: 5px;
-        text-transform: uppercase;
-    }
-    .jj-footer-sub {
-        color: #8d7a52;
-        font-size: 10px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        margin-top: 4px;
-    }
-
-    .stTextArea textarea {
-        background-color: rgba(10, 7, 5, 0.9) !important;
-        border: 1px solid rgba(212, 175, 55, 0.35) !important;
-        border-radius: 10px !important;
-        color: #f3e5ab !important;
-        font-size: 14px !important;
-    }
-    .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
-
-    div[data-testid="stExpander"] {
-        border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        border-radius: 10px !important;
-        background: rgba(12, 9, 6, 0.85) !important;
-    }
-    div[data-testid="stExpander"] summary p {
-        color: #e5c158 !important;
-        font-size: 11px !important;
-        letter-spacing: 2px !important;
-        text-transform: uppercase !important;
-    }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
-
-if modo == "Painel do Jurado":
-  if st.session_state.jurado_logado is None:
-    st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
-  elif st.session_state.categoria_selecionada is None:
-    st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
-  else:
-    st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
-elif modo == "Telão (Público)":
-  st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
-else:
-  st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
-
-if modo == "Painel do Jurado":
-  if st.session_state.jurado_logado is None:
-    st.markdown(
-        """
-        <div style="
-            position: fixed;
-            top: 80%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 320px;
-            z-index: 99999;
-            background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%);
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            border-radius: 14px;
-            padding: 25px 20px 20px 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
-        ">
-        """,
-        unsafe_allow_html=True,
-    )
-
-    login_digitado = st.text_input(
-        "Usuário",
-        key="login_usuario_jurado",
-        placeholder="👤    Usuário",
-        label_visibility="collapsed",
-    )
-    senha_digitada = st.text_input(
-        "Senha",
-        type="password",
-        key="senha_login_jurado",
-        placeholder="🔒    Senha",
-        label_visibility="collapsed",
-    )
-    st.markdown('<div style="margin-top: 12px;"></div>', unsafe_allow_html=True)
-    if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
-      usuario_limpo = login_digitado.strip()
-      if usuario_limpo in senhas_jurados:
-        if senha_digitada == senhas_jurados[usuario_limpo]:
-          st.session_state.jurado_logado = usuario_limpo
-          st.session_state.categoria_selecionada = None
-          st.query_params["jurado"] = usuario_limpo
-          if link_jurado_exclusivo:
-            st.query_params["view"] = "jurado"
-          st.rerun()
+    st.markdown('<div style="height: 38vh;"></div>', unsafe_allow_html=True)
+    col_esq, col_login, col_dir = st.columns([1, 10, 1])
+    with col_login:
+      login_digitado = st.text_input(
+          "Usuário",
+          key="login_usuario_jurado",
+          placeholder="👤    Usuário",
+          label_visibility="collapsed",
+      )
+      senha_digitada = st.text_input(
+          "Senha",
+          type="password",
+          key="senha_login_jurado",
+          placeholder="🔒    Senha",
+          label_visibility="collapsed",
+      )
+      st.markdown('<div style="margin-top: 12px;"></div>', unsafe_allow_html=True)
+      if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
+        usuario_limpo = login_digitado.strip()
+        if usuario_limpo in senhas_jurados:
+          if senha_digitada == senhas_jurados[usuario_limpo]:
+            st.session_state.jurado_logado = usuario_limpo
+            st.session_state.categoria_selecionada = None
+            st.query_params["jurado"] = usuario_limpo
+            if link_jurado_exclusivo:
+              st.query_params["view"] = "jurado"
+            st.rerun()
+          else:
+            st.error("❌ Senha incorreta!")
         else:
-          st.error("❌ Senha incorreta!")
-      else:
-        st.error("❌ Usuário não encontrado.")
-
-    st.markdown("</div>", unsafe_allow_html=True)
+          st.error("❌ Usuário não encontrado.")
   else:
     if st.session_state.categoria_selecionada is None:
       logout_param = (
@@ -1365,7 +745,6 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Espaçamento otimizado para que tudo caiba na tela sem precisar de scroll
       st.markdown('<div style="height: 110px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
@@ -1463,7 +842,6 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # ---------- Cabeçalho fixo com barra sticky unificada (Sair à esquerda e Trocar Categoria à direita com tamanhos iguais) ----------
       logout_url = (
           "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
       )
@@ -1517,7 +895,6 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # ---------- Fase e grupo ----------
       fases_disponiveis = fases_por_categoria[categoria_escolhida]
       if st.session_state.fase_atual not in fases_disponiveis:
         st.session_state.fase_atual = fases_disponiveis[0]
@@ -1556,7 +933,6 @@ if modo == "Painel do Jurado":
           "Condutores" if tipo_selecionado == "Condutor" else "Conduzidas"
       )
 
-      # ---------- Banner da categoria ----------
       arquivo_icone, emoji_icone = icones_categoria.get(
           categoria_escolhida, ("", "✦")
       )
@@ -1589,7 +965,6 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # ---------- Lista de competidores ----------
       precisa_filtrar_classificados = (
           fase_escolhida == "Fase Final"
           and categoria_escolhida in ["Prata", "Ouro"]
@@ -1618,7 +993,6 @@ if modo == "Painel do Jurado":
           st.session_state.idx_comp = 0
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
-        # ---------- Card de navegação (avaliando) ----------
         col_ant, col_nome, col_prox = st.columns([1, 4, 1])
 
         with col_ant:
@@ -1666,7 +1040,6 @@ if modo == "Painel do Jurado":
 
         st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
 
-        # ---------- Card do critério atual ----------
         criterios = criterios_por_categoria[categoria_escolhida]
         lista_criterios = list(criterios.items())
         total_crit = len(lista_criterios)
@@ -1694,7 +1067,6 @@ if modo == "Painel do Jurado":
             unsafe_allow_html=True,
         )
 
-        # ---------- Notas 1 a 10 ----------
         chave_base = (
             f"{st.session_state.jurado_logado}|{categoria_escolhida}|"
             f"{fase_escolhida}|{papel_escolhido}|{competidor_escolhido}|"
@@ -1736,7 +1108,6 @@ if modo == "Painel do Jurado":
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # ---------- Comentários ----------
         chave_comentario = f"coment_{chave_base}"
         comentario = st.text_area(
             "COMENTÁRIOS (OPCIONAL)",
@@ -1753,7 +1124,6 @@ if modo == "Painel do Jurado":
 
         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 
-        # ---------- Enviar avaliação ----------
         if st.button(
             "➤  ENVIAR AVALIAÇÃO",
             type="primary",
@@ -1790,7 +1160,6 @@ if modo == "Painel do Jurado":
               )
             st.rerun()
 
-        # ---------- Rodapé ----------
         st.markdown(
             """
             <div class="jj-footer">
