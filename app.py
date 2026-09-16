@@ -721,13 +721,13 @@ if modo == "Painel do Jurado":
 
       st.markdown(
           f"""
-          <div style="position: fixed; top: 10px; right: 12px; z-index: 99999;">
+          <div style="position: sticky; top: 10px; z-index: 99999; display: flex; justify-content: flex-end;">
               <a href="?{logout_param}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
-                  width: 85px;
-                  height: 36px;
+                  width: 95px;
+                  height: 38px;
                   border-radius: 6px;
                   border: 1px solid rgba(212,175,55,0.6);
                   font-size: 9px;
@@ -842,7 +842,7 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # ---------- Botões fixos e perfeitamente dimensionados em cada lado da tela ----------
+      # ---------- Cabeçalho fixo com barra sticky unificada (Sair à esquerda e Trocar Categoria à direita com tamanhos iguais) ----------
       logout_url = (
           "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
       )
@@ -852,13 +852,13 @@ if modo == "Painel do Jurado":
 
       st.markdown(
           f"""
-          <div style="position: fixed; top: 10px; left: 12px; z-index: 99999;">
+          <div style="position: sticky; top: 10px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
               <a href="{logout_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
-                  width: 85px;
-                  height: 36px;
+                  width: 95px;
+                  height: 38px;
                   border-radius: 6px;
                   border: 1px solid rgba(212,175,55,0.6);
                   font-size: 9px;
@@ -872,14 +872,12 @@ if modo == "Painel do Jurado":
                   text-align: center;
                   line-height: 1.1;
               ">← Sair</a>
-          </div>
-          <div style="position: fixed; top: 10px; right: 12px; z-index: 99999;">
               <a href="{trocar_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
-                  width: 85px;
-                  height: 36px;
+                  width: 95px;
+                  height: 38px;
                   border-radius: 6px;
                   border: 1px solid rgba(212,175,55,0.6);
                   font-size: 8.5px;
@@ -897,8 +895,6 @@ if modo == "Painel do Jurado":
           """,
           unsafe_allow_html=True,
       )
-
-      st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 
       # ---------- Fase e grupo ----------
       fases_disponiveis = fases_por_categoria[categoria_escolhida]
@@ -1160,7 +1156,7 @@ if modo == "Painel do Jurado":
             if st.session_state.idx_crit + 1 < total_crit:
               st.session_state.idx_crit += 1
               st.toast(
-                  f"✨ Nota registrada para {competidor_escolh_id if 'competidor_escolh_id' in locals() else competidor_escolhido} —"
+                  f"✨ Nota registrada para {competidor_escolhido} —"
                   f" {criterio_nome}"
               )
             else:
