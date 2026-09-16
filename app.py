@@ -279,7 +279,6 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* CSS Geral (sem travar tudo para não estragar a tela de votação) */
     .block-container {
         padding-top: 1rem !important;
         max-width: 650px !important;
@@ -359,19 +358,17 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # MÁGICA AQUI: Trava completamente o scroll SOMENTE nesta tela
+      # MÁGICA REFORÇADA: Trava o scroll e força o topo com JS para não descer
       # =======================================================================
       st.markdown(
           """
           <style>
-          /* Bloqueia qualquer rolagem de tela e toque de arrastar */
           html, body, [data-testid="stAppViewContainer"], .main, .block-container, [data-testid="stVerticalBlock"] {
               overflow: hidden !important;
-              touch-action: none !important; /* Desativa o swipe do celular */
+              touch-action: none !important;
               overscroll-behavior: none !important;
           }
           
-          /* Gruda o app na tela */
           html, body {
               position: fixed !important;
               width: 100vw !important;
@@ -380,10 +377,10 @@ if modo == "Painel do Jurado":
               padding: 0 !important;
           }
 
-          /* Fixa o bloco contendo os botões na coordenada EXATA */
+          /* Mantido em 32vh como estava perfeito na sua primeira imagem */
           .block-container {
               position: absolute !important;
-              top: 32vh !important; /* SE PRECISAR SUBIR, MUDE PARA 44vh. SE PRECISAR DESCER, 48vh */
+              top: 32vh !important;
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
@@ -392,7 +389,6 @@ if modo == "Painel do Jurado":
               margin: 0 !important;
           }
           
-          /* Estilização dos Cards - Tamanho idêntico à sua arte */
           .category-card {
               display: flex;
               align-items: center;
@@ -432,7 +428,6 @@ if modo == "Painel do Jurado":
               font-size: 16px !important;
           }
           
-          /* Botão Sair - Mesmo tamanho e estilo dos cards */
           .stButton > button {
               background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
               border: 1px solid rgba(212, 175, 55, 0.5) !important;
@@ -450,6 +445,11 @@ if modo == "Painel do Jurado":
               border: 1px solid rgba(212, 175, 55, 1.0) !important;
           }
           </style>
+          
+          <script>
+              // Força o navegador a travar no topo ao carregar a tela
+              window.scrollTo(0, 0);
+          </script>
           """,
           unsafe_allow_html=True,
       )
