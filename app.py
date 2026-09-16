@@ -71,20 +71,6 @@ def img_to_base64(file_path):
   return ""
 
 
-def obter_avatar_html():
-  base_dir = os.path.dirname(os.path.abspath(__file__))
-  arquivos = os.listdir(base_dir) if os.path.exists(base_dir) else []
-  for f in arquivos:
-    if f.lower().startswith(
-        ("avatar", "perfil", "jurado", "user", "icone", "foto")
-    ) and f.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
-      caminho_completo = os.path.join(base_dir, f)
-      b64 = img_to_base64(caminho_completo)
-      if b64:
-        return f'<img src="{b64}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; box-shadow: 0 3px 10px rgba(0,0,0,0.8); background-color: #150f0a;">'
-  return '<div style="width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #1f150b, #3d2b16); border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; color: #f3e5ab; font-size: 18px; box-shadow: 0 3px 10px rgba(0,0,0,0.8);">👤</div>'
-
-
 if "votos" not in st.session_state:
   st.session_state.votos = []
 
@@ -413,89 +399,35 @@ if modo == "Painel do Jurado":
           st.error("❌ Usuário não encontrado.")
   else:
     if st.session_state.categoria_selecionada is None:
-      avatar_html = obter_avatar_html()
       logout_param = (
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Menu flutuante controlado com listener JavaScript seguro
+      # Botão de Logout fixo no topo direito (na altura 40px)
       st.markdown(
           f"""
-          <div id="jurado-avatar-btn" style="position: fixed; top: 40px; right: 18px; z-index: 99999; cursor: pointer;">
-              <div title="Menu do Jurado" style="display: inline-block;">
-                  {avatar_html}
-              </div>
-          </div>
-
-          <div id="jurado-popup-menu" style="
-              display: none;
+          <a href="?{logout_param}" style="
               position: fixed;
-              top: 92px;
+              top: 40px;
               right: 18px;
-              background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(35, 25, 15, 0.98) 100%);
-              border: 1px solid rgba(212, 175, 55, 0.7);
-              border-radius: 10px;
-              padding: 14px 16px;
-              width: 210px;
-              box-shadow: 0 8px 25px rgba(0,0,0,0.85);
-              z-index: 99998;
+              z-index: 99999;
+              background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
               color: #f3e5ab;
-              font-family: 'Helvetica Neue', sans-serif;
-              text-align: center;
-          ">
-              <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #e5c158; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 6px; letter-spacing: 0.5px;">
-                  Jurado: {st.session_state.jurado_logado}
-              </div>
-              <a href="?{logout_param}" style="
-                  display: block;
-                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%);
-                  color: #f3e5ab;
-                  text-decoration: none;
-                  padding: 8px 10px;
-                  border-radius: 6px;
-                  border: 1px solid rgba(212,175,55,0.5);
-                  font-size: 11.5px;
-                  font-weight: 600;
-                  text-transform: uppercase;
-                  letter-spacing: 1px;
-              ">
-                  Sair / Mudar Login
-              </a>
-          </div>
-
-          <script>
-              setTimeout(function() {{
-                  const btn = document.getElementById('jurado-avatar-btn');
-                  const menu = document.getElementById('jurado-popup-menu');
-                  
-                  if (btn && menu) {{
-                      btn.onclick = function(event) {{
-                          event.stopPropagation();
-                          if (menu.style.display === 'block') {{
-                              menu.style.display = 'none';
-                          }} else {{
-                              menu.style.display = 'block';
-                          }}
-                      }};
-                  }}
-              }}, 200);
-
-              if (!window.juradoMenuGlobalListener) {{
-                  window.juradoMenuGlobalListener = true;
-                  document.addEventListener('click', function(event) {{
-                      const menu = document.getElementById('jurado-popup-menu');
-                      const btn = document.getElementById('jurado-avatar-btn');
-                      if (menu && btn && !menu.contains(event.target) && !btn.contains(event.target)) {{
-                          menu.style.display = 'none';
-                      }}
-                  }});
-              }}
-          </script>
+              text-decoration: none;
+              padding: 8px 14px;
+              border-radius: 6px;
+              border: 1px solid rgba(212,175,55,0.6);
+              font-size: 12px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+          ">Sair da Conta</a>
           """,
           unsafe_allow_html=True,
       )
 
-      # Espaçamento original para empurrar o texto e as categorias para baixo
+      # Espaçamento para empurrar o texto de boas-vindas e as categorias para baixo
       st.markdown('<div style="height: 160px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
