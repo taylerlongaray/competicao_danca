@@ -445,7 +445,7 @@ if modo == "Painel do Jurado":
       )
 
       # Espaçamento para empurrar o texto de boas-vindas e as categorias para baixo
-      st.markdown('<div style="height: 160px;"></div>', unsafe_allow_html=True)
+      st.markdown('<div style="height: 200px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
