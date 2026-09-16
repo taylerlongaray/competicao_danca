@@ -301,7 +301,6 @@ st.markdown(
         letter-spacing: 1px;
     }
 
-    /* Estilo customizado para o saudação do jurado */
     .saudacao-jurado {
         font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
         color: #f3e5ab !important;
@@ -444,7 +443,7 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Espaçamento para empurrar o texto de boas-vindas e as categorias para baixo
+      # Espaçamento superior
       st.markdown('<div style="height: 200px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
@@ -452,7 +451,7 @@ if modo == "Painel do Jurado":
           f"""
           <div style="text-align: center; margin-bottom: 6px;">
               <div class="saudacao-jurado">Olá, {nome_jurado}!</div>
-              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; margin-top: 25px; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
+              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; position: relative; top: 15px; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
           </div>
           """,
           unsafe_allow_html=True,
