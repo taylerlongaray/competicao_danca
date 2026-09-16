@@ -292,7 +292,7 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* ESTILIZAÇÃO DO BLOCO DE LOGIN HARMONIZADO COM OS CARDS DE CATEGORIA */
+    /* BLOCO DE LOGIN ESTILIZADO COM O PADRÃO DOS CARDS */
     div[data-testid="column"]:has(input[type="password"]) {
         max-width: 320px !important; 
         margin: 0 auto !important; 
@@ -304,7 +304,7 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7) !important;
     }
 
-    /* Inputs de texto e senha com visual refinado */
+    /* INPUTS DE TEXTO E SENHA */
     .stTextInput div[data-baseweb="input"] {
         background-color: rgba(10, 8, 7, 0.9) !important;
         border: 1px solid rgba(212, 175, 55, 0.4) !important;
@@ -327,6 +327,34 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
+    /* BOTÃO DE LOGIN EM FORMATO DOURADO HARMONIZADO */
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.6) !important;
+        border-radius: 8px !important;
+        color: #f3e5ab !important;
+        text-transform: uppercase !important;
+        letter-spacing: 2px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 50%, rgba(80,60,30,1) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 1.0) !important;
+        color: #ffffff !important;
+    }
+
+    /* SUBSTITUI OS AVISOS VERMELHOS POR TONS ESCUROS COM BORDA DOURADA */
+    div[data-testid="stAlert"] {
+        background-color: rgba(20, 15, 10, 0.95) !important;
+        border: 1px solid rgba(212, 175, 55, 0.6) !important;
+        color: #f3e5ab !important;
+        border-radius: 8px !important;
+    }
+    div[data-testid="stAlert"] p {
+        color: #f3e5ab !important;
+    }
+
     [data-testid="stSidebar"] {
         background-color: rgba(14, 10, 8, 0.96);
         border-right: 1px solid rgba(212, 175, 55, 0.15);
@@ -336,7 +364,6 @@ st.markdown("""
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    # Altura ajustada para a tela de login casar com o espaço reservado na arte
     st.markdown('<div style="height: 38vh;"></div>', unsafe_allow_html=True)
     col_esq, col_login, col_dir = st.columns([1, 10, 1])
     with col_login:
@@ -371,7 +398,7 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # BLOQUEIO TOTAL DE SCROLL E POSICIONAMENTO FIXO EM 250px (EXATAMENTE COMO ESTAVA)
+      # TELA DE CATEGORIAS MANTIDA EXATAMENTE COM O 250px FIXO QUE JÁ ESTAVA PERFEITO
       # =======================================================================
       st.markdown(
           """
