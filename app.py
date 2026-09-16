@@ -383,7 +383,7 @@ if modo == "Painel do Jurado":
           /* Fixa o bloco contendo os botões na coordenada EXATA */
           .block-container {
               position: absolute !important;
-              top: 30vh !important; /* SE PRECISAR SUBIR, MUDE PARA 44vh. SE PRECISAR DESCER, 48vh */
+              top: 32vh !important; /* SE PRECISAR SUBIR, MUDE PARA 44vh. SE PRECISAR DESCER, 48vh */
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
