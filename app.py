@@ -358,7 +358,7 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # RESET DE ROLAGEM INTERNA DO STREAMLIT + ESPAÇADOR DE 20vh
+      # RESET DE ROLAGEM INTERNA DO STREAMLIT + ESPAÇADOR DE 32vh
       # =======================================================================
       st.markdown(
           """
