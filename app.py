@@ -721,23 +721,26 @@ if modo == "Painel do Jurado":
 
       st.markdown(
           f"""
-          <a href="?{logout_param}" style="
-              position: fixed;
-              top: 10px;
-              right: 12px;
-              z-index: 99999;
-              background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(60,45,25,0.9) 100%);
-              color: #f3e5ab;
-              text-decoration: none;
-              padding: 3px 8px;
-              border-radius: 4px;
-              border: 1px solid rgba(212,175,55,0.5);
-              font-size: 9px;
-              font-weight: 500;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-              box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-          ">Sair</a>
+          <div style="position: fixed; top: 10px; right: 12px; z-index: 99999;">
+              <a href="?{logout_param}" style="
+                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
+                  color: #f3e5ab;
+                  text-decoration: none;
+                  width: 85px;
+                  height: 36px;
+                  border-radius: 6px;
+                  border: 1px solid rgba(212,175,55,0.6);
+                  font-size: 9px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  text-align: center;
+              ">← Sair</a>
+          </div>
           """,
           unsafe_allow_html=True,
       )
@@ -839,7 +842,7 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # ---------- Botões fixos em cada lado da tela (Esquerda: Sair | Direita: Trocar em cima / Categoria embaixo) ----------
+      # ---------- Botões fixos e perfeitamente dimensionados em cada lado da tela ----------
       logout_url = (
           "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
       )
@@ -851,36 +854,44 @@ if modo == "Painel do Jurado":
           f"""
           <div style="position: fixed; top: 10px; left: 12px; z-index: 99999;">
               <a href="{logout_url}" style="
-                  background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(60,45,25,0.9) 100%);
+                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
-                  padding: 4px 10px;
-                  border-radius: 5px;
+                  width: 85px;
+                  height: 36px;
+                  border-radius: 6px;
                   border: 1px solid rgba(212,175,55,0.6);
                   font-size: 9px;
                   font-weight: 600;
                   text-transform: uppercase;
                   letter-spacing: 0.5px;
                   box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-                  display: inline-block;
-                  line-height: 1.2;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  text-align: center;
+                  line-height: 1.1;
               ">← Sair</a>
           </div>
-          <div style="position: fixed; top: 10px; right: 12px; z-index: 99999; text-align: center;">
+          <div style="position: fixed; top: 10px; right: 12px; z-index: 99999;">
               <a href="{trocar_url}" style="
-                  background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(60,45,25,0.9) 100%);
+                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
                   text-decoration: none;
-                  padding: 3px 8px;
-                  border-radius: 5px;
+                  width: 85px;
+                  height: 36px;
+                  border-radius: 6px;
                   border: 1px solid rgba(212,175,55,0.6);
                   font-size: 8.5px;
                   font-weight: 600;
                   text-transform: uppercase;
                   letter-spacing: 0.5px;
                   box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-                  display: inline-block;
-                  line-height: 1.25;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  text-align: center;
+                  line-height: 1.15;
               ">Trocar<br>Categoria</a>
           </div>
           """,
@@ -1149,7 +1160,7 @@ if modo == "Painel do Jurado":
             if st.session_state.idx_crit + 1 < total_crit:
               st.session_state.idx_crit += 1
               st.toast(
-                  f"✨ Nota registrada para {competidor_escolhido} —"
+                  f"✨ Nota registrada para {competidor_escolh_id if 'competidor_escolh_id' in locals() else competidor_escolhido} —"
                   f" {criterio_nome}"
               )
             else:
@@ -1339,7 +1350,7 @@ else:
             )
             for g_idx, g_papel in enumerate(["Condutores", "Conduzidas"]):
               with sub_abas_geral[g_idx]:
-                df_g = df_cat_geral[df_cat_gerall["papel"] == g_papel] if 'df_cat_gerall' in locals() else df_cat_geral[df_cat_geral["papel"] == g_papel]
+                df_g = df_cat_geral[df_cat_geral["papel"] == g_papel]
                 if not df_g.empty:
                   fase_means = (
                       df_g.groupby(["competidor", "fase"])["nota"]
