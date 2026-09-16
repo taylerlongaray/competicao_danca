@@ -414,7 +414,7 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Template seguro usando .replace() para evitar problemas com chaves em f-strings
+      # Template seguro usando .replace() posicionado exatamente onde indicado pelo círculo vermelho
       avatar_template = """
             <style>
             html, body, [data-testid="stAppViewContainer"], .main {
@@ -511,8 +511,8 @@ if modo == "Painel do Jurado":
                     src.id = 'fixed-top-right-avatar-global';
                     src.style.display = 'block';
                     src.style.position = 'fixed';
-                    src.style.top = '15px';
-                    src.style.right = '15px';
+                    src.style.top = '25px';
+                    src.style.right = '25px';
                     src.style.zIndex = '9999999';
                     document.body.appendChild(src);
                 } else if (src) {
