@@ -395,7 +395,7 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # TELA DE CATEGORIAS COM O TEXTO DINÂMICO E POSIÇÃO FIXA EM 250px
+      # TELA DE CATEGORIAS: POSIÇÃO SUBIDA PARA 145px (Logo abaixo do logo)
       # =======================================================================
       st.markdown(
           """
@@ -413,7 +413,7 @@ if modo == "Painel do Jurado":
 
           .block-container {
               position: fixed !important;
-              top: 250px !important; /* Se precisar subir ou descer o conjunto do texto + cards, ajuste aqui */
+              top: 145px !important; /* Posição bem no alto, logo abaixo da logo */
               left: 50% !important;
               transform: translateX(-50%) !important;
               width: 100% !important;
@@ -422,15 +422,25 @@ if modo == "Painel do Jurado":
               margin: 0 !important;
           }
 
-          /* Estilo para o texto de saudação idêntico à arte */
-          .welcome-text {
+          /* Estilização idêntica à arte da foto enviada */
+          .welcome-title {
               color: #f3e5ab;
               font-family: 'Georgia', serif;
-              font-size: 13px;
+              font-size: 20px;
               text-align: center;
-              margin-bottom: 12px;
-              line-height: 1.4;
+              font-weight: normal;
+              margin-bottom: 6px;
               letter-spacing: 0.5px;
+          }
+
+          .welcome-subtitle {
+              color: #f3e5ab;
+              font-family: 'Helvetica Neue', sans-serif;
+              font-size: 11.5px;
+              text-align: center;
+              margin-bottom: 15px;
+              opacity: 0.9;
+              letter-spacing: 0.3px;
           }
 
           .category-card {
@@ -493,13 +503,12 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Renderiza dinamicamente o texto personalizado com o nome do jurado logado
+      # Renderiza o texto idêntico à arte, puxando o nome dinâmico do jurado
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
           f"""
-          <div class="welcome-text">
-              Olá, <b>{nome_jurado}</b>!<br>Selecione a categoria que você irá avaliar:
-          </div>
+          <div class="welcome-title">Olá, {nome_jurado}!</div>
+          <div class="welcome-subtitle">Selecione a categoria que você irá avaliar:</div>
           """,
           unsafe_allow_html=True,
       )
