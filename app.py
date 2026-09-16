@@ -1284,37 +1284,55 @@ else:
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
-    st.markdown('<div style="height: 38vh;"></div>', unsafe_allow_html=True)
-    col_esq, col_login, col_dir = st.columns([1, 10, 1])
-    with col_login:
-      login_digitado = st.text_input(
-          "Usuário",
-          key="login_usuario_jurado",
-          placeholder="👤   Usuário",
-          label_visibility="collapsed",
-      )
-      senha_digitada = st.text_input(
-          "Senha",
-          type="password",
-          key="senha_login_jurado",
-          placeholder="🔒   Senha",
-          label_visibility="collapsed",
-      )
-      st.markdown('<div style="margin-top: 12px;"></div>', unsafe_allow_html=True)
-      if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
-        usuario_limpo = login_digitado.strip()
-        if usuario_limpo in senhas_jurados:
-          if senha_digitada == senhas_jurados[usuario_limpo]:
-            st.session_state.jurado_logado = usuario_limpo
-            st.session_state.categoria_selecionada = None
-            st.query_params["jurado"] = usuario_limpo
-            if link_jurado_exclusivo:
-              st.query_params["view"] = "jurado"
-            st.rerun()
-          else:
-            st.error("❌ Senha incorreta!")
+    st.markdown(
+        """
+        <div style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            z-index: 99999;
+            background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 14px;
+            padding: 25px 20px 20px 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+        ">
+        """,
+        unsafe_allow_html=True,
+    )
+
+    login_digitado = st.text_input(
+        "Usuário",
+        key="login_usuario_jurado",
+        placeholder="👤    Usuário",
+        label_visibility="collapsed",
+    )
+    senha_digitada = st.text_input(
+        "Senha",
+        type="password",
+        key="senha_login_jurado",
+        placeholder="🔒    Senha",
+        label_visibility="collapsed",
+    )
+    st.markdown('<div style="margin-top: 12px;"></div>', unsafe_allow_html=True)
+    if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
+      usuario_limpo = login_digitado.strip()
+      if usuario_limpo in senhas_jurados:
+        if senha_digitada == senhas_jurados[usuario_limpo]:
+          st.session_state.jurado_logado = usuario_limpo
+          st.session_state.categoria_selecionada = None
+          st.query_params["jurado"] = usuario_limpo
+          if link_jurado_exclusivo:
+            st.query_params["view"] = "jurado"
+          st.rerun()
         else:
-          st.error("❌ Usuário não encontrado.")
+          st.error("❌ Senha incorreta!")
+      else:
+        st.error("❌ Usuário não encontrado.")
+
+    st.markdown("</div>", unsafe_allow_html=True)
   else:
     if st.session_state.categoria_selecionada is None:
       logout_param = (
