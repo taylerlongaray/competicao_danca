@@ -12,6 +12,7 @@ st.set_page_config(
 
 
 def obter_fundo_css(tipo_tela):
+  base_dir = os.path.dirname(os.path.abspath(__file__))
   candidatos = [
       f"fundo_{tipo_tela}.png",
       f"fundo_{tipo_tela}.jpg",
@@ -25,8 +26,9 @@ def obter_fundo_css(tipo_tela):
 
   img_encontrada = None
   for arquivo in candidatos:
-    if os.path.exists(arquivo):
-      img_encontrada = arquivo
+    caminho = os.path.join(base_dir, arquivo)
+    if os.path.exists(caminho):
+      img_encontrada = caminho
       break
 
   if img_encontrada:
@@ -70,12 +72,14 @@ def img_to_base64(file_path):
 
 
 def obter_avatar_html():
-  arquivos = os.listdir(".") if os.path.exists(".") else []
+  base_dir = os.path.dirname(os.path.abspath(__file__))
+  arquivos = os.listdir(base_dir) if os.path.exists(base_dir) else []
   for f in arquivos:
     if f.lower().startswith(
         ("avatar", "perfil", "jurado", "user", "icone", "foto")
     ) and f.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
-      b64 = img_to_base64(f)
+      caminho_completo = os.path.join(base_dir, f)
+      b64 = img_to_base64(caminho_completo)
       if b64:
         return f'<img src="{b64}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; box-shadow: 0 3px 10px rgba(0,0,0,0.8); background-color: #150f0a;">'
   return '<div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #1f150b, #3d2b16); border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; color: #f3e5ab; font-size: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.8);">👤</div>'
@@ -414,7 +418,7 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Template seguro usando .replace() posicionado exatamente onde indicado pelo círculo vermelho
+      # Template seguro ajustado para o canto superior direito exato (círculo vermelho)
       avatar_template = """
             <style>
             html, body, [data-testid="stAppViewContainer"], .main {
@@ -547,7 +551,7 @@ if modo == "Painel do Jurado":
       jurado_param = f"jurado={st.session_state.jurado_logado}&"
 
       for cat_nome, icone_path, emoji_fallback in cats_info:
-        img_b64 = img_to_base64(icone_path)
+        img_b64 = img_to_base64(os.path.join(os.path.dirname(__file__), icone_path))
         if img_b64:
           icon_html = f'<img src="{img_b64}" class="card-icon"/>'
         else:
@@ -776,8 +780,8 @@ else:
                     indices_para_ignorar = []
                     for comp in df_papel["competidor"].unique():
                       temp_df = df_papel[df_papel["competidor"] == comp]
-                      if not temp_df.empty:
-                        indices_para_ignorar.append(temp_df.index[-1])
+                    if not temp_df.empty:
+                      indices_para_ignorar.append(temp_df.index[-1])
                     df_calculo = df_papel.drop(indices_para_ignorar)
                   else:
                     df_calculo = df_papel.copy()
