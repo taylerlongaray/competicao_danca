@@ -1676,7 +1676,7 @@ if modo == "Painel do Jurado":
             unsafe_allow_html=True,
         )
 
-        # ---------- Notas (Campo Numérico) ----------
+        # ---------- Notas (Campo de Digitação idêntico ao layout) ----------
         chave_base = (
             f"{st.session_state.jurado_logado}|{categoria_escolhida}|"
             f"{fase_escolhida}|{papel_escolhido}|{competidor_escolhido}|"
@@ -1685,33 +1685,35 @@ if modo == "Painel do Jurado":
         chave_nota = f"nota_sel_{chave_base}"
 
         if chave_nota not in st.session_state:
-          nota_salva = buscar_nota_salva(
-              st.session_state.jurado_logado,
-              categoria_escolhida,
-              fase_escolhida,
-              papel_escolhido,
-              competidor_escolhido,
-              criterio_nome,
-          )
-          st.session_state[chave_nota] = (
-              float(nota_salva) if nota_salva is not None else None
-          )
+            nota_salva = buscar_nota_salva(
+                st.session_state.jurado_logado,
+                categoria_escolhida,
+                fase_escolhida,
+                papel_escolhido,
+                competidor_escolhido,
+                criterio_nome,
+            )
+            st.session_state[chave_nota] = (
+                float(nota_salva) if nota_salva is not None else None
+            )
 
         st.markdown(
             '<div class="jj-card" style="padding-bottom: 14px;">'
-            '<div class="jj-secao-label" style="margin-bottom: 8px;">Digite sua nota (Ex: 8.5)</div>',
+            '<div class="jj-secao-label">Sua nota</div>',
             unsafe_allow_html=True,
         )
 
-        st.number_input(
+        nota_str = st.text_input(
             "Sua nota",
-            min_value=0.0,
-            max_value=10.0,
-            step=0.1,
-            format="%.1f",
-            key=chave_nota,
+            value=str(st.session_state[chave_nota]) if st.session_state[chave_nota] is not None else "",
+            key=f"input_{chave_base}",
             label_visibility="collapsed"
         )
+        
+        try:
+            st.session_state[chave_nota] = float(nota_str.replace(",", ".")) if nota_str.strip() else None
+        except ValueError:
+            st.session_state[chave_nota] = None
 
         st.markdown("</div>", unsafe_allow_html=True)
 
