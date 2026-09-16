@@ -204,7 +204,7 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
-# Verificação segura de parâmetros de URL
+# Verificação de parâmetros de URL para isolar o link do jurado (?view=jurado)
 try:
   query_params = st.query_params
   link_jurado_exclusivo = query_params.get("view") == "jurado"
@@ -298,7 +298,7 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
-    /* Botões estilo pílula com borda dourada para o menu de categorias */
+    /* Botões de categorias e ações em formato pílula */
     .stButton > button {
         background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(70,55,30,0.9) 50%, rgba(40,30,18,0.9) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.5) !important;
@@ -358,11 +358,10 @@ if modo == "Painel do Jurado":
         else:
           st.error("❌ Usuário não encontrado.")
   else:
-    # Se o jurado está logado MAS não escolheu a categoria ainda, mostra a tela de escolha (Estilo Image2)
+    # Se o jurado está logado MAS não escolheu a categoria, exibe a tela de escolha com ícones
     if st.session_state.categoria_selecionada is None:
-      st.markdown('<div style="height: 5vh;"></div>', unsafe_allow_html=True)
+      st.markdown('<div style="height: 4vh;"></div>', unsafe_allow_html=True)
 
-      # Cabeçalho com identificação do Jurado no canto superior direito
       col_top1, col_top2 = st.columns([3, 1])
       with col_top1:
         st.markdown(
@@ -379,28 +378,40 @@ if modo == "Painel do Jurado":
 
       st.markdown(
           "<p style='text-align: center; color: #b39b6b; font-size: 14px;"
-          " margin-top: 20px; margin-bottom: 30px;'>Selecione a categoria que"
+          " margin-top: 15px; margin-bottom: 25px;'>Selecione a categoria que"
           " você irá avaliar:</p>",
           unsafe_allow_html=True,
       )
 
-      # Botões de Categorias com ícones idênticos ao layout solicitado
+      # Mapeamento das categorias e respectivos ícones em imagem (com fallback para emojis)
       cats_info = [
-          ("Diamante", "💎"),
-          ("Platina", "🥈"),
-          ("Ouro", "🥇"),
-          ("Prata", "🥈"),
-          ("Aprendendo a Voar", "🕊️"),
+          ("Diamante", "diamante.png", "💎"),
+          ("Platina", "platina.png", "🥈"),
+          ("Ouro", "ouro.png", "🥇"),
+          ("Prata", "prata.png", "🥈"),
+          ("Aprendendo a Voar", "asas.png", "🕊️"),
       ]
 
-      for cat_nome, icone in cats_info:
-        if st.button(
-            f"{icone}   &nbsp; {cat_nome.upper()}   &nbsp; ›",
-            key=f"btn_cat_{cat_nome}",
-            use_container_width=True,
-        ):
-          st.session_state.categoria_selecionada = cat_nome
-          st.rerun()
+      for cat_nome, icone_path, emoji_fallback in cats_info:
+        col_icone, col_botao = st.columns([1.2, 5.8])
+
+        with col_icone:
+          if os.path.exists(icone_path):
+            st.image(icone_path, width=40)
+          else:
+            st.markdown(
+                f"<h2 style='text-align: center; margin: 0;'>{emoji_fallback}</h2>",
+                unsafe_allow_html=True,
+            )
+
+        with col_botao:
+          if st.button(
+              f"{cat_nome.upper()}   ›",
+              key=f"btn_cat_{cat_nome}",
+              use_container_width=True,
+          ):
+            st.session_state.categoria_selecionada = cat_nome
+            st.rerun()
 
       st.markdown("<br>", unsafe_allow_html=True)
       if st.button("Sair da Conta", use_container_width=True):
@@ -409,7 +420,7 @@ if modo == "Painel do Jurado":
         st.rerun()
 
     else:
-      # Se a categoria já foi escolhida, exibe o painel de notas daquela categoria
+      # Painel de avaliação da categoria escolhida
       categoria_escolhida = st.session_state.categoria_selecionada
 
       col_info, col_voltar = st.columns([2.5, 1.5])
