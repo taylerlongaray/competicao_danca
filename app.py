@@ -38,7 +38,7 @@ def obter_fundo_css(tipo_tela):
     return f"""
         <style>
         .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.05), rgba(5, 4, 3, 0.10)), url("data:image/{mime};base64,{encoded}");
+            background-image: linear-gradient(rgba(5, 4, 3, 0.02), rgba(5, 4, 3, 0.10)), url("data:image/{mime};base64,{encoded}");
             background-size: cover;
             background-position: top center !important;
             background-attachment: fixed;
@@ -285,13 +285,6 @@ st.markdown("""
         margin: 0 auto !important;
     }
 
-    h1, h2, h3 {
-        color: #e5c158 !important;
-        font-family: 'Georgia', serif;
-        text-align: center;
-        letter-spacing: 1px;
-    }
-
     div[data-testid="column"]:has(input[type="password"]) {
         max-width: 330px !important; 
         margin: 0 auto !important; 
@@ -308,86 +301,22 @@ st.markdown("""
         border-radius: 30px !important;
     }
     
-    .stTextInput div[data-baseweb="input"]:focus-within {
-        border: 1px solid rgba(212, 175, 55, 0.8) !important;
-        box-shadow: 0 0 5px rgba(212, 175, 55, 0.2) !important;
-    }
-
     .stTextInput input {
         color: #f3e5ab !important;
         background-color: transparent !important;
         padding: 12px 20px !important;
         font-size: 14px !important;
     }
-    
-    .stTextInput input::placeholder {
-        color: rgba(243, 229, 171, 0.4) !important;
-    }
 
-    /* Cards de Categoria MENORES e com TAMANHO FIXO CENTRALIZADO */
-    .category-card {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
-        border: 1px solid rgba(212, 175, 55, 0.45);
-        border-radius: 10px;
-        padding: 10px 18px; /* Mais fino verticalmente */
-        margin: 0 auto 10px auto; /* Centraliza o card e dá um espaço entre eles */
-        max-width: 340px; /* Mantém a largura fixa e elegante */
-        text-decoration: none !important;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-        transition: all 0.3s ease;
-    }
-    .category-card:hover {
-        border-color: rgba(212, 175, 55, 1.0);
-        background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
-        box-shadow: 0 6px 15px rgba(212, 175, 55, 0.5);
-        transform: translateY(-2px);
-    }
-    .card-left {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    .card-icon {
-        width: 32px; /* Ícone um pouco menor */
-        height: 32px;
-        object-fit: contain;
-    }
-    .card-title {
-        color: #f3e5ab;
-        font-family: 'Georgia', serif;
-        font-size: 14px; /* Fonte levemente ajustada */
-        font-weight: 600;
-        letter-spacing: 2px;
-    }
-    .card-arrow {
-        color: #d4af37;
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    /* Botão Sair da conta fixo e centralizado para acompanhar os cards */
     .stButton > button {
         background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 50%, rgba(40,30,18,0.95) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 10px !important;
+        border-radius: 12px !important;
         color: #f3e5ab !important;
         text-transform: uppercase !important;
         letter-spacing: 2px !important;
         font-weight: 600 !important;
-        padding: 10px 18px !important;
-        max-width: 340px !important;
-        margin: 0 auto !important;
-        display: block !important;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
         transition: all 0.3s ease !important;
-    }
-    .stButton > button:hover {
-        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 50%, rgba(80,60,30,1) 100%) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(212, 175, 55, 1.0) !important;
     }
     
     [data-testid="stSidebar"] {
@@ -415,6 +344,7 @@ if modo == "Painel do Jurado":
           placeholder="🔒   Senha",
           label_visibility="collapsed",
       )
+      st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
       if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
         usuario_limpo = login_digitado.strip()
         if usuario_limpo in senhas_jurados:
@@ -432,13 +362,84 @@ if modo == "Painel do Jurado":
   else:
     if st.session_state.categoria_selecionada is None:
       # =======================================================================
-      # 💡 AJUSTE DE ALTURA DOS BOTÕES AQUI!
-      # Esse 36vh empurra os botões para baixo na tela. 
-      # Se quiser os botões mais para cima, diminua para 30vh.
-      # Se quiser os botões mais para baixo, aumente para 40vh ou 45vh.
+      # INJEÇÃO DE CSS QUE TRAVA O SCROLL E FIXA A POSIÇÃO NA TELA
       # =======================================================================
-      st.markdown('<div style="height: 36vh;"></div>', unsafe_allow_html=True)
+      st.markdown(
+          """
+          <style>
+          /* 1. Desativa a rolagem da página inteira */
+          html, body, [data-testid="stAppViewContainer"], .stApp {
+              overflow: hidden !important;
+              position: fixed !important;
+              width: 100vw !important;
+              height: 100vh !important;
+          }
+          
+          /* 2. Fixa e centraliza o bloco principal contendo os botões */
+          .block-container {
+              position: absolute !important;
+              top: 45vh !important; /* SE PRECISAR SUBIR/DESCER OS BOTÕES, MUDE AQUI! (ex: 42vh sobe, 48vh desce) */
+              left: 50% !important;
+              transform: translateX(-50%) !important;
+              width: 100% !important;
+              max-width: 310px !important; /* Tamanho fixo limitando a largura dos cards */
+              padding-top: 0 !important;
+          }
+          
+          /* 3. Estilização dos Cards - Ainda Menores */
+          .category-card {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
+              border: 1px solid rgba(212, 175, 55, 0.45);
+              border-radius: 8px !important;
+              padding: 8px 16px !important; /* Mais fino */
+              margin-bottom: 8px !important; /* Espaço menor entre eles */
+              text-decoration: none !important;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+              transition: all 0.3s ease;
+          }
+          .category-card:hover {
+              border-color: rgba(212, 175, 55, 1.0);
+              background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
+          }
+          .card-left {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+          }
+          .card-icon {
+              width: 26px !important; /* Ícone menor */
+              height: 26px !important;
+              object-fit: contain;
+          }
+          .card-title {
+              color: #f3e5ab;
+              font-family: 'Georgia', serif;
+              font-size: 13px !important; /* Fonte menor */
+              font-weight: 600;
+              letter-spacing: 1.5px;
+          }
+          .card-arrow {
+              color: #d4af37;
+              font-size: 14px !important;
+          }
+          
+          /* Botão Sair - Menor e centralizado */
+          .stButton > button {
+              padding: 8px 16px !important;
+              font-size: 12px !important;
+              margin-top: 10px !important;
+              border-radius: 8px !important;
+              width: 100% !important;
+          }
+          </style>
+          """,
+          unsafe_allow_html=True,
+      )
 
+      # Sem o texto duplicado gerado por código, apenas o design puro fixado
       cats_info = [
           ("Diamante", "diamante.png", "💎"),
           ("Platina", "platina.png", "🥈"),
@@ -455,7 +456,7 @@ if modo == "Painel do Jurado":
         if img_b64:
           icon_html = f'<img src="{img_b64}" class="card-icon"/>'
         else:
-          icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
+          icon_html = f'<span style="font-size: 22px;">{emoji_fallback}</span>'
 
         target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
 
@@ -472,18 +473,13 @@ if modo == "Painel do Jurado":
             unsafe_allow_html=True,
         )
 
-      st.markdown("<br>", unsafe_allow_html=True)
-      
-      # Envolvemos o botão "Sair" em colunas para forçar o alinhamento
-      col_sair1, col_sair2, col_sair3 = st.columns([1, 10, 1])
-      with col_sair2:
-          if st.button("Sair da Conta", use_container_width=True):
-            st.session_state.jurado_logado = None
-            st.session_state.categoria_selecionada = None
-            st.query_params.clear()
-            if link_jurado_exclusivo:
-              st.query_params["view"] = "jurado"
-            st.rerun()
+      if st.button("Sair da Conta"):
+        st.session_state.jurado_logado = None
+        st.session_state.categoria_selecionada = None
+        st.query_params.clear()
+        if link_jurado_exclusivo:
+          st.query_params["view"] = "jurado"
+        st.rerun()
 
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
