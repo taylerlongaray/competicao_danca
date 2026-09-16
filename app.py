@@ -55,6 +55,17 @@ def obter_fundo_css(tipo_tela):
         """
 
 
+def img_to_base64(file_path):
+  if os.path.exists(file_path):
+    with open(file_path, "rb") as f:
+      data = f.read()
+    encoded = base64.b64encode(data).decode()
+    ext = file_path.split(".")[-1].lower()
+    mime = "png" if ext == "png" else "jpeg"
+    return f"data:image/{mime};base64,{encoded}"
+  return ""
+
+
 if "votos" not in st.session_state:
   st.session_state.votos = []
 
@@ -66,6 +77,16 @@ if "jurado_logado" not in st.session_state:
 
 if "categoria_selecionada" not in st.session_state:
   st.session_state.categoria_selecionada = None
+
+# Recuperação automática de estado via URL para evitar novo login ao trocar de tela
+try:
+  qp = st.query_params
+  if "jurado" in qp and not st.session_state.jurado_logado:
+    st.session_state.jurado_logado = qp["jurado"]
+  if "cat" in qp and not st.session_state.categoria_selecionada:
+    st.session_state.categoria_selecionada = qp["cat"]
+except Exception:
+  pass
 
 categorias = {
     "Diamante": {
@@ -204,7 +225,6 @@ senhas_jurados = {
     "Jurado de Referência": "1234",
 }
 
-# Verificação segura do link exclusivo de jurado (?view=jurado)
 try:
   query_params = st.query_params
   link_jurado_exclusivo = query_params.get("view") == "jurado"
@@ -298,28 +318,67 @@ st.markdown("""
         color: rgba(243, 229, 171, 0.4) !important;
     }
 
-    /* Estilização dos botões de categorias no formato de card idêntico à referência */
+    /* Cards de Categoria idênticos à referência */
+    .category-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, rgba(15, 11, 7, 0.85) 0%, rgba(30, 21, 12, 0.92) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        border-radius: 12px;
+        padding: 14px 22px;
+        margin-bottom: 14px;
+        text-decoration: none !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        transition: all 0.3s ease;
+    }
+    .category-card:hover {
+        border-color: rgba(212, 175, 55, 0.95);
+        background: linear-gradient(135deg, rgba(25, 18, 12, 0.92) 0%, rgba(45, 33, 19, 0.98) 100%);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        transform: translateY(-2px);
+    }
+    .card-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .card-icon {
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+    }
+    .card-title {
+        color: #f3e5ab;
+        font-family: 'Georgia', serif;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 2px;
+    }
+    .card-arrow {
+        color: #d4af37;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* Botões padrão pílula */
     .stButton > button {
-        background: linear-gradient(135deg, rgba(15, 11, 7, 0.85) 0%, rgba(30, 21, 12, 0.92) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.45) !important;
+        background: linear-gradient(180deg, rgba(40,30,18,0.9) 0%, rgba(70,55,30,0.9) 50%, rgba(40,30,18,0.9) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.5) !important;
         border-radius: 12px !important;
         color: #f3e5ab !important;
         text-transform: uppercase !important;
         letter-spacing: 2px !important;
         font-weight: 600 !important;
-        font-family: 'Georgia', serif !important;
-        padding: 14px 20px !important;
+        padding: 12px 20px !important;
         width: 100% !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
         transition: all 0.3s ease !important;
-        text-align: left !important;
     }
-    
     .stButton > button:hover {
-        border-color: rgba(212, 175, 55, 0.95) !important;
-        background: linear-gradient(135deg, rgba(25, 18, 12, 0.92) 0%, rgba(45, 33, 19, 0.98) 100%) !important;
+        background: linear-gradient(180deg, rgba(60,45,25,1) 0%, rgba(100,80,45,1) 50%, rgba(60,45,25,1) 100%) !important;
         color: #ffffff !important;
-        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3) !important;
+        border: 1px solid rgba(212, 175, 55, 0.9) !important;
     }
     
     [data-testid="stSidebar"] {
@@ -353,6 +412,9 @@ if modo == "Painel do Jurado":
           if senha_digitada == senhas_jurados[usuario_limpo]:
             st.session_state.jurado_logado = usuario_limpo
             st.session_state.categoria_selecionada = None
+            st.query_params["jurado"] = usuario_limpo
+            if link_jurado_exclusivo:
+              st.query_params["view"] = "jurado"
             st.rerun()
           else:
             st.error("❌ Senha incorreta!")
@@ -362,7 +424,6 @@ if modo == "Painel do Jurado":
     if st.session_state.categoria_selecionada is None:
       st.markdown('<div style="height: 2vh;"></div>', unsafe_allow_html=True)
 
-      # Cabeçalho idêntico à imagem de referência
       st.markdown(
           f"""
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -384,38 +445,38 @@ if modo == "Painel do Jurado":
           ("Aprendendo a Voar", "asas.png", "🕊️"),
       ]
 
+      view_param = "view=jurado&" if link_jurado_exclusivo else ""
+      jurado_param = f"jurado={st.session_state.jurado_logado}&"
+
       for cat_nome, icone_path, emoji_fallback in cats_info:
-        # Colunas alinhadas perfeitamente mantendo a sessão ativa (sem recarregar o navegador)
-        col_icone, col_botao = st.columns(
-            [1.0, 6.0], vertical_alignment="center"
-        )
+        img_b64 = img_to_base64(icone_path)
+        if img_b64:
+          icon_html = f'<img src="{img_b64}" class="card-icon"/>'
+        else:
+          icon_html = f'<span style="font-size: 26px;">{emoji_fallback}</span>'
 
-        with col_icone:
-          if os.path.exists(icone_path):
-            st.image(icone_path, width=42)
-          else:
-            st.markdown(
-                f"<h2 style='text-align: center; margin: 0;'>{emoji_fallback}</h2>",
-                unsafe_allow_html=True,
-            )
-
-        with col_botao:
-          if st.button(
-              f"{cat_nome.upper()}   ›",
-              key=f"btn_cat_{cat_nome}",
-              use_container_width=True,
-          ):
-            st.session_state.categoria_selecionada = cat_nome
-            st.rerun()
+        target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
 
         st.markdown(
-            '<div style="margin-bottom: 6px;"></div>', unsafe_allow_html=True
+            f"""
+                <a href="{target_url}" class="category-card">
+                    <div class="card-left">
+                        {icon_html}
+                        <span class="card-title">{cat_nome.upper()}</span>
+                    </div>
+                    <span class="card-arrow">›</span>
+                </a>
+                """,
+            unsafe_allow_html=True,
         )
 
       st.markdown("<br>", unsafe_allow_html=True)
       if st.button("Sair da Conta", use_container_width=True):
         st.session_state.jurado_logado = None
         st.session_state.categoria_selecionada = None
+        st.query_params.clear()
+        if link_jurado_exclusivo:
+          st.query_params["view"] = "jurado"
         st.rerun()
 
     else:
@@ -430,6 +491,8 @@ if modo == "Painel do Jurado":
       with col_voltar:
         if st.button("⬅️ Trocar Categoria"):
           st.session_state.categoria_selecionada = None
+          if "cat" in st.query_params:
+            del st.query_params["cat"]
           st.rerun()
 
       st.markdown("---")
