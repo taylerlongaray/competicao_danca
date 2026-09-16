@@ -81,8 +81,8 @@ def obter_avatar_html():
       caminho_completo = os.path.join(base_dir, f)
       b64 = img_to_base64(caminho_completo)
       if b64:
-        return f'<img src="{b64}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; box-shadow: 0 3px 10px rgba(0,0,0,0.8); background-color: #150f0a;">'
-  return '<div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #1f150b, #3d2b16); border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; color: #f3e5ab; font-size: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.8);">👤</div>'
+        return f'<img src="{b64}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; box-shadow: 0 3px 10px rgba(0,0,0,0.8); background-color: #150f0a;">'
+  return '<div style="width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #1f150b, #3d2b16); border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; color: #f3e5ab; font-size: 18px; box-shadow: 0 3px 10px rgba(0,0,0,0.8);">👤</div>'
 
 
 if "votos" not in st.session_state:
@@ -300,8 +300,8 @@ st.markdown("""
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 1rem !important;
-        max-width: 650px !important;
+        padding-top: 1.5rem !important;
+        max-width: 600px !important;
         margin: 0 auto !important;
     }
 
@@ -413,127 +413,83 @@ if modo == "Painel do Jurado":
           st.error("❌ Usuário não encontrado.")
   else:
     if st.session_state.categoria_selecionada is None:
-      avatar_html = obter_avatar_html()
-      logout_param = (
-          "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
-      )
+      st.markdown('<div style="height: 140px;"></div>', unsafe_allow_html=True)
 
-      # Template seguro com injeção persistente no body via JS
-      avatar_template = """
-            <style>
-            html, body, [data-testid="stAppViewContainer"], .main {
-                overflow: hidden !important;
-                touch-action: none !important;
-                overscroll-behavior: none !important;
-                position: fixed !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
+      # Topo nativo: usa 3 colunas para alinhar o avatar no canto superior direito
+      col_esq_espaco, col_centro_msg, col_dir_avatar = st.columns([1, 8, 2])
 
-            .block-container {
-                position: fixed !important;
-                top: 200px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                width: 100% !important;
-                max-width: 320px !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
+      with col_dir_avatar:
+        avatar_html = obtaining_avatar_html = obter_avatar_html()
+        logout_param = (
+            "view=jurado&logout=true"
+            if link_jurado_exclusivo
+            else "logout=true"
+        )
+        st.markdown(
+            f"""
+            <div style="text-align: right; margin-top: -10px;">
+                <a href="?{logout_param}" title="Sair da Conta" style="text-decoration: none; display: inline-block;">
+                    {avatar_html}
+                </a>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-            .welcome-title {
-                color: #f3e5ab;
-                font-family: 'Georgia', serif;
-                font-size: 20px;
-                text-align: center;
-                font-weight: normal;
-                margin-bottom: 6px;
-                letter-spacing: 0.5px;
-            }
+      with col_centro_msg:
+        nome_jurado = st.session_state.jurado_logado
+        st.markdown(
+            f"""
+            <div style="text-align: center;">
+                <h3 style="color: #f3e5ab; font-family: 'Georgia', serif; font-size: 20px; font-weight: normal; margin-bottom: 4px;">Olá, {nome_jurado}!</h3>
+                <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-            .welcome-subtitle {
-                color: #f3e5ab;
-                font-family: 'Helvetica Neue', sans-serif;
-                font-size: 11.5px;
-                text-align: center;
-                margin-bottom: 15px;
-                opacity: 0.9;
-                letter-spacing: 0.3px;
-            }
-
-            .category-card {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
-                border: 1px solid rgba(212, 175, 55, 0.45);
-                border-radius: 8px !important;
-                padding: 10px 18px !important;
-                margin-bottom: 10px !important;
-                text-decoration: none !important;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
-                transition: all 0.3s ease;
-            }
-            .category-card:hover {
-                border-color: rgba(212, 175, 55, 1.0);
-                background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
-            }
-            .card-left {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            }
-            .card-icon {
-                width: 28px !important; 
-                height: 28px !important;
-                object-fit: contain;
-            }
-            .card-title {
-                color: #f3e5ab;
-                font-family: 'Georgia', serif;
-                font-size: 13px !important; 
-                font-weight: 600;
-                letter-spacing: 2px;
-            }
-            .card-arrow {
-                color: #d4af37;
-                font-size: 16px !important;
-            }
-            </style>
-
-            <script>
-                (function() {
-                    let avatarElem = document.getElementById('fixed-top-right-avatar-global');
-                    if (!avatarElem) {
-                        avatarElem = document.createElement('a');
-                        avatarElem.id = 'fixed-top-right-avatar-global';
-                        avatarElem.style.position = 'fixed';
-                        avatarElem.style.top = '15px';
-                        avatarElem.style.right = '20px';
-                        avatarElem.style.zIndex = '9999999';
-                        avatarElem.style.textDecoration = 'none';
-                        avatarElem.style.display = 'block';
-                        document.body.appendChild(avatarElem);
-                    }
-                    avatarElem.href = '?LOGOUT_PARAM_REPLACE';
-                    avatarElem.title = 'Sair da Conta';
-                    avatarElem.innerHTML = 'AVATAR_HTML_REPLACE';
-                })();
-            </script>
-            """
-
-      avatar_html_final = avatar_template.replace(
-          "LOGOUT_PARAM_REPLACE", logout_param
-      ).replace("AVATAR_HTML_REPLACE", avatar_html)
-      st.markdown(avatar_html_final, unsafe_allow_html=True)
-
-      nome_jurado = st.session_state.jurado_logado
       st.markdown(
-          f"""
-          <div class="welcome-title">Olá, {nome_jurado}!</div>
-          <div class="welcome-subtitle">Selecione a categoria que você irá avaliar:</div>
+          """
+          <style>
+          .category-card {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              background: linear-gradient(135deg, rgba(15, 11, 7, 0.90) 0%, rgba(30, 21, 12, 0.95) 100%);
+              border: 1px solid rgba(212, 175, 55, 0.45);
+              border-radius: 8px !important;
+              padding: 10px 18px !important;
+              margin-bottom: 10px !important;
+              text-decoration: none !important;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+              transition: all 0.3s ease;
+          }
+          .category-card:hover {
+              border-color: rgba(212, 175, 55, 1.0);
+              background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
+          }
+          .card-left {
+              display: flex;
+              align-items: center;
+              gap: 15px;
+          }
+          .card-icon {
+              width: 28px !important; 
+              height: 28px !important;
+              object-fit: contain;
+          }
+          .card-title {
+              color: #f3e5ab;
+              font-family: 'Georgia', serif;
+              font-size: 13px !important; 
+              font-weight: 600;
+              letter-spacing: 2px;
+          }
+          .card-arrow {
+              color: #d4af37;
+              font-size: 16px !important;
+          }
+          </style>
           """,
           unsafe_allow_html=True,
       )
@@ -550,7 +506,9 @@ if modo == "Painel do Jurado":
       jurado_param = f"jurado={st.session_state.jurado_logado}&"
 
       for cat_nome, icone_path, emoji_fallback in cats_info:
-        img_b64 = img_to_base64(os.path.join(os.path.dirname(__file__), icone_path))
+        img_b64 = img_to_base64(
+            os.path.join(os.path.dirname(__file__), icone_path)
+        )
         if img_b64:
           icon_html = f'<img src="{img_b64}" class="card-icon"/>'
         else:
