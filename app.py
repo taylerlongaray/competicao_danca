@@ -300,7 +300,7 @@ st.markdown("""
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 0.5rem !important;
+        padding-top: 1rem !important;
         max-width: 600px !important;
         margin: 0 auto !important;
     }
@@ -418,10 +418,10 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # Cabeçalho no topo absoluto, alinhando o avatar à direita na altura de Passion Dance
+      # Ícone do avatar posicionado fixo de forma absoluta no topo direito (altura do Passion Dance)
       st.markdown(
           f"""
-          <div style="display: flex; justify-content: flex-end; align-items: center; width: 100%; padding: 0 5px; margin-bottom: 10px;">
+          <div style="position: fixed; top: 15px; right: 18px; z-index: 99999;">
               <a href="?{logout_param}" title="Sair da Conta" style="text-decoration: none; display: inline-block;">
                   {avatar_html}
               </a>
@@ -430,10 +430,13 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
+      # Espaçamento para empurrar o texto e as categorias para baixo, exatamente como antes
+      st.markdown('<div style="height: 160px;"></div>', unsafe_allow_html=True)
+
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
           f"""
-          <div style="text-align: center; margin-top: 5px;">
+          <div style="text-align: center; margin-bottom: 6px;">
               <h3 style="color: #f3e5ab; font-family: 'Georgia', serif; font-size: 20px; font-weight: normal; margin-bottom: 4px;">Olá, {nome_jurado}!</h3>
               <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
           </div>
