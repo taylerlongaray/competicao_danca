@@ -12,19 +12,23 @@ st.set_page_config(
 
 
 def obter_fundo_css(tipo_tela):
-  candidatos = [f"fundo_{tipo_tela}.png", f"fundo_{tipo_tela}.jpg"]
+  # Procura primeiro pelo específico da tela, depois tenta fallbacks comuns
+  candidatos = [
+      f"fundo_{tipo_tela}.png",
+      f"fundo_{tipo_tela}.jpg",
+      "fundo_categorias.png",
+      "fundo_categorias.jpg",
+      "fundo_login.png",
+      "fundo_login.jpg",
+      "fundo.png",
+      "fundo.jpg",
+  ]
 
   img_encontrada = None
   for arquivo in candidatos:
     if os.path.exists(arquivo):
       img_encontrada = arquivo
       break
-
-  if not img_encontrada:
-    for arquivo in ["fundo.png", "fundo.jpg", "Fundo.png", "Fundo.jpg"]:
-      if os.path.exists(arquivo):
-        img_encontrada = arquivo
-        break
 
   if img_encontrada:
     with open(img_encontrada, "rb") as f:
@@ -259,7 +263,7 @@ else:
       label_visibility="collapsed",
   )
 
-# Gerenciamento dinâmico dos fundos de tela por etapa
+# Gerenciamento dinâmico dos fundos
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
     st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
