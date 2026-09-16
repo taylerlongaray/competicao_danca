@@ -448,15 +448,15 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # Espaçamento superior reduzido para ajustar perfeitamente ao viewport sem scroll
-      st.markdown('<div style="height: 140px;"></div>', unsafe_allow_html=True)
+      # Espaçamento superior ajustado para 170px
+      st.markdown('<div style="height: 170px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
           f"""
           <div style="text-align: center; margin-bottom: 2px;">
               <div class="saudacao-jurado">Olá, {nome_jurado}!</div>
-              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; position: relative; top: 30px; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p>
+              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; position: relative; top: 15px; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p>
           </div>
           """,
           unsafe_allow_html=True,
