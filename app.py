@@ -397,7 +397,6 @@ elif modo == "Telão (Público)":
 else:
   st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
-# ----------------- CSS GLOBAL (RESTAURADO EXATAMENTE COMO ERA ANTES) -----------------
 st.markdown(
     """
     <style>
@@ -408,7 +407,7 @@ st.markdown(
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 2.2rem !important; /* MANTIDO ORIGINAL */
+        padding-top: 2.2rem !important;
         max-width: 600px !important;
         margin: 0 auto !important;
     }
@@ -473,8 +472,8 @@ st.markdown(
         letter-spacing: 1.5px !important;
         font-weight: 600 !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
-        padding: 8px 14px !important; /* MANTIDO ORIGINAL */
-        font-size: 12px !important; /* MANTIDO ORIGINAL */
+        padding: 8px 14px !important;
+        font-size: 12px !important;
     }
     .stButton > button:hover {
         background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
@@ -514,8 +513,8 @@ st.markdown(
         border: 1px solid rgba(212, 175, 55, 0.45);
         border-radius: 14px;
         box-shadow: 0 6px 20px rgba(0,0,0,0.75);
-        padding: 16px 18px; /* MANTIDO ORIGINAL */
-        margin-bottom: 14px; /* MANTIDO ORIGINAL */
+        padding: 16px 18px;
+        margin-bottom: 14px;
     }
 
     .jj-banner {
@@ -681,6 +680,607 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+if modo == "Painel do Jurado":
+  if st.session_state.jurado_logado is None:
+    st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
+  elif st.session_state.categoria_selecionada is None:
+    st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
+  else:
+    st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
+elif modo == "Telão (Público)":
+  st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
+else:
+  st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
+
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    .block-container {
+        padding-top: 2.2rem !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+    }
+
+    h1, h2, h3 {
+        color: #e5c158 !important;
+        font-family: 'Georgia', serif;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .saudacao-jurado {
+        font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
+        color: #f3e5ab !important;
+        font-size: 22px !important;
+        font-weight: 700 !important;
+        text-align: center;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        letter-spacing: 1.5px;
+        margin-bottom: 2px;
+    }
+
+    div[data-testid="column"]:has(input[type="password"]) {
+        max-width: 320px !important; 
+        margin: 0 auto !important; 
+        float: none !important;
+        background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.5) !important;
+        border-radius: 14px !important;
+        padding: 25px 20px 20px 20px !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .stTextInput div[data-baseweb="input"] {
+        background-color: rgba(12, 9, 7, 0.95) !important;
+        border: 1px solid rgba(212, 175, 55, 0.45) !important;
+        border-radius: 8px !important;
+    }
+    
+    .stTextInput div[data-baseweb="input"]:focus-within {
+        border: 1px solid rgba(212, 175, 55, 1.0) !important;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
+    }
+
+    .stTextInput input {
+        color: #f3e5ab !important;
+        background-color: transparent !important;
+        padding: 10px 15px !important;
+        font-size: 14px !important;
+    }
+    
+    .stTextInput input::placeholder {
+        color: rgba(243, 229, 171, 0.4) !important;
+    }
+
+    .stButton > button {
+        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.6) !important;
+        border-radius: 8px !important;
+        color: #f3e5ab !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+        padding: 8px 14px !important;
+        font-size: 12px !important;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 1.0) !important;
+        color: #ffffff !important;
+    }
+
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
+        border: 1px solid #e5c158 !important;
+        color: #1a1208 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25) !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
+        color: #1a1208 !important;
+    }
+
+    div[data-testid="stAlert"] {
+        background-color: rgba(20, 15, 10, 0.95) !important;
+        border: 1px solid rgba(212, 175, 55, 0.6) !important;
+        color: #f3e5ab !important;
+        border-radius: 8px !important;
+    }
+    div[data-testid="stAlert"] p {
+        color: #f3e5ab !important;
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: rgba(14, 10, 8, 0.96);
+        border-right: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .jj-card {
+        background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.75);
+        padding: 16px 18px;
+        margin-bottom: 14px;
+    }
+
+    .jj-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+    }
+    .jj-banner-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .jj-banner-icon { font-size: 30px; line-height: 1; }
+    .jj-banner-icon img { width: 34px; height: 34px; object-fit: contain; }
+    .jj-label {
+        color: #b39b6b;
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+    }
+    .jj-categoria {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        line-height: 1.1;
+    }
+    .jj-banner-right {
+        text-align: right;
+        border-left: 1px solid rgba(212, 175, 55, 0.3);
+        padding-left: 16px;
+    }
+    .jj-fase {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+    .jj-musica {
+        color: #b39b6b;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .jj-avaliando { text-align: center; }
+    .jj-nome {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin: 2px 0 8px 0;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .jj-badge {
+        display: inline-block;
+        border: 1px solid rgba(212, 175, 55, 0.8);
+        border-radius: 20px;
+        padding: 5px 22px;
+        color: #e5c158;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .jj-crit-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .jj-crit-icon {
+        width: 46px; height: 46px; min-width: 46px;
+        border-radius: 50%;
+        border: 1px solid rgba(212, 175, 55, 0.7);
+        background: rgba(0,0,0,0.35);
+        display: flex; align-items: center; justify-content: center;
+        color: #e5c158; font-size: 20px;
+    }
+    .jj-contador {
+        border: 1px solid rgba(212, 175, 55, 0.7);
+        border-radius: 20px;
+        padding: 4px 14px;
+        color: #e5c158;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    .jj-crit-nome {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-top: 2px;
+    }
+    .jj-divisor {
+        border: none;
+        border-top: 1px solid rgba(212, 175, 55, 0.25);
+        margin: 12px 0 10px 0;
+    }
+    .jj-crit-desc {
+        color: #ded2b4;
+        font-size: 14px;
+        line-height: 1.55;
+    }
+    .jj-crit-desc b { color: #e5c158; }
+
+    .jj-secao-label {
+        color: #f3e5ab;
+        font-size: 12px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .jj-footer {
+        text-align: center;
+        margin-top: 26px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .jj-footer-marca {
+        color: #e5c158;
+        font-size: 13px;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+    }
+    .jj-footer-sub {
+        color: #8d7a52;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+
+    .stTextArea textarea {
+        background-color: rgba(10, 7, 5, 0.9) !important;
+        border: 1px solid rgba(212, 175, 55, 0.35) !important;
+        border-radius: 10px !important;
+        color: #f3e5ab !important;
+        font-size: 14px !important;
+    }
+    .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
+
+    div[data-testid="stExpander"] {
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        border-radius: 10px !important;
+        background: rgba(12, 9, 6, 0.85) !important;
+    }
+    div[data-testid="stExpander"] summary p {
+        color: #e5c158 !important;
+        font-size: 11px !important;
+        letter-spacing: 2px !important;
+        text-transform: uppercase !important;
+    }
+    </style>
+""",
+    unsafe_allow_html=True,
+)
+
+if modo == "Painel do Jurado":
+  if st.session_state.jurado_logado is None:
+    st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
+  elif st.session_state.categoria_selecionada is None:
+    st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
+  else:
+    st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
+elif modo == "Telão (Público)":
+  st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
+else:
+  st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
+
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    .block-container {
+        padding-top: 2.2rem !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+    }
+
+    h1, h2, h3 {
+        color: #e5c158 !important;
+        font-family: 'Georgia', serif;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .saudacao-jurado {
+        font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
+        color: #f3e5ab !important;
+        font-size: 22px !important;
+        font-weight: 700 !important;
+        text-align: center;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        letter-spacing: 1.5px;
+        margin-bottom: 2px;
+    }
+
+    div[data-testid="column"]:has(input[type="password"]) {
+        max-width: 320px !important; 
+        margin: 0 auto !important; 
+        float: none !important;
+        background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.5) !important;
+        border-radius: 14px !important;
+        padding: 25px 20px 20px 20px !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .stTextInput div[data-baseweb="input"] {
+        background-color: rgba(12, 9, 7, 0.95) !important;
+        border: 1px solid rgba(212, 175, 55, 0.45) !important;
+        border-radius: 8px !important;
+    }
+    
+    .stTextInput div[data-baseweb="input"]:focus-within {
+        border: 1px solid rgba(212, 175, 55, 1.0) !important;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
+    }
+
+    .stTextInput input {
+        color: #f3e5ab !important;
+        background-color: transparent !important;
+        padding: 10px 15px !important;
+        font-size: 14px !important;
+    }
+    
+    .stTextInput input::placeholder {
+        color: rgba(243, 229, 171, 0.4) !important;
+    }
+
+    .stButton > button {
+        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 0.6) !important;
+        border-radius: 8px !important;
+        color: #f3e5ab !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+        padding: 8px 14px !important;
+        font-size: 12px !important;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
+        border: 1px solid rgba(212, 175, 55, 1.0) !important;
+        color: #ffffff !important;
+    }
+
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
+        border: 1px solid #e5c158 !important;
+        color: #1a1208 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25) !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
+        color: #1a1208 !important;
+    }
+
+    div[data-testid="stAlert"] {
+        background-color: rgba(20, 15, 10, 0.95) !important;
+        border: 1px solid rgba(212, 175, 55, 0.6) !important;
+        color: #f3e5ab !important;
+        border-radius: 8px !important;
+    }
+    div[data-testid="stAlert"] p {
+        color: #f3e5ab !important;
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: rgba(14, 10, 8, 0.96);
+        border-right: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .jj-card {
+        background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.75);
+        padding: 16px 18px;
+        margin-bottom: 14px;
+    }
+
+    .jj-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+    }
+    .jj-banner-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .jj-banner-icon { font-size: 30px; line-height: 1; }
+    .jj-banner-icon img { width: 34px; height: 34px; object-fit: contain; }
+    .jj-label {
+        color: #b39b6b;
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+    }
+    .jj-categoria {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        line-height: 1.1;
+    }
+    .jj-banner-right {
+        text-align: right;
+        border-left: 1px solid rgba(212, 175, 55, 0.3);
+        padding-left: 16px;
+    }
+    .jj-fase {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+    .jj-musica {
+        color: #b39b6b;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .jj-avaliando { text-align: center; }
+    .jj-nome {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin: 2px 0 8px 0;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .jj-badge {
+        display: inline-block;
+        border: 1px solid rgba(212, 175, 55, 0.8);
+        border-radius: 20px;
+        padding: 5px 22px;
+        color: #e5c158;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .jj-crit-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .jj-crit-icon {
+        width: 46px; height: 46px; min-width: 46px;
+        border-radius: 50%;
+        border: 1px solid rgba(212, 175, 55, 0.7);
+        background: rgba(0,0,0,0.35);
+        display: flex; align-items: center; justify-content: center;
+        color: #e5c158; font-size: 20px;
+    }
+    .jj-contador {
+        border: 1px solid rgba(212, 175, 55, 0.7);
+        border-radius: 20px;
+        padding: 4px 14px;
+        color: #e5c158;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    .jj-crit-nome {
+        font-family: 'Cinzel', 'Georgia', serif;
+        color: #f3e5ab;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-top: 2px;
+    }
+    .jj-divisor {
+        border: none;
+        border-top: 1px solid rgba(212, 175, 55, 0.25);
+        margin: 12px 0 10px 0;
+    }
+    .jj-crit-desc {
+        color: #ded2b4;
+        font-size: 14px;
+        line-height: 1.55;
+    }
+    .jj-crit-desc b { color: #e5c158; }
+
+    .jj-secao-label {
+        color: #f3e5ab;
+        font-size: 12px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .jj-footer {
+        text-align: center;
+        margin-top: 26px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .jj-footer-marca {
+        color: #e5c158;
+        font-size: 13px;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+    }
+    .jj-footer-sub {
+        color: #8d7a52;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+
+    .stTextArea textarea {
+        background-color: rgba(10, 7, 5, 0.9) !important;
+        border: 1px solid rgba(212, 175, 55, 0.35) !important;
+        border-radius: 10px !important;
+        color: #f3e5ab !important;
+        font-size: 14px !important;
+    }
+    .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
+
+    div[data-testid="stExpander"] {
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        border-radius: 10px !important;
+        background: rgba(12, 9, 6, 0.85) !important;
+    }
+    div[data-testid="stExpander"] summary p {
+        color: #e5c158 !important;
+        font-size: 11px !important;
+        letter-spacing: 2px !important;
+        text-transform: uppercase !important;
+    }
+    </style>
+""",
+    unsafe_allow_html=True,
+)
+
+if modo == "Painel do Jurado":
+  if st.session_state.jurado_logado is None:
+    st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
+  elif st.session_state.categoria_selecionada is None:
+    st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
+  else:
+    st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
+elif modo == "Telão (Público)":
+  st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
+else:
+  st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
 if modo == "Painel do Jurado":
   if st.session_state.jurado_logado is None:
@@ -721,7 +1321,6 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # MANTIDO INTACTO EXATAMENTE DO JEITO QUE ESTAVA NA SUA CONFIGURAÇÃO PERFEITA
       st.markdown(
           f"""
           <div style="position: fixed; top: 10px; right: 12px; z-index: 99999;">
@@ -748,7 +1347,7 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      # ESPAÇAMENTO EXATO QUE VOCÊ AJUSTOU PARA 40px
+      # Espaçamento otimizado para que tudo caiba na tela sem precisar de scroll
       st.markdown('<div style="height: 40px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
@@ -846,56 +1445,7 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # -------------------------------------------------------------------------------------
-      # AQUI ESTÁ O SEGREDO! Este bloco de CSS SÓ É LIDO quando a TELA DE VOTAÇÃO está aberta.
-      # Ele compacta a tela atual sem afetar a tela das categorias que ficou lá atrás.
-      # -------------------------------------------------------------------------------------
-      st.markdown(
-          """
-          <style>
-          .block-container {
-              padding-top: 1.0rem !important;
-              padding-bottom: 1.0rem !important;
-          }
-          .jj-card {
-              padding: 10px 12px !important;
-              margin-bottom: 8px !important;
-              border-radius: 10px !important;
-          }
-          .jj-banner-icon { font-size: 26px !important; }
-          .jj-banner-icon img { width: 28px !important; height: 28px !important; }
-          .jj-categoria { font-size: 20px !important; }
-          .jj-fase { font-size: 15px !important; }
-          .jj-nome { font-size: 26px !important; margin: 0 0 4px 0 !important; }
-          .jj-badge { padding: 3px 16px !important; font-size: 9px !important; }
-          .jj-crit-icon { width: 36px !important; height: 36px !important; min-width: 36px !important; font-size: 16px !important; }
-          .jj-contador { padding: 2px 10px !important; font-size: 10px !important; }
-          .jj-crit-nome { font-size: 18px !important; }
-          .jj-divisor { margin: 8px 0 6px 0 !important; }
-          .jj-crit-desc { font-size: 12px !important; line-height: 1.3 !important; }
-          .jj-secao-label { font-size: 10px !important; margin-bottom: 4px !important; }
-          
-          div.stNumberInput { margin-bottom: -15px !important; }
-          div[data-testid="stNumberInput"] input {
-              text-align: center !important; font-size: 22px !important; font-weight: 700 !important;
-              padding: 6px !important;
-          }
-          div.stTextArea { margin-bottom: -10px !important; }
-          .stTextArea textarea { min-height: 60px !important; height: 60px !important; }
-          div[data-testid="stExpander"] { margin-bottom: 8px !important; }
-          div[data-testid="stExpander"] summary { padding-top: 5px !important; padding-bottom: 5px !important; }
-          
-          .stButton > button {
-              padding: 4px 14px !important;
-              font-size: 11px !important;
-          }
-          </style>
-          """,
-          unsafe_allow_html=True
-      )
-      # -------------------------------------------------------------------------------------
-
-      # ---------- Cabeçalho fixo com barra sticky unificada (Sair e Trocar Categoria) ----------
+      # ---------- Cabeçalho fixo com barra sticky unificada (Sair à esquerda e Trocar Categoria à direita com tamanhos iguais) ----------
       logout_url = (
           "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
       )
@@ -905,7 +1455,7 @@ if modo == "Painel do Jurado":
 
       st.markdown(
           f"""
-          <div style="position: sticky; top: 10px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="position: sticky; top: 10px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
               <a href="{logout_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
@@ -1054,7 +1604,7 @@ if modo == "Painel do Jurado":
         col_ant, col_nome, col_prox = st.columns([1, 4, 1])
 
         with col_ant:
-          st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
+          st.markdown("<div style='height: 26px;'></div>", unsafe_allow_html=True)
           if st.button("‹", key="btn_anterior", use_container_width=True):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp - 1
@@ -1062,8 +1612,8 @@ if modo == "Painel do Jurado":
             st.session_state.idx_crit = 0
             st.rerun()
           st.markdown(
-              "<div style='text-align:center; color:#8d7a52; font-size:8px;"
-              " letter-spacing:1px; margin-top:-4px;'>ANT</div>",
+              "<div style='text-align:center; color:#8d7a52; font-size:9px;"
+              " letter-spacing:2px;'>ANTERIOR</div>",
               unsafe_allow_html=True,
           )
 
@@ -1071,10 +1621,10 @@ if modo == "Painel do Jurado":
           st.markdown(
               f"""
               <div class="jj-avaliando">
-                  <div class="jj-label" style="margin-bottom:0;">Avaliando</div>
+                  <div class="jj-label">Avaliando</div>
                   <div class="jj-nome">{competidor_escolhido}</div>
                   <span class="jj-badge">{tipo_selecionado}</span>
-                  <div style="color:#8d7a52; font-size:8px; letter-spacing:2px; margin-top:4px;">
+                  <div style="color:#8d7a52; font-size:9px; letter-spacing:2px; margin-top:8px;">
                       {st.session_state.idx_comp + 1} DE {total_comp}
                   </div>
               </div>
@@ -1083,7 +1633,7 @@ if modo == "Painel do Jurado":
           )
 
         with col_prox:
-          st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
+          st.markdown("<div style='height: 26px;'></div>", unsafe_allow_html=True)
           if st.button("›", key="btn_proximo", use_container_width=True):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp + 1
@@ -1091,10 +1641,12 @@ if modo == "Painel do Jurado":
             st.session_state.idx_crit = 0
             st.rerun()
           st.markdown(
-              "<div style='text-align:center; color:#8d7a52; font-size:8px;"
-              " letter-spacing:1px; margin-top:-4px;'>PRÓX</div>",
+              "<div style='text-align:center; color:#8d7a52; font-size:9px;"
+              " letter-spacing:2px;'>PRÓXIMO</div>",
               unsafe_allow_html=True,
           )
+
+        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
 
         # ---------- Card do critério atual ----------
         criterios = criterios_por_categoria[categoria_escolhida]
@@ -1111,8 +1663,8 @@ if modo == "Painel do Jurado":
             <div class="jj-card">
                 <div class="jj-crit-head">
                     <div class="jj-crit-icon">♪</div>
-                    <div style="flex: 1; padding: 0 10px;">
-                        <div class="jj-label" style="margin-bottom:0;">Critério</div>
+                    <div style="flex: 1; padding: 0 14px;">
+                        <div class="jj-label">Critério</div>
                         <div class="jj-crit-nome">{criterio_nome}</div>
                     </div>
                     <div class="jj-contador">{st.session_state.idx_crit + 1} / {total_crit}</div>
@@ -1124,7 +1676,7 @@ if modo == "Painel do Jurado":
             unsafe_allow_html=True,
         )
 
-        # ---------- Notas (Campo Numérico) ----------
+        # ---------- Notas 1 a 10 ----------
         chave_base = (
             f"{st.session_state.jurado_logado}|{categoria_escolhida}|"
             f"{fase_escolhida}|{papel_escolhido}|{competidor_escolhido}|"
@@ -1142,49 +1694,46 @@ if modo == "Painel do Jurado":
               criterio_nome,
           )
           st.session_state[chave_nota] = (
-              float(nota_salva) if nota_salva is not None else 0.0
+              int(nota_salva) if nota_salva is not None else None
           )
 
         st.markdown(
-            '<div class="jj-card" style="padding-bottom: 12px; margin-bottom: 8px;">'
-            '<div class="jj-secao-label" style="margin-bottom: 8px;">SUA NOTA (Ex: 8.5)</div>',
+            '<div class="jj-card" style="padding-bottom: 6px;">'
+            '<div class="jj-secao-label">Sua nota</div>',
             unsafe_allow_html=True,
         )
 
-        st.number_input(
-            "Sua nota",
-            min_value=0.0,
-            max_value=10.0,
-            step=0.1,
-            format="%.1f",
-            key=chave_nota,
-            label_visibility="collapsed",
-        )
+        colunas_notas = st.columns(10, gap="small")
+        for i, coluna in enumerate(colunas_notas, start=1):
+          with coluna:
+            selecionada = st.session_state[chave_nota] == i
+            if st.button(
+                str(i),
+                key=f"nota_{i}_{chave_base}",
+                use_container_width=True,
+                type="primary" if selecionada else "secondary",
+            ):
+              st.session_state[chave_nota] = i
+              st.rerun()
 
         st.markdown("</div>", unsafe_allow_html=True)
 
         # ---------- Comentários ----------
         chave_comentario = f"coment_{chave_base}"
-        
-        st.markdown(
-            '<div class="jj-card" style="padding-bottom: 4px; margin-bottom: 8px;">'
-            '<div class="jj-secao-label" style="margin-bottom: 4px;">COMENTÁRIOS (OPCIONAL)</div>',
-            unsafe_allow_html=True,
-        )
-        
         comentario = st.text_area(
-            "Comentários",
+            "COMENTÁRIOS (OPCIONAL)",
             key=chave_comentario,
             placeholder="Deixe seu comentário aqui...",
             max_chars=300,
-            height=60,
-            label_visibility="collapsed"
+            height=110,
         )
         st.markdown(
-            f"<div style='text-align:right; color:#8d7a52; font-size:10px; margin-top:-8px;'>{len(comentario)}/300</div>"
-            "</div>",
+            f"<div style='text-align:right; color:#8d7a52; font-size:11px;"
+            f" margin-top:-8px;'>{len(comentario)}/300</div>",
             unsafe_allow_html=True,
         )
+
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 
         # ---------- Enviar avaliação ----------
         if st.button(
@@ -1193,38 +1742,41 @@ if modo == "Painel do Jurado":
             use_container_width=True,
             key=f"enviar_{chave_base}",
         ):
-          registrar_voto(
-              st.session_state.jurado_logado,
-              categoria_escolhida,
-              fase_escolhida,
-              papel_escolhido,
-              competidor_escolhido,
-              criterio_nome,
-              float(st.session_state[chave_nota]),
-              comentario,
-          )
-
-          if st.session_state.idx_crit + 1 < total_crit:
-            st.session_state.idx_crit += 1
-            st.toast(
-                f"✨ Nota registrada para {competidor_escolhido} —"
-                f" {criterio_nome}"
-            )
+          if st.session_state[chave_nota] is None:
+            st.error("❌ Selecione uma nota de 1 a 10 antes de enviar.")
           else:
-            st.session_state.idx_crit = 0
-            st.session_state.idx_comp = (
-                st.session_state.idx_comp + 1
-            ) % total_comp
-            st.toast(
-                f"🏅 Avaliação de {competidor_escolhido} concluída!"
+            registrar_voto(
+                st.session_state.jurado_logado,
+                categoria_escolhida,
+                fase_escolhida,
+                papel_escolhido,
+                competidor_escolhido,
+                criterio_nome,
+                float(st.session_state[chave_nota]),
+                comentario,
             )
-          st.rerun()
+
+            if st.session_state.idx_crit + 1 < total_crit:
+              st.session_state.idx_crit += 1
+              st.toast(
+                  f"✨ Nota registrada para {competidor_escolhido} —"
+                  f" {criterio_nome}"
+              )
+            else:
+              st.session_state.idx_crit = 0
+              st.session_state.idx_comp = (
+                  st.session_state.idx_comp + 1
+              ) % total_comp
+              st.toast(
+                  f"🏅 Avaliação de {competidor_escolhido} concluída!"
+              )
+            st.rerun()
 
         # ---------- Rodapé ----------
         st.markdown(
             """
             <div class="jj-footer">
-                <div style="color:#b39b6b; font-size:10px;">✦</div>
+                <div style="color:#b39b6b; font-size:13px;">✦</div>
                 <div class="jj-footer-marca">Passion Dance</div>
                 <div class="jj-footer-sub">Jack and Jill · Noite nas Arábias</div>
             </div>
