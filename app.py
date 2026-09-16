@@ -13,16 +13,24 @@ st.set_page_config(
 
 def obter_fundo_css(tipo_tela):
   base_dir = os.path.dirname(os.path.abspath(__file__))
-  candidatos = [
-      f"fundo_{tipo_tela}.png",
-      f"fundo_{tipo_tela}.jpg",
-      "fundo_categorias.png",
-      "fundo_categorias.jpg",
-      "fundo_login.png",
-      "fundo_login.jpg",
-      "fundo.png",
-      "fundo.jpg",
-  ]
+
+  # Define os candidatos específicos baseados no tipo de tela
+  if tipo_tela == "votacao":
+    candidatos = [
+        "fundo_votacao.png",
+        "fundo_votacao.jpg",
+        "fundo_painel.png",
+        "fundo_painel.jpg",
+        "fundo.png",
+        "fundo.jpg",
+    ]
+  else:
+    candidatos = [
+        f"fundo_{tipo_tela}.png",
+        f"fundo_{tipo_tela}.jpg",
+        "fundo.png",
+        "fundo.jpg",
+    ]
 
   img_encontrada = None
   for arquivo in candidatos:
@@ -258,7 +266,6 @@ def obter_classificados(categoria, papel):
   if df_class.empty:
     return []
 
-  # Prata classifica 8, Ouro classifica 7
   limite = 8 if categoria == "Prata" else 7
 
   ranking = df_class.groupby("competidor")["nota"].mean().reset_index()
@@ -300,7 +307,9 @@ if modo == "Painel do Jurado":
   elif st.session_state.categoria_selecionada is None:
     st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
   else:
-    st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
+    st.markdown(
+        obter_fundo_css("votacao"), unsafe_allow_html=True
+    )  # Usa o fundo específico da votação
 elif modo == "Telão (Público)":
   st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
 else:
@@ -567,7 +576,6 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # Top Navigation Bar matching mockup: [← SAIR] and [⇄ TROCAR CATEGORIA]
       col_btn_1, col_btn_2 = st.columns(2)
       with col_btn_1:
         if st.button("← SAIR", use_container_width=True):
@@ -594,7 +602,6 @@ if modo == "Painel do Jurado":
       else:
         fase_escolhida = fases_disponiveis[0]
 
-      # Category Banner Card matching mockup
       st.markdown(
           f"""
           <div style="
@@ -630,7 +637,6 @@ if modo == "Painel do Jurado":
           label_visibility="collapsed",
       )
 
-      # Lógica automática para filtrar os classificados na Fase Final para Prata e Ouro
       precisa_filtrar_classificados = (
           fase_escolhida == "Fase Final"
           and categoria_escolhida in ["Prata", "Ouro"]
@@ -665,7 +671,6 @@ if modo == "Painel do Jurado":
 
         current_comp = competidores_ordenados[st.session_state.competidor_index]
 
-        # Competitor Navigation Card matching mockup with arrows
         col_prev, col_name, col_next = st.columns([1, 5, 1])
         with col_prev:
           if st.button("〈", use_container_width=True, key="btn_prev_comp"):
