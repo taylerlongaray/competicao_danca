@@ -452,7 +452,7 @@ if modo == "Painel do Jurado":
           f"""
           <div style="text-align: center; margin-bottom: 6px;">
               <div class="saudacao-jurado">Olá, {nome_jurado}!</div>
-              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
+              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11.5px; opacity: 0.9; margin-top: 25px; margin-bottom: 15px;">Selecione a categoria que você irá avaliar:</p>
           </div>
           """,
           unsafe_allow_html=True,
