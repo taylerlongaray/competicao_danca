@@ -105,6 +105,14 @@ try:
       st.query_params["view"] = "jurado"
     st.rerun()
 
+  if "trocar_cat" in qp:
+    st.session_state.categoria_selecionada = None
+    if "cat" in st.query_params:
+      del st.query_params["cat"]
+    if "trocar_cat" in st.query_params:
+      del st.query_params["trocar_cat"]
+    st.rerun()
+
   if "jurado" in qp and not st.session_state.jurado_logado:
     st.session_state.jurado_logado = qp["jurado"]
   if "cat" in qp and not st.session_state.categoria_selecionada:
@@ -574,24 +582,76 @@ if modo == "Painel do Jurado":
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
-      # Top Navigation Bar matching reference mockup
-      col_btn_1, col_btn_2 = st.columns(2)
-      with col_btn_1:
-        if st.button("← SAIR", use_container_width=True):
-          st.session_state.jurado_logado = None
-          st.session_state.categoria_selecionada = None
-          st.query_params.clear()
-          if link_jurado_exclusivo:
-            st.query_params["view"] = "jurado"
-          st.rerun()
-      with col_btn_2:
-        if st.button("⇄ TROCAR CATEGORIA", use_container_width=True):
-          st.session_state.categoria_selecionada = None
-          if "cat" in st.query_params:
-            del st.query_params["cat"]
-          st.rerun()
+      # Estilo CSS exato para os botões em pílula do topo
+      st.markdown(
+          """
+          <style>
+          .top-pill-btn {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              background: linear-gradient(135deg, rgba(18, 13, 9, 0.95) 0%, rgba(35, 25, 15, 0.98) 100%);
+              border: 1px solid rgba(212, 175, 55, 0.7);
+              color: #f3e5ab;
+              text-decoration: none;
+              padding: 8px 16px;
+              border-radius: 30px;
+              font-family: 'Helvetica Neue', sans-serif;
+              font-size: 11px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 1.5px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+              transition: all 0.3s ease;
+              white-space: nowrap;
+          }
+          .top-pill-btn:hover {
+              border-color: rgba(212, 175, 55, 1.0);
+              background: linear-gradient(135deg, rgba(30, 21, 14, 1) 0%, rgba(55, 40, 24, 1) 100%);
+              color: #ffffff;
+          }
+          </style>
+          """,
+          unsafe_allow_html=True,
+      )
 
-      st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+      # Top Bar idêntica ao design de referência: [← SAIR] | LOGO CENTRAL | [⇄ TROCAR CATEGORIA]
+      col_btn_l, col_logo, col_btn_r = st.columns([1.2, 2.2, 1.2])
+
+      with col_btn_l:
+        logout_url = (
+            "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
+        )
+        st.markdown(
+            f'<a href="{logout_url}" class="top-pill-btn">← SAIR</a>',
+            unsafe_allow_html=True,
+        )
+
+      with col_logo:
+        st.markdown(
+            """
+            <div style="text-align: center; line-height: 1.2;">
+                <div style="font-family: 'Georgia', serif; font-size: 15px; color: #e5c158; font-weight: bold; letter-spacing: 1.5px;">JACK <span style="font-size: 10px; color: #b39b6b; font-weight: normal;">AND</span> JILL</div>
+                <div style="font-size: 8px; color: #b39b6b; letter-spacing: 2px; text-transform: uppercase; margin-top: 1px;">NOITE NAS ARÁBIAS</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+      with col_btn_r:
+        view_str = "view=jurado&" if link_jurado_exclusivo else ""
+        jurado_str = f"jurado={st.session_state.jurado_logado}&"
+        trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
+        st.markdown(
+            f'<div style="text-align: right;"><a href="{trocar_url}"'
+            ' class="top-pill-btn">⇄ TROCAR</a></div>',
+            unsafe_allow_html=True,
+        )
+
+      st.markdown(
+          "<div style='margin-top: 20px;'></div>", unsafe_allow_html=True
+      )
 
       fases_disponiveis = fases_por_categoria[categoria_escolhida]
       if len(fases_disponiveis) > 1:
