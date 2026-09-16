@@ -421,7 +421,7 @@ if modo == "Painel do Jurado":
       # Ícone do avatar posicionado fixo de forma absoluta no topo direito (altura do Passion Dance)
       st.markdown(
           f"""
-          <div style="position: fixed; top: 15px; right: 18px; z-index: 99999;">
+          <div style="position: fixed; top: 25px; right: 18px; z-index: 99999;">
               <a href="?{logout_param}" title="Sair da Conta" style="text-decoration: none; display: inline-block;">
                   {avatar_html}
               </a>
