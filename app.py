@@ -70,11 +70,15 @@ def img_to_base64(file_path):
 
 
 def obter_avatar_html():
-  candidatos = ["avatar.png", "avatar.jpg", "jurado.png", "jurado.jpg"]
-  for arquivo in candidatos:
-    if os.path.exists(arquivo):
-      b64 = img_to_base64(arquivo)
-      return f'<img src="{b64}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; box-shadow: 0 3px 10px rgba(0,0,0,0.8); background-color: #150f0a;">'
+  arquivos = os.listdir(".") if os.path.exists(".") else []
+  # Procura automaticamente por qualquer imagem de perfil/jurado na pasta
+  for f in arquivos:
+    if f.lower().startswith(
+        ("avatar", "perfil", "jurado", "user", "icone", "foto")
+    ) and f.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
+      b64 = img_to_base64(f)
+      if b64:
+        return f'<img src="{b64}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; box-shadow: 0 3px 10px rgba(0,0,0,0.8); background-color: #150f0a;">'
   return '<div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #1f150b, #3d2b16); border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; color: #f3e5ab; font-size: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.8);">👤</div>'
 
 
@@ -411,11 +415,11 @@ if modo == "Painel do Jurado":
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
       )
 
-      # CSS separado sem conflito de f-string
+      # CSS e Script para forçar o avatar perfeitamente no canto superior direito da tela
       st.markdown(
-          """
+          f"""
           <style>
-          html, body, [data-testid="stAppViewContainer"], .main {
+          html, body, [data-testid="stAppViewContainer"], .main {{
               overflow: hidden !important;
               touch-action: none !important;
               overscroll-behavior: none !important;
@@ -424,9 +428,9 @@ if modo == "Painel do Jurado":
               height: 100vh !important;
               margin: 0 !important;
               padding: 0 !important;
-          }
+          }}
 
-          .block-container {
+          .block-container {{
               position: fixed !important;
               top: 200px !important;
               left: 50% !important;
@@ -435,9 +439,9 @@ if modo == "Painel do Jurado":
               max-width: 320px !important;
               padding: 0 !important;
               margin: 0 !important;
-          }
+          }}
 
-          .welcome-title {
+          .welcome-title {{
               color: #f3e5ab;
               font-family: 'Georgia', serif;
               font-size: 20px;
@@ -445,9 +449,9 @@ if modo == "Painel do Jurado":
               font-weight: normal;
               margin-bottom: 6px;
               letter-spacing: 0.5px;
-          }
+          }}
 
-          .welcome-subtitle {
+          .welcome-subtitle {{
               color: #f3e5ab;
               font-family: 'Helvetica Neue', sans-serif;
               font-size: 11.5px;
@@ -455,9 +459,9 @@ if modo == "Painel do Jurado":
               margin-bottom: 15px;
               opacity: 0.9;
               letter-spacing: 0.3px;
-          }
+          }}
 
-          .category-card {
+          .category-card {{
               display: flex;
               align-items: center;
               justify-content: space-between;
@@ -470,50 +474,54 @@ if modo == "Painel do Jurado":
               box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
               transition: all 0.3s ease;
           }
-          .category-card:hover {
+          .category-card:hover {{
               border-color: rgba(212, 175, 55, 1.0);
               background: linear-gradient(135deg, rgba(25, 18, 12, 0.95) 0%, rgba(45, 33, 19, 0.98) 100%);
-          }
-          .card-left {
+          }}
+          .card-left {{
               display: flex;
               align-items: center;
               gap: 15px;
-          }
-          .card-icon {
+          }}
+          .card-icon {{
               width: 28px !important; 
               height: 28px !important;
               object-fit: contain;
-          }
-          .card-title {
+          }}
+          .card-title {{
               color: #f3e5ab;
               font-family: 'Georgia', serif;
               font-size: 13px !important; 
               font-weight: 600;
               letter-spacing: 2px;
-          }
-          .card-arrow {
+          }}
+          .card-arrow {{
               color: #d4af37;
               font-size: 16px !important;
-          }
-
-          .top-right-avatar {
-              position: fixed !important;
-              top: 15px !important;
-              right: 15px !important;
-              z-index: 99999 !important;
-              text-decoration: none !important;
-              cursor: pointer;
-          }
+          }}
           </style>
-          """,
-          unsafe_allow_html=True,
-      )
 
-      st.markdown(
-          f"""
-          <a href="?{logout_param}" class="top-right-avatar" title="Sair da Conta">
-              {avatar_html}
-          </a>
+          <div id="avatar-container-source" style="display:none;">
+              <a href="?{logout_param}" title="Sair da Conta" style="text-decoration: none; display: block;">
+                  {avatar_html}
+              </a>
+          </div>
+
+          <script>
+              // Move o avatar para a raiz do body, escapando de qualquer transform do Streamlit
+              const src = document.getElementById('avatar-container-source');
+              if (src && !document.getElementById('fixed-top-right-avatar-global')) {
+                  src.id = 'fixed-top-right-avatar-global';
+                  src.style.display = 'block';
+                  src.style.position = 'fixed';
+                  src.style.top = '15px';
+                  src.style.right = '15px';
+                  src.style.zIndex = '9999999';
+                  document.body.appendChild(src);
+              } else if (src) {
+                  src.remove();
+              }
+          </script>
           """,
           unsafe_allow_html=True,
       )
