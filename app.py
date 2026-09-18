@@ -1030,7 +1030,7 @@ if modo == "Painel do Jurado":
                 label_visibility="collapsed",
             )
             st.markdown(
-                f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:0px;'>{len(comentario)}/300</div>",
+                f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:-4px;'>{len(comentario)}/300</div>",
                 unsafe_allow_html=True,
             )
 
