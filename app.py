@@ -988,7 +988,7 @@ if modo == "Painel do Jurado":
               label_visibility="collapsed",
           )
 
-        # Card 5: Comentários unificado em um único retângulo
+        # Card 5: Comentários unificado em um único retângulo com contador interno
         st.markdown(
             """<style>
             .st-key-coment_card { 
@@ -996,7 +996,7 @@ if modo == "Painel do Jurado":
                 border: 1px solid rgba(212, 175, 55, 0.45); 
                 border-radius: 10px; 
                 box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
-                padding: 6px 10px 8px 10px; 
+                padding: 8px 10px 10px 10px; 
                 margin-bottom: 6px; 
             } 
             .st-key-coment_card textarea { 
@@ -1006,9 +1006,15 @@ if modo == "Painel do Jurado":
                 color: #f3e5ab !important; 
                 font-size: 12px !important; 
                 height: 45px !important; 
+                margin-bottom: 0px !important;
             } 
             .st-key-coment_card textarea::placeholder { 
                 color: rgba(243, 229, 171, 0.35) !important; 
+            }
+            /* Força os textos do markdown a ficarem contidos sem margens extras */
+            .st-key-coment_card p {
+                margin: 0 !important;
+                padding: 0 !important;
             }
             </style>""",
             unsafe_allow_html=True,
