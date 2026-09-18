@@ -850,7 +850,7 @@ if modo == "Painel do Jurado":
 
       st.markdown(
           f"""
-          <div style="position: sticky; top: 0px; background: rgba(14, 10, 8, 0.95); z-index: 99999; padding: 10px 0; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="position: fixed; top: 12px; left: 12px; right: 12px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; pointer-events: none;">
               <a href="{logout_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
@@ -868,6 +868,7 @@ if modo == "Painel do Jurado":
                   align-items: center;
                   justify-content: center;
                   text-align: center;
+                  pointer-events: auto;
               ">← Sair</a>
               <a href="{trocar_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
@@ -887,6 +888,7 @@ if modo == "Painel do Jurado":
                   justify-content: center;
                   text-align: center;
                   line-height: 1.15;
+                  pointer-events: auto;
               ">Trocar<br>Categoria</a>
           </div>
           """,
