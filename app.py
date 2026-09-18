@@ -668,39 +668,43 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     align-items: center !important;
     width: 100% !important;
     max-width: 100% !important;
-    gap: 4px !important;
+    gap: 3px !important;
     box-sizing: border-box !important;
-    overflow: hidden !important;
+    overflow: visible !important;
 }
+
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
-    flex: 1 1 auto !important;
     min-width: 0 !important;
-    width: auto !important;
     padding: 0 !important;
     margin: 0 !important;
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-    flex: 0 0 36px !important;
-    max-width: 36px !important;
-    min-width: 36px !important;
+    flex: 0 0 34px !important;
+    max-width: 34px !important;
+    min-width: 34px !important;
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
-    flex: 1 1 auto !important;
-    padding: 0 2px !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-    height: 36px !important;
-    width: 36px !important;
-    min-width: 36px !important;
-    font-size: 14px !important;
-    border-radius: 8px !important;
+    height: 34px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    font-size: 15px !important;
+    border-radius: 6px !important;
     padding: 0 !important;
     margin: 0 auto !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 4px 6px !important;
 }
 </style>
 """,
