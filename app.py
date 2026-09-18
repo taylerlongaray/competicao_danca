@@ -668,7 +668,7 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     align-items: center !important;
     width: 100% !important;
     max-width: 100% !important;
-    gap: 4px !important;
+    gap: 0px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
@@ -676,6 +676,8 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
     flex: 1 1 auto !important;
     min-width: 0 !important;
     width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
@@ -685,6 +687,7 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important;
+    padding: 0 4px !important;
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
     height: 36px !important;
