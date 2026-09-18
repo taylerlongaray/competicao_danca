@@ -680,9 +680,9 @@ st.markdown(
         text-transform: uppercase !important;
     }
     
-    /* ======================================================== */
-    /* CSS DEFINITIVO PARA FORÇAR OS BOTÕES E O NOME LADO A LADO */
-    /* ======================================================== */
+    /* ========================================================================= */
+    /* CSS À PROVA DE FALHAS PARA FORÇAR OS BOTÕES E O NOME LADO A LADO NO MOBILE */
+    /* ========================================================================= */
     @media (max-width: 9999px) {
         div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
             display: flex !important;
@@ -702,16 +702,17 @@ st.markdown(
         }
         div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
         div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-            flex: 0 0 46px !important;
-            max-width: 46px !important;
+            flex: 0 0 42px !important;
+            max-width: 42px !important;
+            min-width: 42px !important;
         }
         div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
             flex: 1 1 auto !important;
         }
         div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
             height: 42px !important;
-            width: 46px !important;
-            min-width: 46px !important;
+            width: 42px !important;
+            min-width: 42px !important;
             font-size: 18px !important;
             border-radius: 8px !important;
             padding: 0 !important;
@@ -1051,11 +1052,6 @@ if modo == "Painel do Jurado":
             ) % total_comp
             st.session_state.idx_crit = 0
             st.rerun()
-          st.markdown(
-              "<div style='text-align:center; color:#8d7a52; font-size:8px;"
-              " letter-spacing:1px; margin-top:2px;'>ANT</div>",
-              unsafe_allow_html=True,
-          )
 
         with col_nome:
           st.markdown(
@@ -1077,11 +1073,6 @@ if modo == "Painel do Jurado":
             ) % total_comp
             st.session_state.idx_crit = 0
             st.rerun()
-          st.markdown(
-              "<div style='text-align:center; color:#8d7a52; font-size:8px;"
-              " letter-spacing:1px; margin-top:2px;'>PRÓX</div>",
-              unsafe_allow_html=True,
-          )
 
         st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
 
