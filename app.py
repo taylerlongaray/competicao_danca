@@ -690,10 +690,21 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
     max-width: 40px !important;
 }
 
-/* Coluna do meio (Cartão do Nome) - Ocupa o espaço flexível restante */
+/* Coluna do meio (Cartão do Nome) - Limitada para encaixar as setas */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important;
     min-width: 0 !important;
+    max-width: calc(100% - 88px) !important;
+}
+
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 6px 4px !important;
+    text-align: center !important;
+    overflow: hidden !important;
 }
 
 /* Coluna da direita (Botão Próximo) - Fixa em 40px */
@@ -905,7 +916,7 @@ if modo == "Painel do Jurado":
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
         # Card 2: Competidor com botões Anterior/Próximo e badge central (Com classe .nav-marker para o CSS alinhar)
-        col_ant, col_nome, col_prox = st.columns([1, 6, 1])
+        col_ant, col_nome, col_prox = st.columns([36, 280, 36])
 
         with col_ant:
           if st.button("‹", key="btn_anterior", use_container_width=True):
