@@ -679,18 +679,18 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-    flex: 0 0 42px !important;
-    max-width: 42px !important;
-    min-width: 42px !important;
+    flex: 0 0 36px !important;
+    max-width: 36px !important;
+    min-width: 36px !important;
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important;
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-    height: 42px !important;
-    width: 42px !important;
-    min-width: 42px !important;
-    font-size: 18px !important;
+    height: 36px !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    font-size: 14px !important;
     border-radius: 8px !important;
     padding: 0 !important;
     margin: 0 auto !important;
