@@ -1058,11 +1058,7 @@ if modo == "Painel do Jurado":
             except ValueError:
               st.error("❌ Digite um valor numérico válido para a nota.")
 
-        # Rodapé compacto
-        st.markdown(
-            """<div class="jj-footer" style="margin-top: 6px; padding-top: 4px;"><div style="color:#b39b6b; font-size:9px; margin-bottom: 1px;">✦</div><div class="jj-footer-marca" style="font-size: 9px; letter-spacing: 3px;">Passion Dance</div><div class="jj-footer-sub" style="font-size: 7px; letter-spacing: 1px;">Jack and Jill · Noite nas Arábias</div></div>""",
-            unsafe_allow_html=True,
-        )
+        
 
 elif modo == "Painel da Organização":
   st.title("📋 Painel da Organização")
