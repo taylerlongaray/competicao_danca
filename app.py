@@ -743,7 +743,7 @@ if modo == "Painel do Jurado":
           </div>
           <div style="
               position: fixed;
-              top: 50%;
+              top: 70%;
               left: 50%;
               transform: translate(-50%, -50%);
               width: 360px;
