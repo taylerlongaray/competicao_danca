@@ -659,17 +659,18 @@ div[data-testid="stExpander"] summary p {
 }
 
 /* ========================================================================= */
-/* CSS UNIVERSAL À PROVA DE FALHAS PARA MOBILE (COMPATÍVEL COM TODOS OS BROWSERS) */
+/* CSS UNIVERSAL E À PROVA DE FALHAS PARA MOBILE (COMPATÍVEL COM TODOS OS BROWSERS) */
 /* ========================================================================= */
 @media (max-width: 9999px) {
+    /* 1. Forçar TODAS as colunas a ficarem lado a lado (desativa a quebra do Streamlit no telemóvel) */
     div[data-testid="stHorizontalBlock"] {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
-        align-items: center !important;
         width: 100% !important;
         gap: 6px !important;
         overflow: hidden !important;
+        align-items: center !important;
     }
     
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
@@ -678,32 +679,34 @@ div[data-testid="stExpander"] summary p {
         padding: 0 !important;
     }
 
-    /* BLOCOS COM EXATAMENTE 2 COLUNAS (Ex: Ajustar Fase/Grupo) */
+    /* 2. Blocos com EXATAMENTE 2 colunas (Ex: Fase/Grupo) */
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(2),
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(2) ~ div {
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2):last-child {
         flex: 1 1 50% !important;
     }
 
-    /* BLOCOS COM EXATAMENTE 3 COLUNAS (Ex: Navegação Anterior/Próximo) */
+    /* 3. Blocos com EXATAMENTE 3 colunas (Ex: Navegação Anterior/Próximo) */
+    /* Colunas das extremidades (os botões) */
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3),
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) {
-        flex: 0 0 46px !important;
-        max-width: 46px !important;
-        min-width: 46px !important;
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3):last-child {
+        flex: 0 0 38px !important; /* Se quiser testar os 10px, troque "38px" por "10px" aqui */
+        max-width: 38px !important; /* e aqui */
+        min-width: 38px !important; /* e aqui */
     }
     
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(2) {
+    /* Coluna do meio (Nome do Competidor) */
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2):nth-last-child(2) {
         flex: 1 1 auto !important;
     }
 
-    /* ESTILO ESPECÍFICO PARA OS BOTÕES DAS LATERAIS (Anterior/Próximo) */
+    /* 4. Estilizar SOMENTE os botões das extremidades */
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) button,
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) button {
-        width: 46px !important;
-        height: 46px !important;
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3):last-child button {
+        width: 38px !important; /* Troque para 10px se quiser */
+        height: 38px !important; /* Troque para 10px se quiser */
         padding: 0 !important;
-        font-size: 22px !important;
-        border-radius: 10px !important;
+        font-size: 18px !important; /* Troque para 6px se for usar botão de 10px */
+        border-radius: 8px !important;
         margin: 0 auto !important;
         display: flex !important;
         align-items: center !important;
@@ -711,10 +714,11 @@ div[data-testid="stExpander"] summary p {
         background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
     }
     
-    /* Ajuste do texto ANT e PRÓX embaixo dos botões para não quebrar */
+    /* Ajuste para o texto "ANT" e "PRÓX" não adicionar espaçamento extra */
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) p,
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) p {
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3):last-child p {
         margin-bottom: 0 !important;
+        margin-top: 2px !important;
     }
 }
 </style>
@@ -895,7 +899,7 @@ if modo == "Painel do Jurado":
           st.session_state.idx_comp = 0
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
-        # Card 2: Competidor com botões Anterior/Próximo perfeitamente alinhados
+        # Card 2: Competidor com botões Anterior/Próximo (Ajustado no novo CSS universal)
         col_ant, col_nome, col_prox = st.columns([1, 4, 1])
 
         with col_ant:
@@ -905,6 +909,7 @@ if modo == "Painel do Jurado":
             ) % total_comp
             st.session_state.idx_crit = 0
             st.rerun()
+          st.markdown("<p style='text-align:center; color:#8d7a52; font-size:8px; letter-spacing:1px;'>ANT</p>", unsafe_allow_html=True)
 
         with col_nome:
           st.markdown(
@@ -919,6 +924,7 @@ if modo == "Painel do Jurado":
             ) % total_comp
             st.session_state.idx_crit = 0
             st.rerun()
+          st.markdown("<p style='text-align:center; color:#8d7a52; font-size:8px; letter-spacing:1px;'>PRÓX</p>", unsafe_allow_html=True)
 
         st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
 
