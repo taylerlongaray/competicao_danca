@@ -988,28 +988,51 @@ if modo == "Painel do Jurado":
               label_visibility="collapsed",
           )
 
-        # Card 5: Comentários compacto
+        # Card 5: Comentários unificado em um único retângulo
         st.markdown(
-            f'<div class="jj-card" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-secao-label">Comentários</div>',
-            unsafe_allow_html=True,
-        )
-        chave_comentario = f"coment_{chave_base}"
-        comentario = st.text_area(
-            "COMENTÁRIOS",
-            key=chave_comentario,
-            placeholder="Deixe seu comentário aqui...",
-            max_chars=300,
-            height=45,
-            label_visibility="collapsed",
-        )
-        st.markdown(
-            f"<div style='text-align:right; color:#8d7a52; font-size:9px;"
-            f" margin-top:1px;'>{len(comentario)}/300</div>"
-            "</div>",
+            """<style>
+            .st-key-coment_card { 
+                background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); 
+                border: 1px solid rgba(212, 175, 55, 0.45); 
+                border-radius: 10px; 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
+                padding: 6px 10px 8px 10px; 
+                margin-bottom: 6px; 
+            } 
+            .st-key-coment_card textarea { 
+                background-color: rgba(10, 7, 5, 0.92) !important; 
+                border: 1px solid rgba(212, 175, 55, 0.35) !important; 
+                border-radius: 6px !important; 
+                color: #f3e5ab !important; 
+                font-size: 12px !important; 
+                height: 45px !important; 
+            } 
+            .st-key-coment_card textarea::placeholder { 
+                color: rgba(243, 229, 171, 0.35) !important; 
+            }
+            </style>""",
             unsafe_allow_html=True,
         )
 
-        st.markdown("<div style='height: 2px;'></div>", unsafe_allow_html=True)
+        chave_comentario = f"coment_{chave_base}"
+        
+        with st.container(key="coment_card"):
+            st.markdown(
+                '<div class="jj-secao-label" style="margin-bottom: 4px;">Comentários:</div>',
+                unsafe_allow_html=True,
+            )
+            comentario = st.text_area(
+                "COMENTÁRIOS",
+                key=chave_comentario,
+                placeholder="Deixe seu comentário aqui...",
+                max_chars=300,
+                height=45,
+                label_visibility="collapsed",
+            )
+            st.markdown(
+                f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:2px;'>{len(comentario)}/300</div>",
+                unsafe_allow_html=True,
+            )
 
         # Botão Enviar Avaliação compacto
         if st.button(
