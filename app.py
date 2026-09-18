@@ -659,18 +659,20 @@ div[data-testid="stExpander"] summary p {
 }
 
 /* ========================================================================= */
-/* CSS PARA ELIMINAR O ESPAÇO VAZIO E UNIR SETAS AO CARTÃO  */
+/* BARRA DE NAVEGAÇÃO UNIFICADA E PERFEITA PARA TELEMÓVEL                    */
 /* ========================================================================= */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
+    justify-content: space-between !important;
     width: 100% !important;
     max-width: 100% !important;
-    gap: 4px !important;
+    gap: 6px !important;
     box-sizing: border-box !important;
-    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
@@ -680,28 +682,35 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
     box-sizing: border-box !important;
 }
 
-/* Colunas das setas com largura fixa exata */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-    flex: 0 0 34px !important;
-    max-width: 34px !important;
-    min-width: 34px !important;
-    width: 34px !important;
+/* Botão Anterior (Esquerda) - Fixado em 38px */
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1) {
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    max-width: 38px !important;
+}
 
-/* Coluna do meio ocupa todo o resto do espaço sem vãos */
+/* Cartão do Meio (Nome) - Ocupa todo o espaço central disponível */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important;
     min-width: 0 !important;
+    width: auto !important;
 }
 
-/* Estilo dos botões */
+/* Botão Próximo (Direita) - Fixado em 38px */
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    max-width: 38px !important;
+}
+
+/* Estilo unificado dos botões de setas */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-    height: 34px !important;
-    width: 34px !important;
-    min-width: 34px !important;
-    max-width: 34px !important;
-    font-size: 15px !important;
-    border-radius: 6px !important;
+    height: 38px !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    max-width: 38px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
     padding: 0 !important;
     margin: 0 auto !important;
     display: flex !important;
@@ -710,13 +719,14 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
     background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
 }
 
-/* Garante que o cartão preenche a largura da coluna central sem margens extras */
+/* Retângulo central do nome perfeitamente ajustado */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
     margin: 0 !important;
     padding: 6px 8px !important;
+    text-align: center !important;
 }
 </style>
 """,
@@ -897,7 +907,7 @@ if modo == "Painel do Jurado":
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
         # Card 2: Competidor com botões Anterior/Próximo e badge central (Com classe .nav-marker para o CSS alinhar)
-        col_ant, col_nome, col_prox = st.columns([34, 400, 34])
+        col_ant, col_nome, col_prox = st.columns([1, 8, 1])
 
         with col_ant:
           if st.button("‹", key="btn_anterior", use_container_width=False):
