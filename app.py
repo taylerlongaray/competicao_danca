@@ -848,13 +848,9 @@ if modo == "Painel do Jurado":
       jurado_str = f"jurado={st.session_state.jurado_logado}&"
       trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-      st.markdown(
+     st.markdown(
           f"""
-          <div style="text-align: center; margin-bottom: 14px;">
-              <div style="font-family: 'Georgia', serif; color: #f3e5ab; font-size: 15px; font-weight: 700; letter-spacing: 2px;">JACK <span style="font-size: 10px;">AND</span> JILL</div>
-              <div style="color: #b39b6b; font-size: 8px; letter-spacing: 3px; text-transform: uppercase; margin-top: 1px;">Noite nas Arábias</div>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <div style="position: sticky; top: 0px; background: rgba(14, 10, 8, 0.95); z-index: 99999; padding: 10px 0; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
               <a href="{logout_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab;
