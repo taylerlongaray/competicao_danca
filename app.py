@@ -659,7 +659,7 @@ div[data-testid="stExpander"] summary p {
 }
 
 /* ========================================================================= */
-/* CSS BLINDADO PARA MANTER SETAS E NOME NA MESMA LINHA SEM ESTOURAR A TELA  */
+/* CSS PARA ELIMINAR O ESPAÇO VAZIO E UNIR SETAS AO CARTÃO  */
 /* ========================================================================= */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     display: flex !important;
@@ -668,7 +668,7 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     align-items: center !important;
     width: 100% !important;
     max-width: 100% !important;
-    gap: 2px !important;
+    gap: 4px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
@@ -680,23 +680,21 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
     box-sizing: border-box !important;
 }
 
-/* Força exata de 34px para as colunas das setas lateralmente */
+/* Colunas das setas com largura fixa exata */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
     flex: 0 0 34px !important;
     max-width: 34px !important;
     min-width: 34px !important;
     width: 34px !important;
-}
 
-/* Força a coluna do meio a encolher com limite estrito para caber o botão da direita */
+/* Coluna do meio ocupa todo o resto do espaço sem vãos */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important;
     min-width: 0 !important;
-    max-width: calc(100% - 68px) !important;
 }
 
-/* Estilo estrito dos botões das setas */
+/* Estilo dos botões */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
     height: 34px !important;
     width: 34px !important;
@@ -712,14 +710,13 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
     background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
 }
 
-/* Garante que o cartão do meio se contrai perfeitamente e nunca estoura o limite */
+/* Garante que o cartão preenche a largura da coluna central sem margens extras */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
     margin: 0 !important;
-    padding: 4px 4px !important;
-    overflow: hidden !important;
+    padding: 6px 8px !important;
 }
 </style>
 """,
@@ -900,7 +897,7 @@ if modo == "Painel do Jurado":
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
         # Card 2: Competidor com botões Anterior/Próximo e badge central (Com classe .nav-marker para o CSS alinhar)
-        col_ant, col_nome, col_prox = st.columns([1, 4, 1])
+        col_ant, col_nome, col_prox = st.columns([34, 400, 34])
 
         with col_ant:
           if st.button("‹", key="btn_anterior", use_container_width=False):
