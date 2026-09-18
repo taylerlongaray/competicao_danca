@@ -72,7 +72,6 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
   st.session_state.categoria_selecionada = None
 
-# --- Estado da navegação da tela de votação ---
 if "idx_comp" not in st.session_state:
   st.session_state.idx_comp = 0
 
@@ -659,67 +658,52 @@ div[data-testid="stExpander"] summary p {
 }
 
 /* ========================================================================= */
-/* CSS UNIVERSAL E À PROVA DE FALHAS PARA MOBILE (COMPATÍVEL COM TODOS OS BROWSERS) */
+/* CSS ROBUSTO PARA ANULAR AS REGRAS DO STREAMLIT NO CHROME MOBILE           */
 /* ========================================================================= */
-@media (max-width: 9999px) {
-    /* 1. Forçar TODAS as colunas a ficarem lado a lado (desativa a quebra do Streamlit no telemóvel) */
-    div[data-testid="stHorizontalBlock"] {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        width: 100% !important;
-        gap: 6px !important;
-        overflow: hidden !important;
-        align-items: center !important;
-    }
-    
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        min-width: 0 !important;
-        width: auto !important;
-        padding: 0 !important;
-    }
+.stApp div[data-testid="stHorizontalBlock"] {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+}
 
-    /* 2. Blocos com EXATAMENTE 2 colunas (Ex: Fase/Grupo) */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(2),
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2):last-child {
-        flex: 1 1 50% !important;
-    }
+.stApp div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+    padding: 0 !important;
+}
 
-    /* 3. Blocos com EXATAMENTE 3 colunas (Ex: Navegação Anterior/Próximo) */
-    /* Colunas das extremidades (os botões) */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3),
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3):last-child {
-        flex: 0 0 38px !important; /* Se quiser testar os 10px, troque "38px" por "10px" aqui */
-        max-width: 38px !important; /* e aqui */
-        min-width: 38px !important; /* e aqui */
-    }
-    
-    /* Coluna do meio (Nome do Competidor) */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2):nth-last-child(2) {
-        flex: 1 1 auto !important;
-    }
+/* Blocos de 3 colunas (Anterior | Nome | Próximo) */
+.stApp div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3),
+.stApp div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) {
+    flex: 0 0 38px !important;
+    max-width: 38px !important;
+    min-width: 38px !important;
+}
 
-    /* 4. Estilizar SOMENTE os botões das extremidades */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) button,
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3):last-child button {
-        width: 38px !important; /* Troque para 10px se quiser */
-        height: 38px !important; /* Troque para 10px se quiser */
-        padding: 0 !important;
-        font-size: 18px !important; /* Troque para 6px se for usar botão de 10px */
-        border-radius: 8px !important;
-        margin: 0 auto !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
-    }
-    
-    /* Ajuste para o texto "ANT" e "PRÓX" não adicionar espaçamento extra */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) p,
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3):last-child p {
-        margin-bottom: 0 !important;
-        margin-top: 2px !important;
-    }
+.stApp div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(2) {
+    flex: 1 1 auto !important;
+}
+
+/* Estilo e tamanho dos botões de setas lateral */
+.stApp div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) button,
+.stApp div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) button {
+    height: 38px !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
 }
 </style>
 """,
@@ -865,7 +849,6 @@ if modo == "Painel do Jurado":
 
       fase_titulo, fase_sub = formatar_fase(fase_escolhida)
 
-      # Card 1: Banner da Categoria e Fase compacto
       st.markdown(
           f"""<div class="jj-card jj-banner" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-banner-left" style="gap: 8px;"><div class="jj-banner-icon">{icone_html}</div><div><div class="jj-label">Categoria</div><div class="jj-categoria">{categoria_escolhida.upper()}</div></div></div><div class="jj-banner-right" style="padding-left: 8px;"><div class="jj-fase">{fase_titulo}</div><div class="jj-musica">{fase_sub}</div></div></div>""",
           unsafe_allow_html=True,
@@ -899,7 +882,6 @@ if modo == "Painel do Jurado":
           st.session_state.idx_comp = 0
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
-        # Card 2: Competidor com botões Anterior/Próximo (Ajustado no novo CSS universal)
         col_ant, col_nome, col_prox = st.columns([1, 4, 1])
 
         with col_ant:
@@ -909,7 +891,6 @@ if modo == "Painel do Jurado":
             ) % total_comp
             st.session_state.idx_crit = 0
             st.rerun()
-          st.markdown("<p style='text-align:center; color:#8d7a52; font-size:8px; letter-spacing:1px;'>ANT</p>", unsafe_allow_html=True)
 
         with col_nome:
           st.markdown(
@@ -924,7 +905,6 @@ if modo == "Painel do Jurado":
             ) % total_comp
             st.session_state.idx_crit = 0
             st.rerun()
-          st.markdown("<p style='text-align:center; color:#8d7a52; font-size:8px; letter-spacing:1px;'>PRÓX</p>", unsafe_allow_html=True)
 
         st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
 
@@ -937,7 +917,6 @@ if modo == "Painel do Jurado":
 
         criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
-        # Card 3: Critério compacto
         st.markdown(
             f"""<div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;"><div class="jj-crit-head"><div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div><div style="flex: 1; padding: 0 6px;"><div class="jj-label">Critério</div><div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div></div><div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor" style="margin: 4px 0 4px 0;"/><div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
             unsafe_allow_html=True,
@@ -963,13 +942,12 @@ if modo == "Painel do Jurado":
               str(nota_salva).replace(".", ",") if nota_salva is not None else ""
           )
 
-        # Card 4: Sua Nota compacto
         st.markdown(
             """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card div[data-baseweb="input"]:focus-within { border-color: rgba(212, 175, 55, 1) !important; box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; } .st-key-nota_card input::placeholder { color: rgba(243, 229, 171, 0.4) !important; }</style>""",
             unsafe_allow_html=True,
         )
 
-        with st.container(key="nota_card"):  
+        with st.container(key="nota_card"):
           st.markdown(
               '<div class="jj-secao-label">Sua Nota</div>',
               unsafe_allow_html=True,
@@ -983,7 +961,6 @@ if modo == "Painel do Jurado":
               label_visibility="collapsed",
           )
 
-        # Card 5: Comentários compacto
         st.markdown(
             f'<div class="jj-card" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-secao-label">Comentários (Opcional)</div>',
             unsafe_allow_html=True,
@@ -1006,7 +983,6 @@ if modo == "Painel do Jurado":
 
         st.markdown("<div style='height: 2px;'></div>", unsafe_allow_html=True)
 
-        # Botão Enviar Avaliação compacto
         if st.button(
             "➤  ENVIAR AVALIAÇÃO",
             type="primary",
@@ -1053,7 +1029,6 @@ if modo == "Painel do Jurado":
             except ValueError:
               st.error("❌ Digite um valor numérico válido para a nota.")
 
-        # Rodapé compacto
         st.markdown(
             """<div class="jj-footer" style="margin-top: 6px; padding-top: 4px;"><div style="color:#b39b6b; font-size:9px; margin-bottom: 1px;">✦</div><div class="jj-footer-marca" style="font-size: 9px; letter-spacing: 3px;">Passion Dance</div><div class="jj-footer-sub" style="font-size: 7px; letter-spacing: 1px;">Jack and Jill · Noite nas Arábias</div></div>""",
             unsafe_allow_html=True,
