@@ -570,19 +570,19 @@ st.markdown(
     .jj-nome {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #ffffff;
-        font-size: 22px;
+        font-size: 20px;
         font-weight: 700;
         line-height: 1.0;
-        margin: 2px 0 4px 0;
+        margin: 2px 0 3px 0;
         text-shadow: 0 2px 6px rgba(0,0,0,0.8);
     }
     .jj-badge {
         display: inline-block;
         border: 1px solid rgba(212, 175, 55, 0.8);
         border-radius: 14px;
-        padding: 2px 12px;
+        padding: 2px 10px;
         color: #e5c158;
-        font-size: 9px;
+        font-size: 8px;
         letter-spacing: 1px;
         text-transform: uppercase;
     }
@@ -594,7 +594,7 @@ st.markdown(
         gap: 8px;
     }
     .jj-crit-icon {
-        width: 30px; height: 30px; min-width: 30px;
+        width: 28px; height: 28px; min-width: 28px;
         border-radius: 50%;
         border: 1px solid rgba(212, 175, 55, 0.7);
         background: rgba(0,0,0,0.35);
@@ -620,11 +620,11 @@ st.markdown(
     .jj-divisor {
         border: none;
         border-top: 1px solid rgba(212, 175, 55, 0.25);
-        margin: 6px 0 6px 0;
+        margin: 4px 0 4px 0;
     }
     .jj-crit-desc {
         color: #ded2b4;
-        font-size: 11px;
+        font-size: 10px;
         line-height: 1.35;
     }
     .jj-crit-desc b { color: #e5c158; }
@@ -639,19 +639,19 @@ st.markdown(
 
     .jj-footer {
         text-align: center;
-        margin-top: 8px;
-        padding-top: 6px;
+        margin-top: 6px;
+        padding-top: 4px;
         border-top: 1px solid rgba(212, 175, 55, 0.2);
     }
     .jj-footer-marca {
         color: #e5c158;
-        font-size: 10px;
+        font-size: 9px;
         letter-spacing: 3px;
         text-transform: uppercase;
     }
     .jj-footer-sub {
         color: #8d7a52;
-        font-size: 8px;
+        font-size: 7px;
         letter-spacing: 1px;
         text-transform: uppercase;
         margin-top: 2px;
@@ -663,7 +663,7 @@ st.markdown(
         border-radius: 6px !important;
         color: #f3e5ab !important;
         font-size: 12px !important;
-        height: 50px !important;
+        height: 45px !important;
     }
     .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
 
@@ -681,41 +681,46 @@ st.markdown(
     }
     
     /* ======================================================== */
-    /* CSS EXCLUSIVO PARA FORÇAR OS BOTÕES NA HORIZONTAL NO CELULAR */
+    /* CSS DEFINITIVO PARA FORÇAR OS BOTÕES E O NOME LADO A LADO */
     /* ======================================================== */
-    div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        gap: 6px !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
-        min-width: 0 !important;
-        padding-bottom: 0 !important;
-    }
-    /* Definir proporções (Esq - Centro - Dir) */
-    div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
-    div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-        flex: 1 1 0% !important;
-        width: 15% !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
-        flex: 4 1 0% !important;
-        width: 70% !important;
-    }
-    /* Deixar os botões de navegação menores e quadrados */
-    div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-        height: 42px !important;
-        width: 42px !important;
-        margin: 0 auto !important;
-        font-size: 20px !important;
-        border-radius: 8px !important;
-        padding: 0 !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
+    @media (max-width: 9999px) {
+        div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            gap: 4px !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            width: auto !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
+        div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
+            flex: 0 0 46px !important;
+            max-width: 46px !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
+            flex: 1 1 auto !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
+            height: 42px !important;
+            width: 46px !important;
+            min-width: 46px !important;
+            font-size: 18px !important;
+            border-radius: 8px !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
+        }
     }
     </style>
 """,
@@ -1036,7 +1041,7 @@ if modo == "Painel do Jurado":
           st.session_state.idx_comp = 0
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
-        # Card 2: Competidor com botões Anterior/Próximo e badge central
+        # Card 2: Competidor com botões Anterior/Próximo e badge central (Com classe .nav-marker para o CSS alinhar)
         col_ant, col_nome, col_prox = st.columns([1, 4, 1])
 
         with col_ant:
