@@ -839,7 +839,6 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
     else:
-      # --- TELA DE VOTAÇÃO ATUALIZADA EXATAMENTE COMO A IMAGEM DE REFERÊNCIA ---
       categoria_escolhida = st.session_state.categoria_selecionada
 
       logout_url = (
@@ -849,22 +848,50 @@ if modo == "Painel do Jurado":
       jurado_str = f"jurado={st.session_state.jurado_logado}&"
       trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-      # Cabeçalho Superior sem o texto central
       st.markdown(
           f"""
+          <div style="text-align: center; margin-bottom: 14px;">
+              <div style="font-family: 'Georgia', serif; color: #f3e5ab; font-size: 15px; font-weight: 700; letter-spacing: 2px;">JACK <span style="font-size: 10px;">AND</span> JILL</div>
+              <div style="color: #b39b6b; font-size: 8px; letter-spacing: 3px; text-transform: uppercase; margin-top: 1px;">Noite nas Arábias</div>
+          </div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
               <a href="{logout_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
-                  color: #f3e5ab; text-decoration: none; padding: 7px 14px; border-radius: 8px;
-                  border: 1px solid rgba(212,175,55,0.6); font-size: 10px; font-weight: 600;
-                  text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center;
+                  color: #f3e5ab;
+                  text-decoration: none;
+                  width: 95px;
+                  height: 38px;
+                  border-radius: 6px;
+                  border: 1px solid rgba(212,175,55,0.6);
+                  font-size: 9px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  text-align: center;
               ">← Sair</a>
               <a href="{trocar_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
-                  color: #f3e5ab; text-decoration: none; padding: 7px 10px; border-radius: 8px;
-                  border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600;
-                  text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; text-align: center;
-              ">⇄ Trocar Categoria</a>
+                  color: #f3e5ab;
+                  text-decoration: none;
+                  width: 95px;
+                  height: 38px;
+                  border-radius: 6px;
+                  border: 1px solid rgba(212,175,55,0.6);
+                  font-size: 8.5px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  text-align: center;
+                  line-height: 1.15;
+              ">Trocar<br>Categoria</a>
           </div>
           """,
           unsafe_allow_html=True,
