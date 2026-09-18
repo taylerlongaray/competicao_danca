@@ -848,7 +848,17 @@ if modo == "Painel do Jurado":
       jurado_str = f"jurado={st.session_state.jurado_logado}&"
       trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-     st.markdown(
+     else:
+      categoria_escolhida = st.session_state.categoria_selecionada
+
+      logout_url = (
+          "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
+      )
+      view_str = "view=jurado&" if link_jurado_exclusivo else ""
+      jurado_str = f"jurado={st.session_state.jurado_logado}&"
+      trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
+
+      st.markdown(
           f"""
           <div style="position: sticky; top: 0px; background: rgba(14, 10, 8, 0.95); z-index: 99999; padding: 10px 0; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
               <a href="{logout_url}" style="
