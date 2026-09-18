@@ -659,14 +659,14 @@ div[data-testid="stExpander"] summary p {
 }
 
 /* ========================================================================= */
-/* NAVEGAÇÃO MOBILE PERFEITA (MANTÉM TUDO NA TELA SEM ROLAGEM)                */
+/* NAVEGAÇÃO MOBILE 100% AJUSTADA À TELA (SEM ESTOURAR)                      */
 /* ========================================================================= */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: space-between !important;
     width: 100% !important;
     max-width: 100% !important;
     gap: 4px !important;
@@ -683,44 +683,28 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
     box-sizing: border-box !important;
 }
 
-/* Coluna da esquerda (Botão Anterior) - Fixa em 40px */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1) {
-    flex: 0 0 40px !important;
-    width: 40px !important;
-    max-width: 40px !important;
+/* Botões laterais (Setas) travados rigidamente em 38px */
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    max-width: 38px !important;
 }
 
-/* Coluna do meio (Cartão do Nome) - Limitada para encaixar as setas */
+/* Cartão do meio encolhe de forma inteligente para caber na tela */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important;
     min-width: 0 !important;
-    max-width: calc(100% - 88px) !important;
+    max-width: calc(100% - 84px) !important;
 }
 
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 6px 4px !important;
-    text-align: center !important;
-    overflow: hidden !important;
-}
-
-/* Coluna da direita (Botão Próximo) - Fixa em 40px */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-    flex: 0 0 40px !important;
-    width: 40px !important;
-    max-width: 40px !important;
-}
-
-/* Estilo unificado dos botões de setas ocupando a largura da coluna */
+/* Estilo dos botões de setas */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-    height: 48px !important;
+    height: 42px !important;
     width: 100% !important;
     min-width: 0 !important;
-    font-size: 18px !important;
-    border-radius: 8px !important;
+    font-size: 16px !important;
+    border-radius: 6px !important;
     padding: 0 !important;
     margin: 0 !important;
     display: flex !important;
@@ -729,13 +713,15 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
     background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
 }
 
-/* Cartão central formatado sem estourar as margens */
+/* Cartão central contido sem vazar */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
     margin: 0 !important;
     padding: 6px 4px !important;
+    text-align: center !important;
+    overflow: hidden !important;
 }
 </style>
 """,
@@ -916,7 +902,7 @@ if modo == "Painel do Jurado":
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
         # Card 2: Competidor com botões Anterior/Próximo e badge central (Com classe .nav-marker para o CSS alinhar)
-        col_ant, col_nome, col_prox = st.columns([36, 280, 36])
+        col_ant, col_nome, col_prox = st.columns([1, 6, 1])
 
         with col_ant:
           if st.button("‹", key="btn_anterior", use_container_width=True):
