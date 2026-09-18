@@ -659,7 +659,7 @@ div[data-testid="stExpander"] summary p {
 }
 
 /* ========================================================================= */
-/* CSS PARA FORÇAR OS BOTÕES E O NOME LADO A LADO E SEM ROLAGEM LATERAL     */
+/* CSS BLINDADO PARA MANTER SETAS E NOME NA MESMA LINHA SEM ESTOURAR A TELA  */
 /* ========================================================================= */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     display: flex !important;
@@ -668,30 +668,40 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     align-items: center !important;
     width: 100% !important;
     max-width: 100% !important;
-    gap: 3px !important;
+    gap: 2px !important;
     box-sizing: border-box !important;
-    overflow: visible !important;
+    overflow: hidden !important;
 }
 
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
     min-width: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
+    box-sizing: border-box !important;
 }
+
+/* Força exata de 34px para as colunas das setas lateralmente */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
     flex: 0 0 34px !important;
     max-width: 34px !important;
     min-width: 34px !important;
+    width: 34px !important;
 }
+
+/* Força a coluna do meio a encolher com limite estrito para caber o botão da direita */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
-    flex: 1 1 0 !important;
+    flex: 1 1 auto !important;
     min-width: 0 !important;
+    max-width: calc(100% - 68px) !important;
 }
+
+/* Estilo estrito dos botões das setas */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
     height: 34px !important;
     width: 34px !important;
     min-width: 34px !important;
+    max-width: 34px !important;
     font-size: 15px !important;
     border-radius: 6px !important;
     padding: 0 !important;
@@ -701,10 +711,15 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
     justify-content: center !important;
     background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
 }
+
+/* Garante que o cartão do meio se contrai perfeitamente e nunca estoura o limite */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
     width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
-    padding: 4px 6px !important;
+    margin: 0 !important;
+    padding: 4px 4px !important;
+    overflow: hidden !important;
 }
 </style>
 """,
