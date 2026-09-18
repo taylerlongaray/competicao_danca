@@ -741,11 +741,18 @@ if modo == "Painel do Jurado":
                   text-align: center;
               ">← Sair</a>
           </div>
+          <div style="
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              width: 360px;
+              max-width: 90vw;
+              z-index: 99999;
+          ">
           """,
           unsafe_allow_html=True,
       )
-
-      st.markdown('<div style="height: 220px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
@@ -838,6 +845,8 @@ if modo == "Painel do Jurado":
                 """,
             unsafe_allow_html=True,
         )
+
+      st.markdown("</div>", unsafe_allow_html=True)
 
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
