@@ -849,7 +849,7 @@ if modo == "Painel do Jurado":
       jurado_str = f"jurado={st.session_state.jurado_logado}&"
       trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-      # Cabeçalho Superior exato conforme a imagem (Sair, Logo central, Trocar Categoria)
+      # Cabeçalho Superior sem o texto central
       st.markdown(
           f"""
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
@@ -859,10 +859,6 @@ if modo == "Painel do Jurado":
                   border: 1px solid rgba(212,175,55,0.6); font-size: 10px; font-weight: 600;
                   text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center;
               ">← Sair</a>
-              <div style="text-align: center;">
-                  <div style="font-family: 'Georgia', serif; color: #f3e5ab; font-size: 15px; font-weight: 700; letter-spacing: 2px;">JACK <span style="font-size: 10px;">AND</span> JILL</div>
-                  <div style="color: #b39b6b; font-size: 8px; letter-spacing: 3px; text-transform: uppercase; margin-top: 1px;">Noite nas Arábias</div>
-              </div>
               <a href="{trocar_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
                   color: #f3e5ab; text-decoration: none; padding: 7px 10px; border-radius: 8px;
