@@ -407,7 +407,8 @@ st.markdown(
     header {visibility: hidden;}
     
     .block-container {
-        padding-top: 2.2rem !important;
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
         max-width: 600px !important;
         margin: 0 auto !important;
     }
@@ -436,15 +437,15 @@ st.markdown(
         float: none !important;
         background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 14px !important;
-        padding: 25px 20px 20px 20px !important;
+        border-radius: 12px !important;
+        padding: 15px 15px 10px 15px !important;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
     }
 
     .stTextInput div[data-baseweb="input"] {
         background-color: rgba(12, 9, 7, 0.95) !important;
         border: 1px solid rgba(212, 175, 55, 0.45) !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
     }
     
     .stTextInput div[data-baseweb="input"]:focus-within {
@@ -455,8 +456,8 @@ st.markdown(
     .stTextInput input {
         color: #f3e5ab !important;
         background-color: transparent !important;
-        padding: 10px 15px !important;
-        font-size: 14px !important;
+        padding: 6px 10px !important;
+        font-size: 13px !important;
     }
     
     .stTextInput input::placeholder {
@@ -466,14 +467,14 @@ st.markdown(
     .stButton > button {
         background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
         border: 1px solid rgba(212, 175, 55, 0.6) !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
         color: #f3e5ab !important;
         text-transform: uppercase !important;
-        letter-spacing: 1.5px !important;
+        letter-spacing: 1px !important;
         font-weight: 600 !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
-        padding: 8px 14px !important;
-        font-size: 12px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+        padding: 6px 10px !important;
+        font-size: 11px !important;
     }
     .stButton > button:hover {
         background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
@@ -486,7 +487,8 @@ st.markdown(
         border: 1px solid #e5c158 !important;
         color: #1a1208 !important;
         font-weight: 700 !important;
-        box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25) !important;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25) !important;
+        padding: 6px 10px !important;
     }
     .stButton > button[kind="primary"]:hover {
         background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
@@ -497,7 +499,7 @@ st.markdown(
         background-color: rgba(20, 15, 10, 0.95) !important;
         border: 1px solid rgba(212, 175, 55, 0.6) !important;
         color: #f3e5ab !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
     }
     div[data-testid="stAlert"] p {
         color: #f3e5ab !important;
@@ -511,56 +513,56 @@ st.markdown(
     .jj-card {
         background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
         border: 1px solid rgba(212, 175, 55, 0.45);
-        border-radius: 14px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.75);
-        padding: 16px 18px;
-        margin-bottom: 14px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        padding: 6px 10px;
+        margin-bottom: 6px;
     }
 
     .jj-banner {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 14px;
+        gap: 10px;
     }
     .jj-banner-left {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 10px;
     }
-    .jj-banner-icon { font-size: 30px; line-height: 1; }
-    .jj-banner-icon img { width: 34px; height: 34px; object-fit: contain; }
+    .jj-banner-icon { font-size: 24px; line-height: 1; }
+    .jj-banner-icon img { width: 28px; height: 28px; object-fit: contain; }
     .jj-label {
         color: #b39b6b;
-        font-size: 10px;
-        letter-spacing: 3px;
+        font-size: 9px;
+        letter-spacing: 2px;
         text-transform: uppercase;
-        margin-bottom: 2px;
+        margin-bottom: 1px;
     }
     .jj-categoria {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #f3e5ab;
-        font-size: 26px;
+        font-size: 20px;
         font-weight: 700;
-        letter-spacing: 3px;
-        line-height: 1.1;
+        letter-spacing: 2px;
+        line-height: 1.0;
     }
     .jj-banner-right {
         text-align: right;
         border-left: 1px solid rgba(212, 175, 55, 0.3);
-        padding-left: 16px;
+        padding-left: 10px;
     }
     .jj-fase {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #f3e5ab;
-        font-size: 19px;
+        font-size: 15px;
         font-weight: 700;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
     }
     .jj-musica {
         color: #b39b6b;
-        font-size: 10px;
-        letter-spacing: 2px;
+        font-size: 9px;
+        letter-spacing: 1px;
         text-transform: uppercase;
     }
 
@@ -568,20 +570,20 @@ st.markdown(
     .jj-nome {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #ffffff;
-        font-size: 34px;
+        font-size: 22px;
         font-weight: 700;
-        line-height: 1.1;
-        margin: 2px 0 8px 0;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        line-height: 1.0;
+        margin: 2px 0 4px 0;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
     }
     .jj-badge {
         display: inline-block;
         border: 1px solid rgba(212, 175, 55, 0.8);
-        border-radius: 20px;
-        padding: 5px 22px;
+        border-radius: 14px;
+        padding: 2px 12px;
         color: #e5c158;
-        font-size: 11px;
-        letter-spacing: 2px;
+        font-size: 9px;
+        letter-spacing: 1px;
         text-transform: uppercase;
     }
 
@@ -589,90 +591,92 @@ st.markdown(
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 12px;
+        gap: 8px;
     }
     .jj-crit-icon {
-        width: 46px; height: 46px; min-width: 46px;
+        width: 30px; height: 30px; min-width: 30px;
         border-radius: 50%;
         border: 1px solid rgba(212, 175, 55, 0.7);
         background: rgba(0,0,0,0.35);
         display: flex; align-items: center; justify-content: center;
-        color: #e5c158; font-size: 20px;
+        color: #e5c158; font-size: 14px;
     }
     .jj-contador {
         border: 1px solid rgba(212, 175, 55, 0.7);
-        border-radius: 20px;
-        padding: 4px 14px;
+        border-radius: 14px;
+        padding: 2px 8px;
         color: #e5c158;
-        font-size: 12px;
+        font-size: 10px;
         white-space: nowrap;
     }
     .jj-crit-nome {
         font-family: 'Cinzel', 'Georgia', serif;
         color: #f3e5ab;
-        font-size: 22px;
+        font-size: 15px;
         font-weight: 700;
-        line-height: 1.2;
-        margin-top: 2px;
+        line-height: 1.1;
+        margin-top: 1px;
     }
     .jj-divisor {
         border: none;
         border-top: 1px solid rgba(212, 175, 55, 0.25);
-        margin: 12px 0 10px 0;
+        margin: 6px 0 6px 0;
     }
     .jj-crit-desc {
         color: #ded2b4;
-        font-size: 14px;
-        line-height: 1.55;
+        font-size: 11px;
+        line-height: 1.35;
     }
     .jj-crit-desc b { color: #e5c158; }
 
     .jj-secao-label {
         color: #b39b6b;
-        font-size: 10px;
-        letter-spacing: 3px;
+        font-size: 9px;
+        letter-spacing: 2px;
         text-transform: uppercase;
-        margin-bottom: 6px;
+        margin-bottom: 2px;
     }
 
     .jj-footer {
         text-align: center;
-        margin-top: 26px;
-        padding-top: 14px;
+        margin-top: 8px;
+        padding-top: 6px;
         border-top: 1px solid rgba(212, 175, 55, 0.2);
     }
     .jj-footer-marca {
         color: #e5c158;
-        font-size: 13px;
-        letter-spacing: 5px;
+        font-size: 10px;
+        letter-spacing: 3px;
         text-transform: uppercase;
     }
     .jj-footer-sub {
         color: #8d7a52;
-        font-size: 10px;
-        letter-spacing: 2px;
+        font-size: 8px;
+        letter-spacing: 1px;
         text-transform: uppercase;
-        margin-top: 4px;
+        margin-top: 2px;
     }
 
     .stTextArea textarea {
         background-color: rgba(10, 7, 5, 0.9) !important;
         border: 1px solid rgba(212, 175, 55, 0.35) !important;
-        border-radius: 10px !important;
+        border-radius: 6px !important;
         color: #f3e5ab !important;
-        font-size: 14px !important;
+        font-size: 12px !important;
+        height: 50px !important;
     }
     .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
 
     div[data-testid="stExpander"] {
         border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        border-radius: 10px !important;
+        border-radius: 6px !important;
         background: rgba(12, 9, 6, 0.85) !important;
+        margin-bottom: 4px !important;
     }
     div[data-testid="stExpander"] summary p {
         color: #e5c158 !important;
-        font-size: 11px !important;
-        letter-spacing: 2px !important;
+        font-size: 10px !important;
+        letter-spacing: 1px !important;
         text-transform: uppercase !important;
     }
     
@@ -684,7 +688,7 @@ st.markdown(
         flex-direction: row !important;
         flex-wrap: nowrap !important;
         align-items: center !important;
-        gap: 8px !important;
+        gap: 6px !important;
     }
     div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
         min-width: 0 !important;
@@ -694,19 +698,19 @@ st.markdown(
     div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
     div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
         flex: 1 1 0% !important;
-        width: 18% !important;
+        width: 15% !important;
     }
     div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
-        flex: 3.5 1 0% !important;
-        width: 64% !important;
+        flex: 4 1 0% !important;
+        width: 70% !important;
     }
-    /* Deixar os botões de navegação mais quadrados e alinhados */
+    /* Deixar os botões de navegação menores e quadrados */
     div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-        height: 58px !important;
-        width: 58px !important;
+        height: 42px !important;
+        width: 42px !important;
         margin: 0 auto !important;
-        font-size: 26px !important;
-        border-radius: 12px !important;
+        font-size: 20px !important;
+        border-radius: 8px !important;
         padding: 0 !important;
         display: flex;
         align-items: center;
@@ -736,7 +740,7 @@ if modo == "Painel do Jurado":
           placeholder="🔒    Senha",
           label_visibility="collapsed",
       )
-      st.markdown('<div style="margin-top: 12px;"></div>', unsafe_allow_html=True)
+      st.markdown('<div style="margin-top: 8px;"></div>', unsafe_allow_html=True)
       if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
         usuario_limpo = login_digitado.strip()
         if usuario_limpo in senhas_jurados:
@@ -978,24 +982,24 @@ if modo == "Painel do Jurado":
           os.path.join(os.path.dirname(__file__), arquivo_icone)
       )
       if icone_b64:
-        icone_html = f'<img src="{icone_b64}" style="width: 32px; height: 32px; object-fit: contain;"/>'
+        icone_html = f'<img src="{icone_b64}" style="width: 24px; height: 24px; object-fit: contain;"/>'
       else:
         icone_html = emoji_icone
 
       fase_titulo, fase_sub = formatar_fase(fase_escolhida)
 
-      # Card 1: Banner da Categoria e Fase idêntico à imagem
+      # Card 1: Banner da Categoria e Fase compacto
       st.markdown(
           f"""
-          <div class="jj-card jj-banner" style="margin-bottom: 12px; padding: 12px 16px;">
-              <div class="jj-banner-left" style="gap: 12px;">
+          <div class="jj-card jj-banner" style="margin-bottom: 6px; padding: 6px 10px;">
+              <div class="jj-banner-left" style="gap: 8px;">
                   <div class="jj-banner-icon">{icone_html}</div>
                   <div>
                       <div class="jj-label">Categoria</div>
                       <div class="jj-categoria">{categoria_escolhida.upper()}</div>
                   </div>
               </div>
-              <div class="jj-banner-right" style="padding-left: 12px;">
+              <div class="jj-banner-right" style="padding-left: 8px;">
                   <div class="jj-fase">{fase_titulo}</div>
                   <div class="jj-musica">{fase_sub}</div>
               </div>
@@ -1036,7 +1040,6 @@ if modo == "Painel do Jurado":
         col_ant, col_nome, col_prox = st.columns([1, 4, 1])
 
         with col_ant:
-          st.markdown("<div style='height: 22px;'></div>", unsafe_allow_html=True)
           if st.button("‹", key="btn_anterior", use_container_width=False):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp - 1
@@ -1044,8 +1047,8 @@ if modo == "Painel do Jurado":
             st.session_state.idx_crit = 0
             st.rerun()
           st.markdown(
-              "<div style='text-align:center; color:#8d7a52; font-size:9px;"
-              " letter-spacing:2px;'>ANTERIOR</div>",
+              "<div style='text-align:center; color:#8d7a52; font-size:8px;"
+              " letter-spacing:1px; margin-top:2px;'>ANT</div>",
               unsafe_allow_html=True,
           )
 
@@ -1053,17 +1056,16 @@ if modo == "Painel do Jurado":
           st.markdown(
               f"""
               <div class="nav-marker"></div>
-              <div class="jj-card jj-avaliando" style="margin-bottom: 0; padding: 10px 12px;">
+              <div class="jj-card jj-avaliando" style="margin-bottom: 0; padding: 6px 8px;">
                   <div class="jj-label">Avaliando</div>
-                  <div class="jj-nome" style="font-size: 28px; margin: 2px 0 6px 0;">{competidor_escolhido}</div>
-                  <span class="jj-badge" style="padding: 3px 16px; font-size: 10px;">{tipo_selecionado.upper()}</span>
+                  <div class="jj-nome" style="font-size: 20px; margin: 1px 0 3px 0;">{competidor_escolhido}</div>
+                  <span class="jj-badge" style="padding: 2px 10px; font-size: 8px;">{tipo_selecionado.upper()}</span>
               </div>
               """,
               unsafe_allow_html=True,
           )
 
         with col_prox:
-          st.markdown("<div style='height: 22px;'></div>", unsafe_allow_html=True)
           if st.button("›", key="btn_proximo", use_container_width=False):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp + 1
@@ -1071,12 +1073,12 @@ if modo == "Painel do Jurado":
             st.session_state.idx_crit = 0
             st.rerun()
           st.markdown(
-              "<div style='text-align:center; color:#8d7a52; font-size:9px;"
-              " letter-spacing:2px;'>PRÓXIMO</div>",
+              "<div style='text-align:center; color:#8d7a52; font-size:8px;"
+              " letter-spacing:1px; margin-top:2px;'>PRÓX</div>",
               unsafe_allow_html=True,
           )
 
-        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
 
         criterios = criterios_por_categoria[categoria_escolhida]
         lista_criterios = list(criterios.items())
@@ -1087,20 +1089,20 @@ if modo == "Painel do Jurado":
 
         criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
-        # Card 3: Critério com ícone musical, título e descrição
+        # Card 3: Critério compacto
         st.markdown(
             f"""
-            <div class="jj-card" style="margin-bottom: 12px; padding: 14px 16px;">
+            <div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;">
                 <div class="jj-crit-head">
-                    <div class="jj-crit-icon" style="width: 38px; height: 38px; min-width: 38px; font-size: 16px;">♪</div>
-                    <div style="flex: 1; padding: 0 10px;">
+                    <div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div>
+                    <div style="flex: 1; padding: 0 6px;">
                         <div class="jj-label">Critério</div>
-                        <div class="jj-crit-nome" style="font-size: 18px;">{criterio_nome}</div>
+                        <div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div>
                     </div>
-                    <div class="jj-contador" style="padding: 2px 10px; font-size: 11px;">{st.session_state.idx_crit + 1} / {total_crit}</div>
+                    <div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div>
                 </div>
-                <hr class="jj-divisor" style="margin: 10px 0 8px 0;"/>
-                <div class="jj-crit-desc" style="font-size: 13px;"><b>O que avaliar:</b> {criterio_desc}</div>
+                <hr class="jj-divisor" style="margin: 4px 0 4px 0;"/>
+                <div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -1126,34 +1128,34 @@ if modo == "Painel do Jurado":
               str(nota_salva).replace(".", ",") if nota_salva is not None else ""
           )
 
-        # Card 4: Sua Nota — entrada manual de 1 a 10, aceitando vírgula decimal
+        # Card 4: Sua Nota compacto
         st.markdown(
             """
             <style>
             .st-key-nota_card {
                 background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
                 border: 1px solid rgba(212, 175, 55, 0.45);
-                border-radius: 14px;
-                box-shadow: 0 6px 20px rgba(0,0,0,0.75);
-                padding: 12px 16px 16px 16px;
-                margin-bottom: 12px;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+                padding: 6px 10px 8px 10px;
+                margin-bottom: 6px;
             }
             .st-key-nota_card div[data-baseweb="input"] {
                 background: rgba(10, 7, 5, 0.92) !important;
                 border: 1px solid rgba(212, 175, 55, 0.55) !important;
-                border-radius: 10px !important;
-                min-height: 52px !important;
+                border-radius: 6px !important;
+                min-height: 38px !important;
             }
             .st-key-nota_card div[data-baseweb="input"]:focus-within {
                 border-color: rgba(212, 175, 55, 1) !important;
-                box-shadow: 0 0 10px rgba(212, 175, 55, 0.25) !important;
+                box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important;
             }
             .st-key-nota_card input {
                 color: #f3e5ab !important;
                 background: transparent !important;
-                font-size: 18px !important;
+                font-size: 15px !important;
                 text-align: center !important;
-                padding: 12px 15px !important;
+                padding: 6px 10px !important;
             }
             .st-key-nota_card input::placeholder {
                 color: rgba(243, 229, 171, 0.4) !important;
@@ -1177,9 +1179,9 @@ if modo == "Painel do Jurado":
               label_visibility="collapsed",
           )
 
-        # Card 5: Comentários (Opcional)
+        # Card 5: Comentários compacto
         st.markdown(
-            '<div class="jj-card" style="margin-bottom: 12px; padding: 12px 16px;">'
+            '<div class="jj-card" style="margin-bottom: 6px; padding: 6px 10px;">'
             '<div class="jj-secao-label">Comentários (Opcional)</div>',
             unsafe_allow_html=True,
         )
@@ -1189,19 +1191,19 @@ if modo == "Painel do Jurado":
             key=chave_comentario,
             placeholder="Deixe seu comentário aqui...",
             max_chars=300,
-            height=85,
+            height=45,
             label_visibility="collapsed",
         )
         st.markdown(
-            f"<div style='text-align:right; color:#8d7a52; font-size:10px;"
-            f" margin-top:2px;'>{len(comentario)}/300</div>"
+            f"<div style='text-align:right; color:#8d7a52; font-size:9px;"
+            f" margin-top:1px;'>{len(comentario)}/300</div>"
             "</div>",
             unsafe_allow_html=True,
         )
 
-        st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 2px;'></div>", unsafe_allow_html=True)
 
-        # Botão Enviar Avaliação idêntico ao da imagem
+        # Botão Enviar Avaliação compacto
         if st.button(
             "➤  ENVIAR AVALIAÇÃO",
             type="primary",
@@ -1248,13 +1250,13 @@ if modo == "Painel do Jurado":
             except ValueError:
               st.error("❌ Digite um valor numérico válido para a nota.")
 
-        # Rodapé idêntico à imagem de referência
+        # Rodapé compacto
         st.markdown(
             """
-            <div class="jj-footer" style="margin-top: 18px; padding-top: 10px;">
-                <div style="color:#b39b6b; font-size:11px; margin-bottom: 2px;">✦</div>
-                <div class="jj-footer-marca" style="font-size: 11px; letter-spacing: 4px;">Passion Dance</div>
-                <div class="jj-footer-sub" style="font-size: 9px; letter-spacing: 2px;">Jack and Jill · Noite nas Arábias</div>
+            <div class="jj-footer" style="margin-top: 6px; padding-top: 4px;">
+                <div style="color:#b39b6b; font-size:9px; margin-bottom: 1px;">✦</div>
+                <div class="jj-footer-marca" style="font-size: 9px; letter-spacing: 3px;">Passion Dance</div>
+                <div class="jj-footer-sub" style="font-size: 7px; letter-spacing: 1px;">Jack and Jill · Noite nas Arábias</div>
             </div>
             """,
             unsafe_allow_html=True,
