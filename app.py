@@ -44,27 +44,9 @@ def obter_fundo_css(tipo_tela):
     encoded = base64.b64encode(data).decode()
     ext = img_encontrada.split(".")[-1].lower()
     mime = "png" if ext == "png" else "jpeg"
-    return f"""
-        <style>
-        .stApp {{
-            background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}");
-            background-size: cover;
-            background-position: top center !important;
-            background-attachment: fixed;
-            color: #f3e5ab;
-            font-family: 'Helvetica Neue', sans-serif;
-        }}
-        </style>
-        """
+    return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
   else:
-    return """
-        <style>
-        .stApp {
-            background-color: #090706;
-            color: #f3e5ab;
-        }
-        </style>
-        """
+    return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
 
 
 def img_to_base64(file_path):
@@ -360,11 +342,7 @@ def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
 if link_jurado_exclusivo:
   modo = "Painel do Jurado"
   st.markdown(
-      """
-        <style>
-        [data-testid="stSidebar"] { display: none !important; }
-        </style>
-        """,
+      '<style>[data-testid="stSidebar"] { display: none !important; }</style>',
       unsafe_allow_html=True,
   )
 else:
@@ -399,331 +377,329 @@ else:
 
 st.markdown(
     """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
 
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    .block-container {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
-        max-width: 600px !important;
-        margin: 0 auto !important;
-    }
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
 
-    h1, h2, h3 {
-        color: #e5c158 !important;
-        font-family: 'Georgia', serif;
-        text-align: center;
-        letter-spacing: 1px;
-    }
+.block-container {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+}
 
-    .saudacao-jurado {
-        font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
-        color: #f3e5ab !important;
-        font-size: 22px !important;
-        font-weight: 700 !important;
-        text-align: center;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-        letter-spacing: 1.5px;
-        margin-bottom: 2px;
-    }
+h1, h2, h3 {
+    color: #e5c158 !important;
+    font-family: 'Georgia', serif;
+    text-align: center;
+    letter-spacing: 1px;
+}
 
-    div[data-testid="column"]:has(input[type="password"]) {
-        max-width: 320px !important; 
-        margin: 0 auto !important; 
-        float: none !important;
-        background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        border-radius: 12px !important;
-        padding: 15px 15px 10px 15px !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
-    }
+.saudacao-jurado {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
+    color: #f3e5ab !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    text-align: center;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+}
 
-    .stTextInput div[data-baseweb="input"] {
-        background-color: rgba(12, 9, 7, 0.95) !important;
-        border: 1px solid rgba(212, 175, 55, 0.45) !important;
-        border-radius: 6px !important;
-    }
-    
-    .stTextInput div[data-baseweb="input"]:focus-within {
-        border: 1px solid rgba(212, 175, 55, 1.0) !important;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
-    }
+div[data-testid="column"]:has(input[type="password"]) {
+    max-width: 320px !important; 
+    margin: 0 auto !important; 
+    float: none !important;
+    background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.5) !important;
+    border-radius: 12px !important;
+    padding: 15px 15px 10px 15px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
+}
 
-    .stTextInput input {
-        color: #f3e5ab !important;
-        background-color: transparent !important;
-        padding: 6px 10px !important;
-        font-size: 13px !important;
-    }
-    
-    .stTextInput input::placeholder {
-        color: rgba(243, 229, 171, 0.4) !important;
-    }
+.stTextInput div[data-baseweb="input"] {
+    background-color: rgba(12, 9, 7, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.45) !important;
+    border-radius: 6px !important;
+}
 
-    .stButton > button {
-        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 0.6) !important;
-        border-radius: 6px !important;
-        color: #f3e5ab !important;
-        text-transform: uppercase !important;
-        letter-spacing: 1px !important;
-        font-weight: 600 !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
-        padding: 6px 10px !important;
-        font-size: 11px !important;
-    }
-    .stButton > button:hover {
-        background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
-        border: 1px solid rgba(212, 175, 55, 1.0) !important;
-        color: #ffffff !important;
-    }
+.stTextInput div[data-baseweb="input"]:focus-within {
+    border: 1px solid rgba(212, 175, 55, 1.0) !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
+}
 
-    .stButton > button[kind="primary"] {
-        background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
-        border: 1px solid #e5c158 !important;
-        color: #1a1208 !important;
-        font-weight: 700 !important;
-        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25) !important;
-        padding: 6px 10px !important;
-    }
-    .stButton > button[kind="primary"]:hover {
-        background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
-        color: #1a1208 !important;
-    }
+.stTextInput input {
+    color: #f3e5ab !important;
+    background-color: transparent !important;
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+}
 
-    div[data-testid="stAlert"] {
-        background-color: rgba(20, 15, 10, 0.95) !important;
-        border: 1px solid rgba(212, 175, 55, 0.6) !important;
-        color: #f3e5ab !important;
-        border-radius: 6px !important;
-    }
-    div[data-testid="stAlert"] p {
-        color: #f3e5ab !important;
-    }
+.stTextInput input::placeholder {
+    color: rgba(243, 229, 171, 0.4) !important;
+}
 
-    [data-testid="stSidebar"] {
-        background-color: rgba(14, 10, 8, 0.96);
-        border-right: 1px solid rgba(212, 175, 55, 0.15);
-    }
+.stButton > button {
+    background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.6) !important;
+    border-radius: 6px !important;
+    color: #f3e5ab !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+}
+.stButton > button:hover {
+    background: linear-gradient(180deg, rgba(80,60,30,1) 0%, rgba(140,115,60,1) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 1.0) !important;
+    color: #ffffff !important;
+}
 
-    .jj-card {
-        background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
-        border: 1px solid rgba(212, 175, 55, 0.45);
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        padding: 6px 10px;
-        margin-bottom: 6px;
-    }
+.stButton > button[kind="primary"] {
+    background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
+    border: 1px solid #e5c158 !important;
+    color: #1a1208 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25) !important;
+    padding: 6px 10px !important;
+}
+.stButton > button[kind="primary"]:hover {
+    background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
+    color: #1a1208 !important;
+}
 
-    .jj-banner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-    }
-    .jj-banner-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .jj-banner-icon { font-size: 24px; line-height: 1; }
-    .jj-banner-icon img { width: 28px; height: 28px; object-fit: contain; }
-    .jj-label {
-        color: #b39b6b;
-        font-size: 9px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        margin-bottom: 1px;
-    }
-    .jj-categoria {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: 2px;
-        line-height: 1.0;
-    }
-    .jj-banner-right {
-        text-align: right;
-        border-left: 1px solid rgba(212, 175, 55, 0.3);
-        padding-left: 10px;
-    }
-    .jj-fase {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 15px;
-        font-weight: 700;
-        letter-spacing: 1px;
-    }
-    .jj-musica {
-        color: #b39b6b;
-        font-size: 9px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-    }
+div[data-testid="stAlert"] {
+    background-color: rgba(20, 15, 10, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.6) !important;
+    color: #f3e5ab !important;
+    border-radius: 6px !important;
+}
+div[data-testid="stAlert"] p {
+    color: #f3e5ab !important;
+}
 
-    .jj-avaliando { text-align: center; }
-    .jj-nome {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #ffffff;
-        font-size: 20px;
-        font-weight: 700;
-        line-height: 1.0;
-        margin: 2px 0 3px 0;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-    }
-    .jj-badge {
-        display: inline-block;
-        border: 1px solid rgba(212, 175, 55, 0.8);
-        border-radius: 14px;
-        padding: 2px 10px;
-        color: #e5c158;
-        font-size: 8px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-    }
+[data-testid="stSidebar"] {
+    background-color: rgba(14, 10, 8, 0.96);
+    border-right: 1px solid rgba(212, 175, 55, 0.15);
+}
 
-    .jj-crit-head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 8px;
-    }
-    .jj-crit-icon {
-        width: 28px; height: 28px; min-width: 28px;
-        border-radius: 50%;
-        border: 1px solid rgba(212, 175, 55, 0.7);
-        background: rgba(0,0,0,0.35);
-        display: flex; align-items: center; justify-content: center;
-        color: #e5c158; font-size: 14px;
-    }
-    .jj-contador {
-        border: 1px solid rgba(212, 175, 55, 0.7);
-        border-radius: 14px;
-        padding: 2px 8px;
-        color: #e5c158;
-        font-size: 10px;
-        white-space: nowrap;
-    }
-    .jj-crit-nome {
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #f3e5ab;
-        font-size: 15px;
-        font-weight: 700;
-        line-height: 1.1;
-        margin-top: 1px;
-    }
-    .jj-divisor {
-        border: none;
-        border-top: 1px solid rgba(212, 175, 55, 0.25);
-        margin: 4px 0 4px 0;
-    }
-    .jj-crit-desc {
-        color: #ded2b4;
-        font-size: 10px;
-        line-height: 1.35;
-    }
-    .jj-crit-desc b { color: #e5c158; }
+.jj-card {
+    background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    padding: 6px 10px;
+    margin-bottom: 6px;
+}
 
-    .jj-secao-label {
-        color: #b39b6b;
-        font-size: 9px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        margin-bottom: 2px;
-    }
+.jj-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.jj-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.jj-banner-icon { font-size: 24px; line-height: 1; }
+.jj-banner-icon img { width: 28px; height: 28px; object-fit: contain; }
+.jj-label {
+    color: #b39b6b;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1px;
+}
+.jj-categoria {
+    font-family: 'Cinzel', 'Georgia', serif;
+    color: #f3e5ab;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1.0;
+}
+.jj-banner-right {
+    text-align: right;
+    border-left: 1px solid rgba(212, 175, 55, 0.3);
+    padding-left: 10px;
+}
+.jj-fase {
+    font-family: 'Cinzel', 'Georgia', serif;
+    color: #f3e5ab;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.jj-musica {
+    color: #b39b6b;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
 
-    .jj-footer {
-        text-align: center;
-        margin-top: 6px;
-        padding-top: 4px;
-        border-top: 1px solid rgba(212, 175, 55, 0.2);
-    }
-    .jj-footer-marca {
-        color: #e5c158;
-        font-size: 9px;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-    }
-    .jj-footer-sub {
-        color: #8d7a52;
-        font-size: 7px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        margin-top: 2px;
-    }
+.jj-avaliando { text-align: center; }
+.jj-nome {
+    font-family: 'Cinzel', 'Georgia', serif;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.0;
+    margin: 2px 0 3px 0;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+.jj-badge {
+    display: inline-block;
+    border: 1px solid rgba(212, 175, 55, 0.8);
+    border-radius: 14px;
+    padding: 2px 10px;
+    color: #e5c158;
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
 
-    .stTextArea textarea {
-        background-color: rgba(10, 7, 5, 0.9) !important;
-        border: 1px solid rgba(212, 175, 55, 0.35) !important;
-        border-radius: 6px !important;
-        color: #f3e5ab !important;
-        font-size: 12px !important;
-        height: 45px !important;
-    }
-    .stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
+.jj-crit-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+.jj-crit-icon {
+    width: 28px; height: 28px; min-width: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 175, 55, 0.7);
+    background: rgba(0,0,0,0.35);
+    display: flex; align-items: center; justify-content: center;
+    color: #e5c158; font-size: 14px;
+}
+.jj-contador {
+    border: 1px solid rgba(212, 175, 55, 0.7);
+    border-radius: 14px;
+    padding: 2px 8px;
+    color: #e5c158;
+    font-size: 10px;
+    white-space: nowrap;
+}
+.jj-crit-nome {
+    font-family: 'Cinzel', 'Georgia', serif;
+    color: #f3e5ab;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-top: 1px;
+}
+.jj-divisor {
+    border: none;
+    border-top: 1px solid rgba(212, 175, 55, 0.25);
+    margin: 4px 0 4px 0;
+}
+.jj-crit-desc {
+    color: #ded2b4;
+    font-size: 10px;
+    line-height: 1.35;
+}
+.jj-crit-desc b { color: #e5c158; }
 
-    div[data-testid="stExpander"] {
-        border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        border-radius: 6px !important;
-        background: rgba(12, 9, 6, 0.85) !important;
-        margin-bottom: 4px !important;
-    }
-    div[data-testid="stExpander"] summary p {
-        color: #e5c158 !important;
-        font-size: 10px !important;
-        letter-spacing: 1px !important;
-        text-transform: uppercase !important;
-    }
-    
-    /* ========================================================================= */
-    /* CSS À PROVA DE FALHAS PARA FORÇAR OS BOTÕES E O NOME LADO A LADO NO MOBILE */
-    /* ========================================================================= */
-    @media (max-width: 9999px) {
-        div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            align-items: center !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            gap: 4px !important;
-            box-sizing: border-box !important;
-            overflow: hidden !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
-            flex: 1 1 auto !important;
-            min-width: 0 !important;
-            width: auto !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
-        div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-            flex: 0 0 42px !important;
-            max-width: 42px !important;
-            min-width: 42px !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
-            flex: 1 1 auto !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-            height: 42px !important;
-            width: 42px !important;
-            min-width: 42px !important;
-            font-size: 18px !important;
-            border-radius: 8px !important;
-            padding: 0 !important;
-            margin: 0 auto !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
-        }
-    }
-    </style>
+.jj-secao-label {
+    color: #b39b6b;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.jj-footer {
+    text-align: center;
+    margin-top: 6px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+.jj-footer-marca {
+    color: #e5c158;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+.jj-footer-sub {
+    color: #8d7a52;
+    font-size: 7px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.stTextArea textarea {
+    background-color: rgba(10, 7, 5, 0.9) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    border-radius: 6px !important;
+    color: #f3e5ab !important;
+    font-size: 12px !important;
+    height: 45px !important;
+}
+.stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
+
+div[data-testid="stExpander"] {
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 6px !important;
+    background: rgba(12, 9, 6, 0.85) !important;
+    margin-bottom: 4px !important;
+}
+div[data-testid="stExpander"] summary p {
+    color: #e5c158 !important;
+    font-size: 10px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+}
+
+/* ========================================================================= */
+/* CSS PARA FORÇAR OS BOTÕES E O NOME LADO A LADO E SEM ROLAGEM LATERAL     */
+/* ========================================================================= */
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
+    flex: 0 0 42px !important;
+    max-width: 42px !important;
+    min-width: 42px !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
+    flex: 1 1 auto !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
+    height: 42px !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    font-size: 18px !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
+}
+</style>
 """,
     unsafe_allow_html=True,
 )
@@ -768,28 +744,7 @@ if modo == "Painel do Jurado":
       )
 
       st.markdown(
-          f"""
-<div style="position: fixed; top: 40px; right: 12px; z-index: 99999;">
-    <a href="?{logout_param}" style="
-        background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
-        color: #f3e5ab;
-        text-decoration: none;
-        width: 95px;
-        height: 38px;
-        border-radius: 6px;
-        border: 1px solid rgba(212,175,55,0.6);
-        font-size: 9px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    ">← Sair</a>
-</div>
-""",
+          f'<div style="position: fixed; top: 40px; right: 12px; z-index: 99999;"><a href="?{logout_param}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center;">← Sair</a></div>',
           unsafe_allow_html=True,
       )
 
@@ -816,74 +771,10 @@ if modo == "Painel do Jurado":
           icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
 
         target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
-        cards_html += f"""
-<a href="{target_url}" class="category-card">
-    <div class="card-left">
-        {icon_html}
-        <span class="card-title">{cat_nome.upper()}</span>
-    </div>
-    <span class="card-arrow">›</span>
-</a>
-"""
+        cards_html += f'<a href="{target_url}" class="category-card"><div class="card-left">{icon_html}<span class="card-title">{cat_nome.upper()}</span></div><span class="card-arrow">›</span></a>'
 
       st.markdown(
-          f"""
-<div style="
-    position: fixed;
-    top: 60%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 360px;
-    max-width: 90vw;
-    z-index: 99999;
-">
-    <div style="text-align: center; margin-bottom: 12px;">
-        <div class="saudacao-jurado">Olá, {nome_jurado}!</div>
-        <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p>
-    </div>
-    {cards_html}
-</div>
-<style>
-.category-card {{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: linear-gradient(135deg, rgba(15, 11, 7, 0.92) 0%, rgba(30, 21, 12, 0.96) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.5);
-    border-radius: 10px !important;
-    padding: 9px 16px !important;
-    margin-bottom: 8px !important;
-    text-decoration: none !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
-    transition: all 0.3s ease;
-}}
-.category-card:hover {{
-    border-color: rgba(212, 175, 55, 1.0);
-    background: linear-gradient(135deg, rgba(25, 18, 12, 0.98) 0%, rgba(45, 33, 19, 1) 100%);
-}}
-.card-left {{
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}}
-.card-icon {{
-    width: 26px !important; 
-    height: 26px !important;
-    object-fit: contain;
-}}
-.card-title {{
-    color: #f3e5ab;
-    font-family: 'Georgia', serif;
-    font-size: 12px !important; 
-    font-weight: 600;
-    letter-spacing: 2px;
-}}
-.card-arrow {{
-    color: #d4af37;
-    font-size: 16px !important;
-}}
-</style>
-""",
+          f"""<div style="position: fixed; top: 60%; left: 50%; transform: translate(-50%, -50%); width: 360px; max-width: 90vw; z-index: 99999;"><div style="text-align: center; margin-bottom: 12px;"><div class="saudacao-jurado">Olá, {nome_jurado}!</div><p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p></div>{cards_html}</div><style>.category-card {{ display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(15, 11, 7, 0.92) 0%, rgba(30, 21, 12, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 10px !important; padding: 9px 16px !important; margin-bottom: 8px !important; text-decoration: none !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7); transition: all 0.3s ease; }} .category-card:hover {{ border-color: rgba(212, 175, 55, 1.0); background: linear-gradient(135deg, rgba(25, 18, 12, 0.98) 0%, rgba(45, 33, 19, 1) 100%); }} .card-left {{ display: flex; align-items: center; gap: 15px; }} .card-icon {{ width: 26px !important; height: 26px !important; object-fit: contain; }} .card-title {{ color: #f3e5ab; font-family: 'Georgia', serif; font-size: 12px !important; font-weight: 600; letter-spacing: 2px; }} .card-arrow {{ color: #d4af37; font-size: 16px !important; }}</style>""",
           unsafe_allow_html=True,
       )
     else:
@@ -897,49 +788,7 @@ if modo == "Painel do Jurado":
       trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
       st.markdown(
-          f"""
-          <div style="position: fixed; top: 12px; left: 12px; right: 12px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; pointer-events: none;">
-              <a href="{logout_url}" style="
-                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
-                  color: #f3e5ab;
-                  text-decoration: none;
-                  width: 95px;
-                  height: 38px;
-                  border-radius: 6px;
-                  border: 1px solid rgba(212,175,55,0.6);
-                  font-size: 9px;
-                  font-weight: 600;
-                  text-transform: uppercase;
-                  letter-spacing: 0.5px;
-                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  text-align: center;
-                  pointer-events: auto;
-              ">← Sair</a>
-              <a href="{trocar_url}" style="
-                  background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
-                  color: #f3e5ab;
-                  text-decoration: none;
-                  width: 95px;
-                  height: 38px;
-                  border-radius: 6px;
-                  border: 1px solid rgba(212,175,55,0.6);
-                  font-size: 8.5px;
-                  font-weight: 600;
-                  text-transform: uppercase;
-                  letter-spacing: 0.5px;
-                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  text-align: center;
-                  line-height: 1.15;
-                  pointer-events: auto;
-              ">Trocar<br>Categoria</a>
-          </div>
-          """,
+          f"""<div style="position: fixed; top: 12px; left: 12px; right: 12px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; pointer-events: none;"><a href="{logout_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; pointer-events: auto;">← Sair</a><a href="{trocar_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 8.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.15; pointer-events: auto;">Trocar<br>Categoria</a></div>""",
           unsafe_allow_html=True,
       )
 
@@ -996,21 +845,7 @@ if modo == "Painel do Jurado":
 
       # Card 1: Banner da Categoria e Fase compacto
       st.markdown(
-          f"""
-          <div class="jj-card jj-banner" style="margin-bottom: 6px; padding: 6px 10px;">
-              <div class="jj-banner-left" style="gap: 8px;">
-                  <div class="jj-banner-icon">{icone_html}</div>
-                  <div>
-                      <div class="jj-label">Categoria</div>
-                      <div class="jj-categoria">{categoria_escolhida.upper()}</div>
-                  </div>
-              </div>
-              <div class="jj-banner-right" style="padding-left: 8px;">
-                  <div class="jj-fase">{fase_titulo}</div>
-                  <div class="jj-musica">{fase_sub}</div>
-              </div>
-          </div>
-          """,
+          f"""<div class="jj-card jj-banner" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-banner-left" style="gap: 8px;"><div class="jj-banner-icon">{icone_html}</div><div><div class="jj-label">Categoria</div><div class="jj-categoria">{categoria_escolhida.upper()}</div></div></div><div class="jj-banner-right" style="padding-left: 8px;"><div class="jj-fase">{fase_titulo}</div><div class="jj-musica">{fase_sub}</div></div></div>""",
           unsafe_allow_html=True,
       )
 
@@ -1055,14 +890,7 @@ if modo == "Painel do Jurado":
 
         with col_nome:
           st.markdown(
-              f"""
-              <div class="nav-marker"></div>
-              <div class="jj-card jj-avaliando" style="margin-bottom: 0; padding: 6px 8px;">
-                  <div class="jj-label">Avaliando</div>
-                  <div class="jj-nome" style="font-size: 20px; margin: 1px 0 3px 0;">{competidor_escolhido}</div>
-                  <span class="jj-badge" style="padding: 2px 10px; font-size: 8px;">{tipo_selecionado.upper()}</span>
-              </div>
-              """,
+              f"""<div class="nav-marker"></div><div class="jj-card jj-avaliando" style="margin-bottom: 0; padding: 6px 8px;"><div class="jj-label">Avaliando</div><div class="jj-nome" style="font-size: 20px; margin: 1px 0 3px 0;">{competidor_escolhido}</div><span class="jj-badge" style="padding: 2px 10px; font-size: 8px;">{tipo_selecionado.upper()}</span></div>""",
               unsafe_allow_html=True,
           )
 
@@ -1087,20 +915,7 @@ if modo == "Painel do Jurado":
 
         # Card 3: Critério compacto
         st.markdown(
-            f"""
-            <div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;">
-                <div class="jj-crit-head">
-                    <div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div>
-                    <div style="flex: 1; padding: 0 6px;">
-                        <div class="jj-label">Critério</div>
-                        <div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div>
-                    </div>
-                    <div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div>
-                </div>
-                <hr class="jj-divisor" style="margin: 4px 0 4px 0;"/>
-                <div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div>
-            </div>
-            """,
+            f"""<div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;"><div class="jj-crit-head"><div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div><div style="flex: 1; padding: 0 6px;"><div class="jj-label">Critério</div><div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div></div><div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor" style="margin: 4px 0 4px 0;"/><div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
             unsafe_allow_html=True,
         )
 
@@ -1126,38 +941,7 @@ if modo == "Painel do Jurado":
 
         # Card 4: Sua Nota compacto
         st.markdown(
-            """
-            <style>
-            .st-key-nota_card {
-                background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
-                border: 1px solid rgba(212, 175, 55, 0.45);
-                border-radius: 10px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-                padding: 6px 10px 8px 10px;
-                margin-bottom: 6px;
-            }
-            .st-key-nota_card div[data-baseweb="input"] {
-                background: rgba(10, 7, 5, 0.92) !important;
-                border: 1px solid rgba(212, 175, 55, 0.55) !important;
-                border-radius: 6px !important;
-                min-height: 38px !important;
-            }
-            .st-key-nota_card div[data-baseweb="input"]:focus-within {
-                border-color: rgba(212, 175, 55, 1) !important;
-                box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important;
-            }
-            .st-key-nota_card input {
-                color: #f3e5ab !important;
-                background: transparent !important;
-                font-size: 15px !important;
-                text-align: center !important;
-                padding: 6px 10px !important;
-            }
-            .st-key-nota_card input::placeholder {
-                color: rgba(243, 229, 171, 0.4) !important;
-            }
-            </style>
-            """,
+            """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card div[data-baseweb="input"]:focus-within { border-color: rgba(212, 175, 55, 1) !important; box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; } .st-key-nota_card input::placeholder { color: rgba(243, 229, 171, 0.4) !important; }</style>""",
             unsafe_allow_html=True,
         )
 
@@ -1177,8 +961,7 @@ if modo == "Painel do Jurado":
 
         # Card 5: Comentários compacto
         st.markdown(
-            '<div class="jj-card" style="margin-bottom: 6px; padding: 6px 10px;">'
-            '<div class="jj-secao-label">Comentários (Opcional)</div>',
+            f'<div class="jj-card" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-secao-label">Comentários (Opcional)</div>',
             unsafe_allow_html=True,
         )
         chave_comentario = f"coment_{chave_base}"
@@ -1248,13 +1031,7 @@ if modo == "Painel do Jurado":
 
         # Rodapé compacto
         st.markdown(
-            """
-            <div class="jj-footer" style="margin-top: 6px; padding-top: 4px;">
-                <div style="color:#b39b6b; font-size:9px; margin-bottom: 1px;">✦</div>
-                <div class="jj-footer-marca" style="font-size: 9px; letter-spacing: 3px;">Passion Dance</div>
-                <div class="jj-footer-sub" style="font-size: 7px; letter-spacing: 1px;">Jack and Jill · Noite nas Arábias</div>
-            </div>
-            """,
+            """<div class="jj-footer" style="margin-top: 6px; padding-top: 4px;"><div style="color:#b39b6b; font-size:9px; margin-bottom: 1px;">✦</div><div class="jj-footer-marca" style="font-size: 9px; letter-spacing: 3px;">Passion Dance</div><div class="jj-footer-sub" style="font-size: 7px; letter-spacing: 1px;">Jack and Jill · Noite nas Arábias</div></div>""",
             unsafe_allow_html=True,
         )
 
@@ -1443,6 +1220,7 @@ else:
                       by="Pontuação Total Acumulada", ascending=False
                   ).reset_index(drop=True)
                   total_score.index = total_score.index + 1
+                  st.dataframe(total_score, use_keyword_argument_or_pass_clean=True) # type: ignore
                   st.dataframe(total_score, use_container_width=True)
                 else:
                   st.info("Aguardando votos em ambas as fases.")
