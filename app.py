@@ -745,7 +745,7 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      st.markdown('<div style="height: 220px;"></div>', unsafe_allow_html=True)
+      st.markdown('<div style="height: 110px;"></div>', unsafe_allow_html=True)
 
       nome_jurado = st.session_state.jurado_logado
       st.markdown(
