@@ -659,20 +659,21 @@ div[data-testid="stExpander"] summary p {
 }
 
 /* ========================================================================= */
-/* BARRA DE NAVEGAÇÃO UNIFICADA E PERFEITA PARA TELEMÓVEL                    */
+/* NAVEGAÇÃO MOBILE PERFEITA (MANTÉM TUDO NA TELA SEM ROLAGEM)                */
 /* ========================================================================= */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: center !important;
     width: 100% !important;
     max-width: 100% !important;
-    gap: 6px !important;
+    gap: 4px !important;
     box-sizing: border-box !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: hidden !important;
 }
 
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
@@ -682,51 +683,48 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
     box-sizing: border-box !important;
 }
 
-/* Botão Anterior (Esquerda) - Fixado em 38px */
+/* Coluna da esquerda (Botão Anterior) - Fixa em 40px */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1) {
-    flex: 0 0 38px !important;
-    width: 38px !important;
-    max-width: 38px !important;
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    max-width: 40px !important;
 }
 
-/* Cartão do Meio (Nome) - Ocupa todo o espaço central disponível */
+/* Coluna do meio (Cartão do Nome) - Ocupa o espaço flexível restante */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important;
     min-width: 0 !important;
-    width: auto !important;
 }
 
-/* Botão Próximo (Direita) - Fixado em 38px */
+/* Coluna da direita (Botão Próximo) - Fixa em 40px */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-    flex: 0 0 38px !important;
-    width: 38px !important;
-    max-width: 38px !important;
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    max-width: 40px !important;
 }
 
-/* Estilo unificado dos botões de setas */
+/* Estilo unificado dos botões de setas ocupando a largura da coluna */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-    height: 38px !important;
-    width: 38px !important;
-    min-width: 38px !important;
-    max-width: 38px !important;
-    font-size: 16px !important;
+    height: 48px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 18px !important;
     border-radius: 8px !important;
     padding: 0 !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
 }
 
-/* Retângulo central do nome perfeitamente ajustado */
+/* Cartão central formatado sem estourar as margens */
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
     margin: 0 !important;
-    padding: 6px 8px !important;
-    text-align: center !important;
+    padding: 6px 4px !important;
 }
 </style>
 """,
@@ -907,10 +905,10 @@ if modo == "Painel do Jurado":
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
         # Card 2: Competidor com botões Anterior/Próximo e badge central (Com classe .nav-marker para o CSS alinhar)
-        col_ant, col_nome, col_prox = st.columns([1, 8, 1])
+        col_ant, col_nome, col_prox = st.columns([1, 6, 1])
 
         with col_ant:
-          if st.button("‹", key="btn_anterior", use_container_width=False):
+          if st.button("‹", key="btn_anterior", use_container_width=True):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp - 1
             ) % total_comp
@@ -924,7 +922,7 @@ if modo == "Painel do Jurado":
           )
 
         with col_prox:
-          if st.button("›", key="btn_proximo", use_container_width=False):
+          if st.button("›", key="btn_proximo", use_container_width=True):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp + 1
             ) % total_comp
