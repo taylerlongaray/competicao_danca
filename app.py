@@ -687,9 +687,9 @@ div[data-testid="stExpander"] summary p {
     /* BLOCOS COM EXATAMENTE 3 COLUNAS (Ex: Navegação Anterior/Próximo) */
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3),
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) {
-        flex: 0 0 46px !important;
-        max-width: 46px !important;
-        min-width: 46px !important;
+        flex: 0 0 30px !important;
+        max-width: 30px !important;
+        min-width: 30px !important;
     }
     
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(2) {
@@ -699,10 +699,10 @@ div[data-testid="stExpander"] summary p {
     /* ESTILO ESPECÍFICO PARA OS BOTÕES DAS LATERAIS (Anterior/Próximo) */
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) button,
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) button {
-        width: 46px !important;
-        height: 46px !important;
+        width: 30px !important;
+        height: 30px !important;
         padding: 0 !important;
-        font-size: 22px !important;
+        font-size: 15px !important;
         border-radius: 10px !important;
         margin: 0 auto !important;
         display: flex !important;
