@@ -990,12 +990,12 @@ if modo == "Painel do Jurado":
 
         # Card 5: Comentários compacto
         st.markdown(
-            f'<div class="jj-card" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-secao-label">Comentários (Opcional)</div>',
+            f'<div class="jj-card" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-secao-label">Comentários</div>',
             unsafe_allow_html=True,
         )
         chave_comentario = f"coment_{chave_base}"
         comentario = st.text_area(
-            "COMENTÁRIOS (OPCIONAL)",
+            "COMENTÁRIOS",
             key=chave_comentario,
             placeholder="Deixe seu comentário aqui...",
             max_chars=300,
