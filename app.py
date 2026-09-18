@@ -668,7 +668,7 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
     align-items: center !important;
     width: 100% !important;
     max-width: 100% !important;
-    gap: 0px !important;
+    gap: 4px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
@@ -687,7 +687,7 @@ div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important;
-    padding: 0 4px !important;
+    padding: 0 2px !important;
 }
 div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
     height: 36px !important;
