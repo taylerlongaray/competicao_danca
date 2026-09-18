@@ -628,11 +628,11 @@ st.markdown(
     .jj-crit-desc b { color: #e5c158; }
 
     .jj-secao-label {
-        color: #f3e5ab;
-        font-size: 12px;
+        color: #b39b6b;
+        font-size: 10px;
         letter-spacing: 3px;
         text-transform: uppercase;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 
     .jj-footer {
@@ -778,7 +778,6 @@ if modo == "Painel do Jurado":
             </a>
         """
 
-      # Podes ajustar o valor de 'top: 60%;' aqui se quiseres mais acima ou mais abaixo
       st.markdown(
           f"""
           <div style="
@@ -840,6 +839,7 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
     else:
+      # --- TELA DE VOTAÇÃO ATUALIZADA EXATAMENTE COMO A IMAGEM DE REFERÊNCIA ---
       categoria_escolhida = st.session_state.categoria_selecionada
 
       logout_url = (
@@ -849,47 +849,26 @@ if modo == "Painel do Jurado":
       jurado_str = f"jurado={st.session_state.jurado_logado}&"
       trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
+      # Cabeçalho Superior exato conforme a imagem (Sair, Logo central, Trocar Categoria)
       st.markdown(
           f"""
-          <div style="position: sticky; top: 10px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
               <a href="{logout_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
-                  color: #f3e5ab;
-                  text-decoration: none;
-                  width: 95px;
-                  height: 38px;
-                  border-radius: 6px;
-                  border: 1px solid rgba(212,175,55,0.6);
-                  font-size: 9px;
-                  font-weight: 600;
-                  text-transform: uppercase;
-                  letter-spacing: 0.5px;
-                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  text-align: center;
-                  line-height: 1.1;
+                  color: #f3e5ab; text-decoration: none; padding: 7px 14px; border-radius: 8px;
+                  border: 1px solid rgba(212,175,55,0.6); font-size: 10px; font-weight: 600;
+                  text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center;
               ">← Sair</a>
+              <div style="text-align: center;">
+                  <div style="font-family: 'Georgia', serif; color: #f3e5ab; font-size: 15px; font-weight: 700; letter-spacing: 2px;">JACK <span style="font-size: 10px;">AND</span> JILL</div>
+                  <div style="color: #b39b6b; font-size: 8px; letter-spacing: 3px; text-transform: uppercase; margin-top: 1px;">Noite nas Arábias</div>
+              </div>
               <a href="{trocar_url}" style="
                   background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%);
-                  color: #f3e5ab;
-                  text-decoration: none;
-                  width: 95px;
-                  height: 38px;
-                  border-radius: 6px;
-                  border: 1px solid rgba(212,175,55,0.6);
-                  font-size: 8.5px;
-                  font-weight: 600;
-                  text-transform: uppercase;
-                  letter-spacing: 0.5px;
-                  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  text-align: center;
-                  line-height: 1.15;
-              ">Trocar<br>Categoria</a>
+                  color: #f3e5ab; text-decoration: none; padding: 7px 10px; border-radius: 8px;
+                  border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600;
+                  text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; text-align: center;
+              ">⇄ Trocar Categoria</a>
           </div>
           """,
           unsafe_allow_html=True,
@@ -940,23 +919,24 @@ if modo == "Painel do Jurado":
           os.path.join(os.path.dirname(__file__), arquivo_icone)
       )
       if icone_b64:
-        icone_html = f'<img src="{icone_b64}"/>'
+        icone_html = f'<img src="{icone_b64}" style="width: 32px; height: 32px; object-fit: contain;"/>'
       else:
         icone_html = emoji_icone
 
       fase_titulo, fase_sub = formatar_fase(fase_escolhida)
 
+      # Card 1: Banner da Categoria e Fase idêntico à imagem
       st.markdown(
           f"""
-          <div class="jj-card jj-banner">
-              <div class="jj-banner-left">
+          <div class="jj-card jj-banner" style="margin-bottom: 12px; padding: 12px 16px;">
+              <div class="jj-banner-left" style="gap: 12px;">
                   <div class="jj-banner-icon">{icone_html}</div>
                   <div>
                       <div class="jj-label">Categoria</div>
                       <div class="jj-categoria">{categoria_escolhida.upper()}</div>
                   </div>
               </div>
-              <div class="jj-banner-right">
+              <div class="jj-banner-right" style="padding-left: 12px;">
                   <div class="jj-fase">{fase_titulo}</div>
                   <div class="jj-musica">{fase_sub}</div>
               </div>
@@ -993,10 +973,11 @@ if modo == "Painel do Jurado":
           st.session_state.idx_comp = 0
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
+        # Card 2: Competidor com botões Anterior/Próximo e badge central
         col_ant, col_nome, col_prox = st.columns([1, 4, 1])
 
         with col_ant:
-          st.markdown("<div style='height: 26px;'></div>", unsafe_allow_html=True)
+          st.markdown("<div style='height: 22px;'></div>", unsafe_allow_html=True)
           if st.button("‹", key="btn_anterior", use_container_width=True):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp - 1
@@ -1012,20 +993,17 @@ if modo == "Painel do Jurado":
         with col_nome:
           st.markdown(
               f"""
-              <div class="jj-avaliando">
+              <div class="jj-card jj-avaliando" style="margin-bottom: 0; padding: 10px 12px;">
                   <div class="jj-label">Avaliando</div>
-                  <div class="jj-nome">{competidor_escolhido}</div>
-                  <span class="jj-badge">{tipo_selecionado}</span>
-                  <div style="color:#8d7a52; font-size:9px; letter-spacing:2px; margin-top:8px;">
-                      {st.session_state.idx_comp + 1} DE {total_comp}
-                  </div>
+                  <div class="jj-nome" style="font-size: 28px; margin: 2px 0 6px 0;">{competidor_escolhido}</div>
+                  <span class="jj-badge" style="padding: 3px 16px; font-size: 10px;">{tipo_selecionado.upper()}</span>
               </div>
               """,
               unsafe_allow_html=True,
           )
 
         with col_prox:
-          st.markdown("<div style='height: 26px;'></div>", unsafe_allow_html=True)
+          st.markdown("<div style='height: 22px;'></div>", unsafe_allow_html=True)
           if st.button("›", key="btn_proximo", use_container_width=True):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp + 1
@@ -1038,7 +1016,7 @@ if modo == "Painel do Jurado":
               unsafe_allow_html=True,
           )
 
-        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 
         criterios = criterios_por_categoria[categoria_escolhida]
         lista_criterios = list(criterios.items())
@@ -1049,19 +1027,20 @@ if modo == "Painel do Jurado":
 
         criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
+        # Card 3: Critério com ícone musical, título e descrição
         st.markdown(
             f"""
-            <div class="jj-card">
+            <div class="jj-card" style="margin-bottom: 12px; padding: 14px 16px;">
                 <div class="jj-crit-head">
-                    <div class="jj-crit-icon">♪</div>
-                    <div style="flex: 1; padding: 0 14px;">
+                    <div class="jj-crit-icon" style="width: 38px; height: 38px; min-width: 38px; font-size: 16px;">♪</div>
+                    <div style="flex: 1; padding: 0 10px;">
                         <div class="jj-label">Critério</div>
-                        <div class="jj-crit-nome">{criterio_nome}</div>
+                        <div class="jj-crit-nome" style="font-size: 18px;">{criterio_nome}</div>
                     </div>
-                    <div class="jj-contador">{st.session_state.idx_crit + 1} / {total_crit}</div>
+                    <div class="jj-contador" style="padding: 2px 10px; font-size: 11px;">{st.session_state.idx_crit + 1} / {total_crit}</div>
                 </div>
-                <hr class="jj-divisor"/>
-                <div class="jj-crit-desc"><b>O que avaliar:</b> {criterio_desc}</div>
+                <hr class="jj-divisor" style="margin: 10px 0 8px 0;"/>
+                <div class="jj-crit-desc" style="font-size: 13px;"><b>O que avaliar:</b> {criterio_desc}</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -1072,9 +1051,9 @@ if modo == "Painel do Jurado":
             f"{fase_escolhida}|{papel_escolhido}|{competidor_escolhido}|"
             f"{criterio_nome}"
         )
-        chave_nota = f"nota_sel_{chave_base}"
+        chave_nota_input = f"nota_input_{chave_base}"
 
-        if chave_nota not in st.session_state:
+        if chave_nota_input not in st.session_state:
           nota_salva = buscar_nota_salva(
               st.session_state.jurado_logado,
               categoria_escolhida,
@@ -1083,89 +1062,107 @@ if modo == "Painel do Jurado":
               competidor_escolhido,
               criterio_nome,
           )
-          st.session_state[chave_nota] = (
-              int(nota_salva) if nota_salva is not None else None
+          st.session_state[chave_nota_input] = (
+              str(int(nota_salva)) if nota_salva is not None else ""
           )
 
+        # Card 4: Sua Nota (Campo de texto idêntico ao modelo da foto)
         st.markdown(
-            '<div class="jj-card" style="padding-bottom: 6px;">'
-            '<div class="jj-secao-label">Sua nota</div>',
+            '<div class="jj-card" style="margin-bottom: 12px; padding: 12px 16px;">'
+            '<div class="jj-secao-label">Sua Nota</div>',
+            unsafe_allow_html=True,
+        )
+        nota_digitada_str = st.text_input(
+            "SUA NOTA",
+            value=st.session_state[chave_nota_input],
+            key=f"txt_nota_{chave_base}",
+            placeholder="Digite sua nota de 1 a 10...",
+            max_chars=2,
+            label_visibility="collapsed",
+        )
+        st.markdown(
+            '<div style="text-align: right; color: #8d7a52; font-size: 10px; margin-top: -6px;">0/2</div>'
+            "</div>",
             unsafe_allow_html=True,
         )
 
-        colunas_notas = st.columns(10, gap="small")
-        for i, coluna in enumerate(colunas_notas, start=1):
-          with coluna:
-            selecionada = st.session_state[chave_nota] == i
-            if st.button(
-                str(i),
-                key=f"nota_{i}_{chave_base}",
-                use_container_width=True,
-                type="primary" if selecionada else "secondary",
-            ):
-              st.session_state[chave_nota] = i
-              st.rerun()
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
+        # Card 5: Comentários (Opcional)
+        st.markdown(
+            '<div class="jj-card" style="margin-bottom: 12px; padding: 12px 16px;">'
+            '<div class="jj-secao-label">Comentários (Opcional)</div>',
+            unsafe_allow_html=True,
+        )
         chave_comentario = f"coment_{chave_base}"
         comentario = st.text_area(
             "COMENTÁRIOS (OPCIONAL)",
             key=chave_comentario,
             placeholder="Deixe seu comentário aqui...",
             max_chars=300,
-            height=110,
+            height=85,
+            label_visibility="collapsed",
         )
         st.markdown(
-            f"<div style='text-align:right; color:#8d7a52; font-size:11px;"
-            f" margin-top:-8px;'>{len(comentario)}/300</div>",
+            f"<div style='text-align:right; color:#8d7a52; font-size:10px;"
+            f" margin-top:2px;'>{len(comentario)}/300</div>"
+            "</div>",
             unsafe_allow_html=True,
         )
 
-        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
 
+        # Botão Enviar Avaliação idêntico ao da imagem
         if st.button(
             "➤  ENVIAR AVALIAÇÃO",
             type="primary",
             use_container_width=True,
             key=f"enviar_{chave_base}",
         ):
-          if st.session_state[chave_nota] is None:
-            st.error("❌ Selecione uma nota de 1 a 10 antes de enviar.")
+          nota_limpa = nota_digitada_str.strip()
+          if not nota_limpa:
+            st.error("❌ Digite uma nota antes de enviar.")
           else:
-            registrar_voto(
-                st.session_state.jurado_logado,
-                categoria_escolhida,
-                fase_escolhida,
-                papel_escolhido,
-                competidor_escolhido,
-                criterio_nome,
-                float(st.session_state[chave_nota]),
-                comentario,
-            )
+            try:
+              val_nota = float(nota_limpa)
+              if not (1 <= val_nota <= 10):
+                st.error("❌ A nota deve ser entre 1 e 10.")
+              else:
+                registrar_voto(
+                    st.session_state.jurado_logado,
+                    categoria_escolhida,
+                    fase_escolhida,
+                    papel_escolhido,
+                    competidor_escolhido,
+                    criterio_nome,
+                    val_nota,
+                    comentario,
+                )
+                st.session_state[chave_nota_input] = nota_limpa
 
-            if st.session_state.idx_crit + 1 < total_crit:
-              st.session_state.idx_crit += 1
-              st.toast(
-                  f"✨ Nota registrada para {competidor_escolhido} —"
-                  f" {criterio_nome}"
-              )
-            else:
-              st.session_state.idx_crit = 0
-              st.session_state.idx_comp = (
-                  st.session_state.idx_comp + 1
-              ) % total_comp
-              st.toast(
-                  f"🏅 Avaliação de {competidor_escolhido} concluída!"
-              )
-            st.rerun()
+                if st.session_state.idx_crit + 1 < total_crit:
+                  st.session_state.idx_crit += 1
+                  st.toast(
+                      f"✨ Nota registrada para {competidor_escolhido} —"
+                      f" {criterio_nome}"
+                  )
+                else:
+                  st.session_state.idx_crit = 0
+                  st.session_state.idx_comp = (
+                      st.session_state.idx_comp + 1
+                  ) % total_comp
+                  st.toast(
+                      f"🏅 Avaliação de {competidor_escolhido} concluída!"
+                  )
+                st.rerun()
+            except ValueError:
+              st.error("❌ Digite um valor numérico válido para a nota.")
 
+        # Rodapé idêntico à imagem de referência
         st.markdown(
             """
-            <div class="jj-footer">
-                <div style="color:#b39b6b; font-size:13px;">✦</div>
-                <div class="jj-footer-marca">Passion Dance</div>
-                <div class="jj-footer-sub">Jack and Jill · Noite nas Arábias</div>
+            <div class="jj-footer" style="margin-top: 18px; padding-top: 10px;">
+                <div style="color:#b39b6b; font-size:11px; margin-bottom: 2px;">✦</div>
+                <div class="jj-footer-marca" style="font-size: 11px; letter-spacing: 4px;">Passion Dance</div>
+                <div class="jj-footer-sub" style="font-size: 9px; letter-spacing: 2px;">Jack and Jill · Noite nas Arábias</div>
             </div>
             """,
             unsafe_allow_html=True,
