@@ -1,5 +1,6 @@
 import base64
 import os
+import urllib.parse
 import pandas as pd
 import streamlit as st
 
@@ -765,7 +766,8 @@ if modo == "Painel do Jurado":
 
             nome_jurado = st.session_state.jurado_logado
             view_param = "view=jurado&" if link_jurado_exclusivo else ""
-            jurado_param = f"jurado={st.session_state.jurado_logado}&"
+            jurado_encoded = urllib.parse.quote(st.session_state.jurado_logado)
+            jurado_param = f"jurado={jurado_encoded}&"
 
             cats_info = [
                 ("Diamante", "diamante.png", "💎"),
@@ -785,7 +787,7 @@ if modo == "Painel do Jurado":
                 else:
                     icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
 
-                target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
+                target_url = f"?{view_param}{jurado_param}cat={urllib.parse.quote(cat_nome)}"
                 cards_html += f"""
                     <a href="{target_url}" class="category-card">
                         <div class="card-left">
@@ -863,7 +865,8 @@ if modo == "Painel do Jurado":
                 "?view=jurado&logout=true" if link_jurado_exclusivo else "?logout=true"
             )
             view_str = "view=jurado&" if link_jurado_exclusivo else ""
-            jurado_str = f"jurado={st.session_state.jurado_logado}&"
+            jurado_encoded = urllib.parse.quote(st.session_state.jurado_logado)
+            jurado_str = f"jurado={jurado_encoded}&"
             trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
             st.markdown(
