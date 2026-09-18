@@ -659,63 +659,45 @@ div[data-testid="stExpander"] summary p {
 }
 
 /* ========================================================================= */
-/* CSS UNIVERSAL À PROVA DE FALHAS PARA MOBILE (COMPATÍVEL COM TODOS OS BROWSERS) */
+/* CSS PARA FORÇAR OS BOTÕES E O NOME LADO A LADO E SEM ROLAGEM LATERAL     */
 /* ========================================================================= */
-@media (max-width: 9999px) {
-    div[data-testid="stHorizontalBlock"] {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        width: 100% !important;
-        gap: 6px !important;
-        overflow: hidden !important;
-    }
-    
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        min-width: 0 !important;
-        width: auto !important;
-        padding: 0 !important;
-    }
-
-    /* BLOCOS COM EXATAMENTE 2 COLUNAS (Ex: Ajustar Fase/Grupo) */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(2),
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(2) ~ div {
-        flex: 1 1 50% !important;
-    }
-
-    /* BLOCOS COM EXATAMENTE 3 COLUNAS (Ex: Navegação Anterior/Próximo) */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3),
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) {
-        flex: 0 0 30px !important;
-        max-width: 30px !important;
-        min-width: 30px !important;
-    }
-    
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(2) {
-        flex: 1 1 auto !important;
-    }
-
-    /* ESTILO ESPECÍFICO PARA OS BOTÕES DAS LATERAIS (Anterior/Próximo) */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) button,
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) button {
-        width: 30px !important;
-        height: 30px !important;
-        padding: 0 !important;
-        font-size: 15px !important;
-        border-radius: 10px !important;
-        margin: 0 auto !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
-    }
-    
-    /* Ajuste do texto ANT e PRÓX embaixo dos botões para não quebrar */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) p,
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child:nth-last-child(3) ~ div:nth-child(3) p {
-        margin-bottom: 0 !important;
-    }
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1),
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
+    flex: 0 0 42px !important;
+    max-width: 42px !important;
+    min-width: 42px !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
+    flex: 1 1 auto !important;
+}
+div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
+    height: 42px !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    font-size: 18px !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
 }
 </style>
 """,
@@ -895,11 +877,11 @@ if modo == "Painel do Jurado":
           st.session_state.idx_comp = 0
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
-        # Card 2: Competidor com botões Anterior/Próximo perfeitamente alinhados
+        # Card 2: Competidor com botões Anterior/Próximo e badge central (Com classe .nav-marker para o CSS alinhar)
         col_ant, col_nome, col_prox = st.columns([1, 4, 1])
 
         with col_ant:
-          if st.button("‹", key="btn_anterior", use_container_width=True):
+          if st.button("‹", key="btn_anterior", use_container_width=False):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp - 1
             ) % total_comp
@@ -908,12 +890,12 @@ if modo == "Painel do Jurado":
 
         with col_nome:
           st.markdown(
-              f"""<div class="jj-card jj-avaliando" style="margin-bottom: 0; padding: 6px 8px;"><div class="jj-label">Avaliando</div><div class="jj-nome" style="font-size: 20px; margin: 1px 0 3px 0;">{competidor_escolhido}</div><span class="jj-badge" style="padding: 2px 10px; font-size: 8px;">{tipo_selecionado.upper()}</span></div>""",
+              f"""<div class="nav-marker"></div><div class="jj-card jj-avaliando" style="margin-bottom: 0; padding: 6px 8px;"><div class="jj-label">Avaliando</div><div class="jj-nome" style="font-size: 20px; margin: 1px 0 3px 0;">{competidor_escolhido}</div><span class="jj-badge" style="padding: 2px 10px; font-size: 8px;">{tipo_selecionado.upper()}</span></div>""",
               unsafe_allow_html=True,
           )
 
         with col_prox:
-          if st.button("›", key="btn_proximo", use_container_width=True):
+          if st.button("›", key="btn_proximo", use_container_width=False):
             st.session_state.idx_comp = (
                 st.session_state.idx_comp + 1
             ) % total_comp
@@ -1238,6 +1220,7 @@ else:
                       by="Pontuação Total Acumulada", ascending=False
                   ).reset_index(drop=True)
                   total_score.index = total_score.index + 1
+                  st.dataframe(total_score, use_keyword_argument_or_pass_clean=True) # type: ignore
                   st.dataframe(total_score, use_container_width=True)
                 else:
                   st.info("Aguardando votos em ambas as fases.")
