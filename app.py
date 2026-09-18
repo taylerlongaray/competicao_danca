@@ -741,34 +741,63 @@ if modo == "Painel do Jurado":
                   text-align: center;
               ">← Sair</a>
           </div>
+          """,
+          unsafe_allow_html=True,
+      )
+
+      nome_jurado = st.session_state.jurado_logado
+      view_param = "view=jurado&" if link_jurado_exclusivo else ""
+      jurado_param = f"jurado={st.session_state.jurado_logado}&"
+
+      cats_info = [
+          ("Diamante", "diamante.png", "💎"),
+          ("Platina", "platina.png", "🥈"),
+          ("Ouro", "ouro.png", "🥇"),
+          ("Prata", "prata.png", "🥈"),
+          ("Aprendendo a Voar", "asas.png", "🕊️"),
+      ]
+
+      cards_html = ""
+      for cat_nome, icone_path, emoji_fallback in cats_info:
+        img_b64 = img_to_base64(
+            os.path.join(os.path.dirname(__file__), icone_path)
+        )
+        if img_b64:
+          icon_html = f'<img src="{img_b64}" class="card-icon"/>'
+        else:
+          icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
+
+        target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
+        cards_html += f"""
+            <a href="{target_url}" class="category-card">
+                <div class="card-left">
+                    {icon_html}
+                    <span class="card-title">{cat_nome.upper()}</span>
+                </div>
+                <span class="card-arrow">›</span>
+            </a>
+        """
+
+      # Podes ajustar o valor de 'top: 60%;' aqui se quiseres mais acima ou mais abaixo
+      st.markdown(
+          f"""
           <div style="
               position: fixed;
-              top: 50%;
+              top: 60%;
               left: 50%;
               transform: translate(-50%, -50%);
               width: 360px;
               max-width: 90vw;
               z-index: 99999;
           ">
-          """,
-          unsafe_allow_html=True,
-      )
-
-      nome_jurado = st.session_state.jurado_logado
-      st.markdown(
-          f"""
-          <div style="text-align: center; margin-bottom: 2px;">
-              <div class="saudacao-jurado">Olá, {nome_jurado}!</div>
-              <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p>
+              <div style="text-align: center; margin-bottom: 12px;">
+                  <div class="saudacao-jurado">Olá, {nome_jurado}!</div>
+                  <p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p>
+              </div>
+              {cards_html}
           </div>
-          """,
-          unsafe_allow_html=True,
-      )
-
-      st.markdown(
-          """
           <style>
-          .category-card {
+          .category-card {{
               display: flex;
               align-items: center;
               justify-content: space-between;
@@ -780,74 +809,36 @@ if modo == "Painel do Jurado":
               text-decoration: none !important;
               box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
               transition: all 0.3s ease;
-          }
-          .category-card:hover {
+          }}
+          .category-card:hover {{
               border-color: rgba(212, 175, 55, 1.0);
               background: linear-gradient(135deg, rgba(25, 18, 12, 0.98) 0%, rgba(45, 33, 19, 1) 100%);
-          }
-          .card-left {
+          }}
+          .card-left {{
               display: flex;
               align-items: center;
               gap: 15px;
-          }
-          .card-icon {
+          }}
+          .card-icon {{
               width: 26px !important; 
               height: 26px !important;
               object-fit: contain;
-          }
-          .card-title {
+          }}
+          .card-title {{
               color: #f3e5ab;
               font-family: 'Georgia', serif;
               font-size: 12px !important; 
               font-weight: 600;
               letter-spacing: 2px;
-          }
-          .card-arrow {
+          }}
+          .card-arrow {{
               color: #d4af37;
               font-size: 16px !important;
-          }
+          }}
           </style>
           """,
           unsafe_allow_html=True,
       )
-
-      cats_info = [
-          ("Diamante", "diamante.png", "💎"),
-          ("Platina", "platina.png", "🥈"),
-          ("Ouro", "ouro.png", "🥇"),
-          ("Prata", "prata.png", "🥈"),
-          ("Aprendendo a Voar", "asas.png", "🕊️"),
-      ]
-
-      view_param = "view=jurado&" if link_jurado_exclusivo else ""
-      jurado_param = f"jurado={st.session_state.jurado_logado}&"
-
-      for cat_nome, icone_path, emoji_fallback in cats_info:
-        img_b64 = img_to_base64(
-            os.path.join(os.path.dirname(__file__), icone_path)
-        )
-        if img_b64:
-          icon_html = f'<img src="{img_b64}" class="card-icon"/>'
-        else:
-          icon_html = f'<span style="font-size: 24px;">{emoji_fallback}</span>'
-
-        target_url = f"?{view_param}{jurado_param}cat={cat_nome}"
-
-        st.markdown(
-            f"""
-                <a href="{target_url}" class="category-card">
-                    <div class="card-left">
-                        {icon_html}
-                        <span class="card-title">{cat_nome.upper()}</span>
-                    </div>
-                    <span class="card-arrow">›</span>
-                </a>
-                """,
-            unsafe_allow_html=True,
-        )
-
-      st.markdown("</div>", unsafe_allow_html=True)
-
     else:
       categoria_escolhida = st.session_state.categoria_selecionada
 
