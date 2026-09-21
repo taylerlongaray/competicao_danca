@@ -252,12 +252,117 @@ icones_categoria = {
     "Aprendendo a Voar": ("asas.png", "🕊️"),
 }
 
-senhas_jurados = {
-    "alisson (teste)": "1234",
-    "Jurado 1": "1234",
-    "Jurado 2": "1234",
-    "Jurado 3": "1234",
-    "Jurado de Referência": "1234",
+configuracao_jurados = {
+    "adri": {
+        "nome": "Adri Santos",
+        "senha": "6153",
+        "permissoes": [
+            {"categoria": "Prata", "papel": "Conduzidas"},
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores"},
+            {"categoria": "Diamante", "papel": "Condutores"}
+        ]
+    },
+    "alan": {
+        "nome": "Alan Demarch",
+        "senha": "7391",
+        "permissoes": [
+            {"categoria": "Platina", "papel": "Condutores"},
+            {"categoria": "Ouro", "papel": "Condutores"}
+        ]
+    },
+    "alex": {
+        "nome": "Alex Alves",
+        "senha": "4827",
+        "permissoes": "TODAS"
+    },
+    "bel": {
+        "nome": "Bel Amaro",
+        "senha": "2648",
+        "permissoes": [
+            {"categoria": "Prata", "papel": "Conduzidas"}
+        ]
+    },
+    "cassiano/luan": {
+        "nome": "Cassiano Fontana / Luan Ruduit",
+        "senha": "8516",
+        "permissoes": [
+            {"categoria": "Prata", "papel": "Condutores"}
+        ]
+    },
+    "claudia": {
+        "nome": "Claudia Papke",
+        "senha": "5274",
+        "permissoes": [
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas"},
+            {"categoria": "Prata", "papel": "Conduzidas"},
+            {"categoria": "Diamante", "papel": "Conduzidas"}
+        ]
+    },
+    "cleo": {
+        "nome": "Cléo Santanna",
+        "senha": "6835",
+        "permissoes": [
+            {"categoria": "Platina", "papel": "Conduzidas"},
+            {"categoria": "Ouro", "papel": "Conduzidas"}
+        ]
+    },
+    "daiani": {
+        "nome": "Daiani Rodrigues",
+        "senha": "9146",
+        "permissoes": [
+            {"categoria": "Diamante", "papel": "Conduzidas"},
+            {"categoria": "Platina", "papel": "Conduzidas"},
+            {"categoria": "Ouro", "papel": "Conduzidas"}
+        ]
+    },
+    "joel": {
+        "nome": "Joel Trevisan",
+        "senha": "3572",
+        "permissoes": [
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores"},
+            {"categoria": "Ouro", "papel": "Condutores"}
+        ]
+    },
+    "lika": {
+        "nome": "Lika",
+        "senha": "7461",
+        "permissoes": [
+            {"categoria": "Ouro", "papel": "Conduzidas"},
+            {"categoria": "Prata", "papel": "Condutores"}
+        ]
+    },
+    "maick": {
+        "nome": "Maick Martins",
+        "senha": "2385",
+        "permissoes": [
+            {"categoria": "Prata", "papel": "Condutores"}
+        ]
+    },
+    "nilson": {
+        "nome": "Nilson Leivas",
+        "senha": "8614",
+        "permissoes": [
+            {"categoria": "Diamante", "papel": "Conduzidas"},
+            {"categoria": "Platina", "papel": "Conduzidas"},
+            {"categoria": "Ouro", "papel": "Condutores"}
+        ]
+    },
+    "wagner": {
+        "nome": "Wagner Camargo",
+        "senha": "4296",
+        "permissoes": [
+            {"categoria": "Diamante", "papel": "Condutores"},
+            {"categoria": "Platina", "papel": "Condutores"}
+        ]
+    },
+    "william": {
+        "nome": "William Ferreira",
+        "senha": "5738",
+        "permissoes": [
+            {"categoria": "Platina", "papel": "Condutores"},
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas"}
+        ]
+    }
 }
 
 
@@ -698,9 +803,9 @@ if modo == "Painel do Jurado":
       )
       st.markdown('<div style="margin-top: 8px;"></div>', unsafe_allow_html=True)
       if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
-        usuario_limpo = login_digitado.strip()
-        if usuario_limpo in senhas_jurados:
-          if senha_digitada == senhas_jurados[usuario_limpo]:
+        usuario_limpo = login_digitado.strip().lower()
+        if usuario_limpo in configuracao_jurados:
+          if senha_digitada == configuracao_jurados[usuario_limpo]["senha"]:
             st.session_state.jurado_logado = usuario_limpo
             st.session_state.categoria_selecionada = None
             st.query_params["jurado"] = usuario_limpo
@@ -722,17 +827,26 @@ if modo == "Painel do Jurado":
           unsafe_allow_html=True,
       )
 
-      nome_jurado = st.session_state.jurado_logado
+      dados_jurado = configuracao_jurados.get(st.session_state.jurado_logado, {"nome": st.session_state.jurado_logado, "permissoes": "TODAS"})
+      nome_jurado = dados_jurado["nome"]
+      permissoes_jurado = dados_jurado["permissoes"]
+
       view_param = "view=jurado&" if link_jurado_exclusivo else ""
       jurado_param = f"jurado={st.session_state.jurado_logado}&"
 
-      cats_info = [
+      cats_info_todas = [
           ("Diamante", "diamante.png", "💎"),
           ("Platina", "platina.png", "🥈"),
           ("Ouro", "ouro.png", "🥇"),
           ("Prata", "prata.png", "🥈"),
           ("Aprendendo a Voar", "asas.png", "🕊️"),
       ]
+
+      if permissoes_jurado == "TODAS":
+        cats_info = cats_info_todas
+      else:
+        categorias_permitidas = {p["categoria"] for p in permissoes_jurado}
+        cats_info = [c for c in cats_info_todas if c[0] in categorias_permitidas]
 
       cards_html = ""
       for cat_nome, icone_path, emoji_fallback in cats_info:
@@ -772,6 +886,11 @@ if modo == "Painel do Jurado":
         st.session_state.idx_comp = 0
         st.session_state.idx_crit = 0
 
+      if permissoes_jurado == "TODAS":
+        papeis_permitidos_categoria = ["Condutores", "Conduzidas"]
+      else:
+        papeis_permitidos_categoria = [p["papel"] for p in permissoes_jurado if p["categoria"] == categoria_escolhida]
+
       with st.expander("⚙ Ajustar fase e grupo"):
         col_fase, col_grupo = st.columns(2)
         with col_fase:
@@ -781,12 +900,16 @@ if modo == "Painel do Jurado":
               index=fases_disponiveis.index(st.session_state.fase_atual),
           )
         with col_grupo:
-          nova_grupo = st.radio(
-              "Grupo",
-              ["Condutor", "Conduzida"],
-              horizontal=True,
-              index=0 if st.session_state.grupo_atual == "Condutor" else 1,
-          )
+          if len(papeis_permitidos_categoria) == 1:
+            papel_unico = papeis_permitidos_categoria[0]
+            nova_grupo = "Condutor" if papel_unico == "Condutores" else "Conduzida"
+            st.markdown(f"<div style='font-size:11px; color:#e5c158; padding-top:15px;'>Grupo: <b>{nova_grupo}</b></div>", unsafe_allow_html=True)
+          else:
+            nova_grupo = st.radio(
+                "Grupo",
+                ["Condutor" if p == "Condutores" else "Conduzida" for p in papeis_permitidos_categoria],
+                horizontal=True,
+            )
 
         if (
             nova_fase != st.session_state.fase_atual
