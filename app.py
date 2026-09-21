@@ -658,84 +658,20 @@ div[data-testid="stExpander"] summary p {
     text-transform: uppercase !important;
 }
 
-/* ========================================================================= */
-/* NAVEGAÇÃO MOBILE PERFEITA (MANTÉM TUDO NA TELA SEM ROLAGEM)                */
-/* ========================================================================= */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    gap: 4px !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-}
-
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"] {
-    min-width: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-}
-
-/* Coluna da esquerda (Botão Anterior) - Fixa em 40px */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(1) {
-    flex: 0 0 40px !important;
-    width: 40px !important;
-    max-width: 40px !important;
-}
-
-/* Coluna do meio (Cartão do Nome) - Limitada para encaixar as setas */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    max-width: calc(100% - 88px) !important;
-}
-
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 6px 4px !important;
-    text-align: center !important;
-    overflow: hidden !important;
-}
-
-/* Coluna da direita (Botão Próximo) - Fixa em 40px */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(3) {
-    flex: 0 0 40px !important;
-    width: 40px !important;
-    max-width: 40px !important;
-}
-
-/* Estilo unificado dos botões de setas ocupando a largura da coluna */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) button {
-    height: 48px !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    font-size: 18px !important;
+/* Estilo personalizado para o seletor de competidores combinar com o tema */
+.stSelectbox div[data-baseweb="select"] {
+    background-color: rgba(12, 9, 7, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.5) !important;
     border-radius: 8px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,20,0.95) 100%) !important;
+    color: #f3e5ab !important;
 }
-
-/* Cartão central formatado sem estourar as margens */
-div[data-testid="stHorizontalBlock"]:has(.nav-marker) > div[data-testid="column"]:nth-child(2) .jj-card {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 6px 4px !important;
+.stSelectbox div[data-baseweb="select"] span {
+    color: #f3e5ab !important;
+    font-family: 'Cinzel', 'Georgia', serif !important;
+    font-weight: 600 !important;
+}
+.stSelectbox svg {
+    fill: #e5c158 !important;
 }
 </style>
 """,
@@ -915,32 +851,46 @@ if modo == "Painel do Jurado":
           st.session_state.idx_comp = 0
         competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
-        # Card 2: Competidor com botões Anterior/Próximo e badge central (Com classe .nav-marker para o CSS alinhar)
-        col_ant, col_nome, col_prox = st.columns([1, 6, 1])
+        # Lista de competidores ordenados
+        competidores_ordenados = sorted(competidores_qualificados)
+        total_comp = len(competidores_ordenados)
 
-        with col_ant:
-          if st.button("‹", key="btn_anterior", use_container_width=True):
-            st.session_state.idx_comp = (
-                st.session_state.idx_comp - 1
-            ) % total_comp
+        if st.session_state.idx_comp >= total_comp:
+            st.session_state.idx_comp = 0
+
+        # Rótulo da seção
+        st.markdown(
+            f"""<div class="jj-card jj-avaliando" style="margin-bottom: 4px; padding: 6px 10px;">
+                <div class="jj-label">Selecionar Competidor</div>
+                <span class="jj-badge" style="padding: 2px 10px; font-size: 8px; margin-top: 2px;">{tipo_selecionado.upper()}</span>
+            </div>""",
+            unsafe_allow_html=True,
+        )
+
+        # Menu suspenso nativo para escolher o competidor
+        competidor_escolhido = st.selectbox(
+            "Competidor",
+            options=competidores_ordenados,
+            index=st.session_state.idx_comp,
+            key="select_competidor_movel",
+            label_visibility="collapsed"
+        )
+
+        # Atualiza o índice interno se o jurado alterar a seleção no menu
+        novo_idx = competidores_ordenados.index(competidor_escolhido)
+        if novo_idx != st.session_state.idx_comp:
+            st.session_state.idx_comp = novo_idx
             st.session_state.idx_crit = 0
             st.rerun()
 
-        with col_nome:
-          st.markdown(
-              f"""<div class="nav-marker"></div><div class="jj-card jj-avaliando" style="margin-bottom: 0; padding: 6px 8px;"><div class="jj-label">Avaliando</div><div class="jj-nome" style="font-size: 20px; margin: 1px 0 3px 0;">{competidor_escolhido}</div><span class="jj-badge" style="padding: 2px 10px; font-size: 8px;">{tipo_selecionado.upper()}</span></div>""",
-              unsafe_allow_html=True,
-          )
-
-        with col_prox:
-          if st.button("›", key="btn_proximo", use_container_width=True):
-            st.session_state.idx_comp = (
-                st.session_state.idx_comp + 1
-            ) % total_comp
-            st.session_state.idx_crit = 0
-            st.rerun()
-
-        st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
+        # Mensagem elegante de confirmação "Avaliando [Nome]"
+        st.markdown(
+            f"""<div class="jj-card jj-avaliando" style="margin-bottom: 6px; padding: 8px 10px; background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(40, 30, 18, 0.98) 100%);">
+                <div class="jj-label" style="color: #e5c158;">Estado Atual</div>
+                <div class="jj-nome" style="font-size: 19px; margin: 2px 0;">Avaliando {competidor_escolhido}</div>
+            </div>""",
+            unsafe_allow_html=True,
+        )
 
         criterios = criterios_por_categoria[categoria_escolhida]
         lista_criterios = list(criterios.items())
