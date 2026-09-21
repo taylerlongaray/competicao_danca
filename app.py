@@ -817,6 +817,11 @@ if modo == "Painel do Jurado":
         else:
           st.error("❌ Usuário não encontrado.")
   else:
+    # Carrega os dados e permissões do jurado logo no início para evitar erros de escopo
+    dados_jurado = configuracao_jurados.get(st.session_state.jurado_logado, {"nome": st.session_state.jurado_logado, "permissoes": "TODAS"})
+    nome_jurado = dados_jurado["nome"]
+    permissoes_jurado = dados_jurado["permissoes"]
+
     if st.session_state.categoria_selecionada is None:
       logout_param = (
           "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
