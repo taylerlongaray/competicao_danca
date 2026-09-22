@@ -927,7 +927,20 @@ else:
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            z-index: 99999 !important;
+        }
+        /* Destaca o botão nativo de recolher/expandir para que não suma no fundo escuro */
+        [data-testid="collapsedControl"] {
+            background-color: rgba(20, 15, 10, 0.8) !important;
+            border: 1px solid rgba(212, 175, 55, 0.5) !important;
+            border-radius: 8px !important;
+            margin-top: 10px !important;
+            margin-left: 10px !important;
+            z-index: 999999 !important;
+        }
+        [data-testid="collapsedControl"] svg,
+        [data-testid="stSidebarCollapseButton"] svg {
+            fill: #f3e5ab !important;
+            color: #f3e5ab !important;
         }
         [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
             display: none !important;
