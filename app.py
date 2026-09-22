@@ -910,7 +910,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM APENAS A SETINHA DA BARRA LATERAL E CABEÇALHO TRANSPARENTE ---
+    # --- TELÃO (PÚBLICO) COM CABEÇALHO TRANSPARENTE E SETINHA VISÍVEL ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
@@ -927,21 +927,19 @@ else:
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
+            z-index: 99999 !important;
         }
-        /* Oculta todos os elementos do cabeçalho por defeito */
-        [data-testid="stHeader"] > div {
-            visibility: hidden !important;
-        }
-        /* Torna visível e estiliza apenas o botão da setinha para abrir/fechar a barra lateral */
+        /* Garante que o botão da setinha apareça com destaque adequado */
         [data-testid="collapsedControl"] {
-            visibility: visible !important;
             display: flex !important;
-            background-color: rgba(15, 11, 7, 0.85) !important;
+            visibility: visible !important;
+            background-color: rgba(20, 15, 10, 0.85) !important;
             border: 1px solid rgba(212, 175, 55, 0.7) !important;
             border-radius: 4px !important;
             color: #f3e5ab !important;
             z-index: 999999 !important;
         }
+        /* Oculta ferramentas e elementos desnecessários do topo */
         [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
             display: none !important;
         }
