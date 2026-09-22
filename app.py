@@ -926,7 +926,7 @@ if modo == "Painel do Jurado":
             )
 
             if permissoes_jurado == "TODAS_GLOBAL":
-                criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
+                criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança du participante."}
             else:
                 criterios_permitidos_nomes = []
                 for p in permissoes_jurado:
@@ -1107,29 +1107,33 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BOTÃO DE TELA CHEIA E CENTRALIZADO ---
-    with st.sidebar:
-        st.markdown("---")
-        st.markdown("### Controlo do Telão")
-        revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
-        st.session_state.revelado = revelar_tudo
-
-        st.markdown(
-            """
+    # --- TELÃO (PÚBLICO) COM BOTÃO DE TELA CHEIA NO TOPO DIREITO ---
+    st.markdown(
+        """
+        <div style="position: fixed; top: 14px; right: 20px; z-index: 999999;">
             <button onclick="
                 if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen();
+                    document.documentElement.requestFullscreen().catch(err => {
+                        alert('Para ativar tela cheia, pressione F11 no seu teclado.');
+                    });
                 } else {
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
                     }
                 }
-            " style="width: 100%; background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; color: #f3e5ab; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; padding: 8px 10px; font-size: 11px; cursor: pointer; margin-top: 10px; margin-bottom: 10px;">
+            " style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; color: #f3e5ab; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; padding: 6px 12px; font-size: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.5);">
                 ⛶ TELA CHEIA
             </button>
-            """,
-            unsafe_allow_html=True,
-        )
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    with st.sidebar:
+        st.markdown("---")
+        st.markdown("### Controlo do Telão")
+        revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
+        st.session_state.revelado = revelar_tudo
 
         st.markdown("---")
         st.markdown("### Categorias")
