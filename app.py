@@ -257,110 +257,111 @@ configuracao_jurados = {
         "nome": "Adri Santos",
         "senha": "6153",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Conduzidas"},
-            {"categoria": "Aprendendo a Voar", "papel": "Condutores"},
-            {"categoria": "Diamante", "papel": "Condutores"}
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Conexão e entrega na dança"]},
+            {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Conexão e Resposta"]}
         ]
     },
     "alan": {
         "nome": "Alan Demarch",
         "senha": "7391",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Condutores"},
-            {"categoria": "Ouro", "papel": "Condutores"}
+            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]}
         ]
     },
     "alex": {
         "nome": "Alex Alves",
         "senha": "4827",
-        "permissoes": "TODAS"
+        "permissoes": "TODAS_GLOBAL", # Jurado global (nota única de referência) em todas as categorias
+        "criterio_global": "Jurado de Avaliação Global / Referência"
     },
     "bel": {
         "nome": "Bel Amaro",
         "senha": "2648",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Conduzidas"}
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]}
         ]
     },
     "cassiano/luan": {
         "nome": "Cassiano Fontana / Luan Ruduit",
         "senha": "8516",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Condutores"}
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
         ]
     },
     "claudia": {
         "nome": "Claudia Papke",
         "senha": "5274",
         "permissoes": [
-            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas"},
-            {"categoria": "Prata", "papel": "Conduzidas"},
-            {"categoria": "Diamante", "papel": "Conduzidas"}
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Conexão e entrega na dança"]},
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Técnica e Conexão"]},
+            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]}
         ]
     },
     "cleo": {
         "nome": "Cléo Santanna",
         "senha": "6835",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Conduzidas"},
-            {"categoria": "Ouro", "papel": "Conduzidas"}
+            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]}
         ]
     },
     "daiani": {
         "nome": "Daiani Rodrigues",
         "senha": "9146",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Conduzidas"},
-            {"categoria": "Platina", "papel": "Conduzidas"},
-            {"categoria": "Ouro", "papel": "Conduzidas"}
+            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Técnica e finalização"]},
+            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Técnica e finalização"]},
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Conexão e resposta"]}
         ]
     },
     "joel": {
         "nome": "Joel Trevisan",
         "senha": "3572",
         "permissoes": [
-            {"categoria": "Aprendendo a Voar", "papel": "Condutores"},
-            {"categoria": "Ouro", "papel": "Condutores"}
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Fundamentos e qualidade base"]},
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
         ]
     },
     "lika": {
         "nome": "Lika",
         "senha": "7461",
         "permissoes": [
-            {"categoria": "Ouro", "papel": "Conduzidas"},
-            {"categoria": "Prata", "papel": "Condutores"}
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]},
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]}
         ]
     },
     "maick": {
         "nome": "Maick Martins",
         "senha": "2385",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Condutores"}
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Técnica e Conexão"]}
         ]
     },
     "nilson": {
         "nome": "Nilson Leivas",
         "senha": "8614",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Conduzidas"},
-            {"categoria": "Platina", "papel": "Conduzidas"},
-            {"categoria": "Ouro", "papel": "Condutores"}
+            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]},
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Conexão e resposta"]}
         ]
     },
     "wagner": {
         "nome": "Wagner Camargo",
         "senha": "4296",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Condutores"},
-            {"categoria": "Platina", "papel": "Condutores"}
+            {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Técnica e finalização"]}
         ]
     },
     "william": {
         "nome": "William Ferreira",
         "senha": "5738",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Condutores"},
-            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas"}
+            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Conexão e Resposta"]},
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Fundamentos e qualidade base"]}
         ]
     }
 }
@@ -1020,9 +1021,23 @@ if modo == "Painel do Jurado":
             unsafe_allow_html=True,
         )
 
-        criterios = criterios_por_categoria[categoria_escolhida]
-        lista_criterios = list(criterios.items())
-        total_crit = len(lista_criterios)
+        if permissoes_jurado == "TODAS_GLOBAL":
+        criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
+    else:
+        criterios_permitidos_nomes = []
+        for p in permissoes_jurado:
+            if p["categoria"] == categoria_escolhida and p["papel"] == papel_escolhido:
+                criterios_permitidos_nomes.extend(p["criterios"])
+        
+        todos_crit_cat = criterios_por_categoria[categoria_escolhida]
+        criterios = {k: v for k, v in todos_crit_cat.items() if k in criterios_permitidos_nomes}
+
+    if not criterios:
+        st.warning(f"⚠️ Não possui critérios atribuídos para avaliar {papel_escolhido} na categoria {categoria_escolhida}.")
+        st.stop()
+
+    lista_criterios = list(criterios.items())
+    total_crit = len(lista_criterios)
 
         if st.session_state.idx_crit >= total_crit:
           st.session_state.idx_crit = 0
