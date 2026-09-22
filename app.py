@@ -1022,7 +1022,7 @@ if modo == "Painel do Jurado":
         )
 
         if permissoes_jurado == "TODAS_GLOBAL":
-        criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
+            criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
     else:
         criterios_permitidos_nomes = []
         for p in permissoes_jurado:
