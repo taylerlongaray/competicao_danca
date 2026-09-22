@@ -889,32 +889,26 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BARRA TOPO REMOVIDA E TELA CHEIA ---
+    # --- TELÃO (PÚBLICO) COM BARRA TRANSPARENTE E SETA DA SIDEBAR MANTIDA ---
     st.markdown(
         """
         <style>
+        /* Deixa o fundo da barra de topo transparente e sem sombra preta pesada */
         [data-testid="stHeader"] {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        /* Esconde elementos extras desnecessários do topo */
+        [data-testid="stDecoration"] {
             display: none !important;
         }
-        [data-testid="stToolbar"] {
+        /* Esconde a coroa/selo vermelho do Streamlit e o rodapé no canto inferior direito */
+        .viewerBadge_container, [data-testid="stStatusWidget"], footer {
+            display: none !important;
             visibility: hidden !important;
         }
         </style>
-        <div style="position: fixed; top: 14px; right: 20px; z-index: 999999;">
-            <button onclick="
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => {
-                        alert('Para ativar tela cheia, pressione F11 no seu teclado.');
-                    });
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    }
-                }
-            " style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; color: #f3e5ab; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; padding: 6px 12px; font-size: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.5);">
-                ⛶ TELA CHEIA
-            </button>
-        </div>
         """,
         unsafe_allow_html=True,
     )
