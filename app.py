@@ -53,7 +53,14 @@ def obter_fundo_css(tipo_tela):
             img.save(buffered, format=formato, optimize=True)
             encoded = base64.b64encode(buffered.getvalue()).decode()
             mime = "png" if formato == "PNG" else "jpeg"
-            return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
+            
+            # Se for o telão, ajustamos para preencher o ecrã do PC/projetor de forma centralizada
+            if tipo_tela == "telao":
+                bg_style = "background-size: cover; background-position: center center !important; background-repeat: no-repeat; background-attachment: fixed;"
+            else:
+                bg_style = "background-size: cover; background-position: top center !important; background-attachment: fixed;"
+
+            return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.15), rgba(5, 4, 3, 0.25)), url("data:image/{mime};base64,{encoded}"); {bg_style} color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
         except Exception:
             return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
     else:
