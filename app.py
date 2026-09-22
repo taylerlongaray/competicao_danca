@@ -406,7 +406,6 @@ def registrar_voto(
     nota,
     justificativa,
 ):
-    # Envia diretamente para os votos oficiais (aparece instantaneamente no telão)
     for voto in st.session_state.votos:
         if (
             voto["jurado"] == jurado
@@ -758,6 +757,45 @@ div[data-testid="stExpander"] summary p {
 }
 .stSelectbox svg {
     fill: #e5c158 !important;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+if modo == "Painel do Jurado":
+    if st.session_state.jurado_logado is None:
+        st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
+    elif st.session_state.categoria_selecionada is None:
+        st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
+    else:
+        st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
+elif modo == "Telão (Público)":
+    st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
+else:
+    st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
+
+st.markdown(
+    """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
+
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+.block-container {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+}
+
+h1, h2, h3 {
+    color: #e5c158 !important;
+    font-family: 'Georgia', serif;
+    text-align: center;
+    letter-spacing: 1px;
 }
 </style>
 """,
@@ -1166,6 +1204,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
+    # --- TELÃO (PÚBLICO) SEMPRE ESTRUTURADO ---
     st.markdown("""
         <div style="text-align: center; padding: 10px 0;">
             <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 32px; letter-spacing: 3px; margin-bottom: 0;'>JACK & JILL</h1>
@@ -1179,104 +1218,119 @@ else:
         revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
         st.session_state.revelado = revelar_tudo
 
-    if not st.session_state.votos:
-        st.info("💡 Aguardando o envio dos votos pelos jurados. Os resultados aparecerão aqui em tempo real.")
-    else:
-        df_votos = pd.DataFrame(st.session_state.votos)
-        
-        nomes_abas = list(categorias.keys())
-        abas = st.tabs([f"💎 {c}" if c=="Diamante" else f"🥈 {c}" if c=="Platina" else f"🥇 {c}" if c=="Ouro" else f"🥈 {c}" if c=="Prata" else f"🕊️ {c}" for c in nomes_abas])
+    df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
+    
+    nomes_abas = list(categorias.keys())
+    abas = st.tabs([f"💎 {c}" if c=="Diamante" else f"🥈 {c}" if c=="Platina" else f"🥇 {c}" if c=="Ouro" else f"🥈 {c}" if c=="Prata" else f"🕊️ {c}" for c in nomes_abas])
 
-        for i, categoria_nome in enumerate(nomes_abas):
-            with abas[i]:
-                st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 20px 0;'>RESULTADO — {categoria_nome.upper()}</h2>", unsafe_allow_html=True)
-                
-                df_cat = df_votos[df_votos["categoria"] == categoria_nome]
-                if df_cat.empty:
-                    st.info(f"Nenhum voto registrado ainda para a categoria {categoria_nome}.")
-                    continue
+    todos_jurados_ordenados = sorted(list(configuracao_jurados.keys()))
+    mapping_todos_jurados = {j: f"J{idx+1}" for idx, j in enumerate(todos_jurados_ordenados)}
+    j_cols_padrao = list(mapping_todos_jurados.values())
 
-                fases_da_cat = fases_por_categoria[categoria_nome]
-                
-                if len(fases_da_cat) > 1:
-                    col_fase1, col_fase2 = st.columns(2)
-                    fases_cols = [(fases_da_cat[0], col_fase1), (fases_da_cat[1], col_fase2)]
-                else:
-                    fases_cols = [(fases_da_cat[0], st.container())]
+    for i, categoria_nome in enumerate(nomes_abas):
+        with abas[i]:
+            st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 20px 0;'>RESULTADO — {categoria_nome.upper()}</h2>", unsafe_allow_html=True)
+            
+            fases_da_cat = fases_por_categoria[categoria_nome]
+            
+            if len(fases_da_cat) > 1:
+                col_fase1, col_fase2 = st.columns(2)
+                fases_cols = [(fases_da_cat[0], col_fase1), (fases_da_cat[1], col_fase2)]
+            else:
+                fases_cols = [(fases_da_cat[0], st.container())]
 
-                for fase_nome, container_fase in fases_cols:
-                    with container_fase:
-                        fase_titulo, fase_sub = formatar_fase(fase_nome)
-                        st.markdown(f"""
-                            <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 8px; padding: 10px; text-align: center; margin-bottom: 15px;">
-                                <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 15px; font-weight: bold; letter-spacing: 1px;">— {fase_titulo} —</div>
-                                <div style="color: #b39b6b; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;">{fase_sub}</div>
-                            </div>
-                        """, unsafe_allow_html=True)
+            for fase_nome, container_fase in fases_cols:
+                with container_fase:
+                    fase_titulo, fase_sub = formatar_fase(fase_nome)
+                    st.markdown(f"""
+                        <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 8px; padding: 10px; text-align: center; margin-bottom: 15px;">
+                            <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 15px; font-weight: bold; letter-spacing: 1px;">— {fase_titulo} —</div>
+                            <div style="color: #b39b6b; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;">{fase_sub}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
 
-                        df_fase = df_cat[df_cat["fase"] == fase_nome]
-                        
-                        c_cond, c_condurz = st.columns(2)
-                        papeis_info = [("Condutores", c_cond), ("Conduzidas", c_condurz)]
-                        
-                        for papel_nome, col_papel in papeis_info:
-                            with col_papel:
-                                st.markdown(f"<h4 style='text-align: center; color: #e5c158; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;'>{papel_nome}</h4>", unsafe_allow_html=True)
+                    df_fase = df_votos[df_votos["fase"] == fase_nome] if not df_votos.empty else df_votos
+                    df_cat = df_fase[df_fase["categoria"] == categoria_nome] if not df_fase.empty else df_fase
+                    
+                    c_cond, c_condurz = st.columns(2)
+                    papeis_info = [("Condutores", c_cond), ("Conduzidas", c_condurz)]
+                    
+                    for papel_nome, col_papel in papeis_info:
+                        with col_papel:
+                            st.markdown(f"<h4 style='text-align: center; color: #e5c158; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;'>{papel_nome}</h4>", unsafe_allow_html=True)
+                            
+                            if fase_nome == "Fase Final" and categoria_nome in ["Prata", "Ouro"]:
+                                comps = obter_classificados(categoria_nome, papel_nome)
+                                if not comps:
+                                    comps = categorias[categoria_nome][papel_nome]
+                            else:
+                                comps = categorias[categoria_nome][papel_nome]
+
+                            df_papel = df_cat[df_cat["papel"] == papel_nome] if not df_cat.empty else df_cat
+                            
+                            if not df_papel.empty:
+                                df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
+                                pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado", values="nota").reset_index()
                                 
-                                df_papel = df_fase[df_fase["papel"] == papel_nome]
-                                if df_papel.empty:
-                                    st.markdown("<p style='text-align: center; color: #8d7a52; font-size: 10px;'>Aguardando votos...</p>", unsafe_allow_html=True)
-                                else:
-                                    df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
-                                    pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado", values="nota").reset_index()
-                                    
-                                    jurados_cols = [c for c in pivot_df.columns if c != "competidor"]
-                                    mapping_jurados = {j: f"J{idx+1}" for idx, j in enumerate(sorted(jurados_cols))}
-                                    pivot_df = pivot_df.rename(columns=mapping_jurados)
-                                    j_cols_renomeadas = list(mapping_jurados.values())
-                                    
-                                    pivot_df["TOTAL"] = pivot_df[j_cols_renomeadas].sum(axis=1)
-                                    
-                                    pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False).reset_index(drop=True)
-                                    pivot_df.index = pivot_df.index + 1
-                                    pivot_df.index.name = "#"
-                                    pivot_df = pivot_df.reset_index()
-                                    
-                                    pivot_df["CLASS."] = [f"{idx}º" for idx in pivot_df.index]
-                                    pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
-                                    
-                                    cols_finais = ["#", "PARTICIPANTE"] + j_cols_renomeadas + ["TOTAL", "CLASS."]
-                                    cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
-                                    
-                                    tabela_exibicao = pivot_df[cols_finais_existentes]
-                                    
-                                    for col in j_cols_renomeadas + ["TOTAL"]:
-                                        if col in tabela_exibicao.columns:
-                                            tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) else "-")
+                                pivot_df = pivot_df.rename(columns=mapping_todos_jurados)
+                                for j_col in j_cols_padrao:
+                                    if j_col not in pivot_df.columns:
+                                        pivot_df[j_col] = None
+                                
+                                exist_j_cols = [j for j in j_cols_padrao if j in pivot_df.columns]
+                                pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+                                pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
+                            else:
+                                data_dict = {"competidor": sorted(comps)}
+                                for j_col in j_cols_padrao:
+                                    data_dict[j_col] = [None] * len(comps)
+                                pivot_df = pd.DataFrame(data_dict)
+                                pivot_df["TOTAL"] = None
+                            
+                            pivot_df.index = pivot_df.index + 1
+                            pivot_df.index.name = "#"
+                            pivot_df = pivot_df.reset_index()
+                            
+                            pivot_df["CLASS."] = [f"{idx}º" for idx in pivot_df.index]
+                            pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
+                            
+                            cols_finais = ["#", "PARTICIPANTE"] + j_cols_padrao + ["TOTAL", "CLASS."]
+                            cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
+                            
+                            tabela_exibicao = pivot_df[cols_finais_existentes].copy()
+                            
+                            for col in j_cols_padrao + ["TOTAL"]:
+                                if col in tabela_exibicao.columns:
+                                    tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
 
-                                    st.dataframe(tabela_exibicao, use_container_width=True, hide_index=True)
+                            st.dataframe(tabela_exibicao, use_container_width=True, hide_index=True)
 
-                if categoria_nome in ["Platina", "Diamante"]:
-                    st.markdown("---")
-                    st.markdown("<h3 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; font-size: 16px;'>🌟 Classificação Geral Acumulada (Fase 1 + Fase 2)</h3>", unsafe_allow_html=True)
-                    df_cat_geral = df_cat.copy()
-                    if not df_cat_geral.empty:
-                        g_cond, g_condurz = st.columns(2)
-                        for g_idx, (g_papel, col_g) in enumerate([("Condutores", g_cond), ("Conduzidas", g_condurz)]):
-                            with col_g:
-                                st.markdown(f"<h4 style='text-align: center; color: #f3e5ab; font-size: 11px; text-transform: uppercase;'>Geral - {g_papel}</h4>", unsafe_allow_html=True)
-                                df_g = df_cat_geral[df_cat_geral["papel"] == g_papel]
-                                if not df_g.empty:
-                                    fase_means = df_g.groupby(["competidor", "fase"])["nota"].mean().reset_index()
-                                    total_score = fase_means.groupby("competidor")["nota"].sum().reset_index()
-                                    total_score.columns = ["PARTICIPANTE", "PONTUAÇÃO TOTAL"]
-                                    total_score = total_score.sort_values(by="PONTUAÇÃO TOTAL", ascending=False).reset_index(drop=True)
-                                    total_score.index = total_score.index + 1
-                                    total_score.index.name = "#"
-                                    total_score = total_score.reset_index()
-                                    total_score["CLASS."] = [f"{idx}º" for idx in total_score.index]
-                                    total_score["PONTUAÇÃO TOTAL"] = total_score["PONTUAÇÃO TOTAL"].apply(lambda x: f"{x:.1f}")
-                                    
-                                    st.dataframe(total_score[["#", "PARTICIPANTE", "PONTUAÇÃO TOTAL", "CLASS."]], use_container_width=True, hide_index=True)
-                                else:
-                                    st.markdown("<p style='text-align: center; color: #8d7a52; font-size: 10px;'>Aguardando votos em ambas as fases.</p>", unsafe_allow_html=True)
+            if categoria_nome in ["Platina", "Diamante"]:
+                st.markdown("---")
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; font-size: 16px;'>🌟 Classificação Geral Acumulada (Fase 1 + Fase 2)</h3>", unsafe_allow_html=True)
+                df_cat_geral = df_cat.copy() if 'df_cat' in locals() and not df_cat.empty else pd.DataFrame()
+                g_cond, g_condurz = st.columns(2)
+                for g_idx, (g_papel, col_g) in enumerate([("Condutores", g_cond), ("Conduzidas", g_condurz)]):
+                    with col_g:
+                        st.markdown(f"<h4 style='text-align: center; color: #f3e5ab; font-size: 11px; text-transform: uppercase;'>Geral - {g_papel}</h4>", unsafe_allow_html=True)
+                        df_g = df_cat_geral[df_cat_geral["papel"] == g_papel] if not df_cat_geral.empty else pd.DataFrame()
+                        if not df_g.empty:
+                            fase_means = df_g.groupby(["competidor", "fase"])["nota"].mean().reset_index()
+                            total_score = fase_means.groupby("competidor")["nota"].sum().reset_index()
+                            total_score.columns = ["PARTICIPANTE", "PONTUAÇÃO TOTAL"]
+                            total_score = total_score.sort_values(by="PONTUAÇÃO TOTAL", ascending=False).reset_index(drop=True)
+                            total_score.index = total_score.index + 1
+                            total_score.index.name = "#"
+                            total_score = total_score.reset_index()
+                            total_score["CLASS."] = [f"{idx}º" for idx in total_score.index]
+                            total_score["PONTUAÇÃO TOTAL"] = total_score["PONTUAÇÃO TOTAL"].apply(lambda x: f"{x:.1f}")
+                            
+                            st.dataframe(total_score[["#", "PARTICIPANTE", "PONTUAÇÃO TOTAL", "CLASS."]], use_container_width=True, hide_index=True)
+                        else:
+                            comps_geral = sorted(categorias[categoria_nome][g_papel])
+                            data_geral = {"PARTICIPANTE": comps_geral, "PONTUAÇÃO TOTAL": ["-"] * len(comps_geral), "CLASS.": [f"{i+1}º" for i in range(len(comps_geral))]}
+                            df_vazio_geral = pd.DataFrame(data_geral)
+                            df_vazio_geral.index = df_vazio_geral.index + 1
+                            df_vazio_geral.index.name = "#"
+                            df_vazio_geral = df_vazio_geral.reset_index()
+                            st.dataframe(df_vazio_geral[["#", "PARTICIPANTE", "PONTUAÇÃO TOTAL", "CLASS."]], use_container_width=True, hide_index=True)
