@@ -1061,11 +1061,13 @@ else:
             text-align: center !important;
             padding: 12px 10px;
             border-bottom: 2px solid #d4af37;
+            white-space: nowrap !important; /* Mantém o nome dos jurados numa linha só, alinhado e padronizado */
         }
         .tabela-dourada td {
             text-align: center !important;
             padding: 10px;
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            white-space: nowrap !important; /* Garante consistência perfeita nas células */
         }
         .tabela-dourada tbody tr:last-child td {
             border-bottom: none;
