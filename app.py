@@ -729,7 +729,7 @@ if modo == "Painel do Jurado":
             )
 
             if permissoes_jurado == "TODAS_GLOBAL":
-                criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança du participante."}
+                criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
             else:
                 criterios_permitidos_nomes = []
                 for p in permissoes_jurado:
@@ -910,7 +910,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BOTÃO DE MENU ROBUSTO E DINÂMICO ---
+    # --- TELÃO (PÚBLICO) COM SETA NATIVA PADRÃO ESTILIZADA ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
@@ -929,34 +929,27 @@ else:
             box-shadow: none !important;
             z-index: 99999 !important;
         }
+        /* Força a setinha padrão nativa do Streamlit (tanto aberta quanto fechada) a ficar visível e destacada */
+        [data-testid="collapsedControl"], [data-testid="stSidebarCollapsedControl"] {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            background-color: rgba(20, 15, 10, 0.9) !important;
+            border: 1px solid rgba(212, 175, 55, 0.8) !important;
+            border-radius: 6px !important;
+            color: #f3e5ab !important;
+            z-index: 999999 !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
+        }
+        [data-testid="collapsedControl"] svg, [data-testid="stSidebarCollapsedControl"] svg {
+            fill: #f3e5ab !important;
+        }
         [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
             display: none !important;
         }
         .viewerBadge_container, [data-testid="stStatusWidget"], footer {
             display: none !important;
             visibility: hidden !important;
-        }
-        /* Botão flutuante funcional no topo esquerdo */
-        .btn-toggle-sidebar {
-            position: fixed;
-            top: 12px;
-            left: 12px;
-            z-index: 9999999;
-            background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(40, 30, 18, 0.95) 100%);
-            color: #f3e5ab;
-            border: 1px solid rgba(212, 175, 55, 0.8);
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-            font-family: 'Cinzel', Georgia, serif;
-            letter-spacing: 1px;
-        }
-        .btn-toggle-sidebar:hover {
-            border-color: rgba(212, 175, 55, 1);
-            background: linear-gradient(135deg, rgba(30, 22, 14, 0.98) 0%, rgba(60, 45, 25, 0.98) 100%);
         }
         h2 {
             font-size: 20px !important;
@@ -986,27 +979,6 @@ else:
             text-align: center !important;
         }
         </style>
-
-        <button class="btn-toggle-sidebar" onclick="toggleSidebar()">⚙ MENU</button>
-
-        <script>
-        function toggleSidebar() {
-            // Varredura abrangente por qualquer botão de recolha/expansão da sidebar do Streamlit
-            const buttons = document.querySelectorAll('button');
-            for (let btn of buttons) {
-                const label = btn.getAttribute('aria-label') || '';
-                if (label.toLowerCase().includes('sidebar') || label.toLowerCase().includes('menu') || btn.closest('[data-testid="collapsedControl"]') || btn.closest('[data-testid="stSidebarCollapsedControl"]')) {
-                    btn.click();
-                    return;
-                }
-            }
-            // Método alternativo simulando clique no elemento nativo se existir no DOM
-            const nativeEl = document.querySelector('[data-testid="collapsedControl"]') || document.querySelector('[data-testid="stSidebarCollapsedControl"]');
-            if (nativeEl) {
-                nativeEl.click();
-            }
-        }
-        </script>
         """,
         unsafe_allow_html=True,
     )
