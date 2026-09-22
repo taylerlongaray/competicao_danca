@@ -1114,7 +1114,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) ESTILO DA IMAGEM DE REFERÊNCIA ---
+    # --- TELÃO (PÚBLICO) ESTILO DA REFERÊNCIA ---
     st.markdown("""
         <div style="text-align: center; padding: 2px 0 5px 0;">
             <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 26px; letter-spacing: 3px; margin-bottom: 0;'>JACK & JILL — NOITE NAS ARÁBIAS</h1>
@@ -1144,7 +1144,7 @@ else:
     fases_da_cat = fases_por_categoria[categoria_nome]
     jurados_aptos = obter_todos_jurados_da_categoria(categoria_nome)
 
-    def gerar_tabela_papel(fase_nome, papel_nome):
+    def gerar_tabela_papel_fase(fase_nome, papel_nome):
         df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
         
         if fase_nome == "Fase Final" and categoria_nome in ["Prata", "Ouro"]:
@@ -1189,12 +1189,48 @@ else:
 
         return tabela_exibicao
 
-    for fase_nome in fases_da_cat:
-        fase_titulo, fase_sub = formatar_fase(fase_nome)
+    def gerar_tabela_acumulada_diamante_platina(papel_nome):
+        comps = categorias[categoria_nome][papel_nome]
+        df_base = pd.DataFrame({"competidor": comps})
+
+        if not df_cat.empty:
+            df_fase_jurado = df_cat[df_cat["papel"] == papel_nome].groupby(["competidor", "fase", "jurado"])["nota"].mean().reset_index()
+            df_total_jurado = df_fase_jurado.groupby(["competidor", "jurado"])["nota"].sum().reset_index()
+            df_total_jurado["jurado_nome"] = df_total_jurado["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
+            
+            pivot_df = df_total_jurado.pivot(index="competidor", columns="jurado_nome", values="nota").reset_index()
+            pivot_df = pd.merge(df_base, pivot_df, on="competidor", how="left")
+        else:
+            pivot_df = df_base.copy()
+
+        for j_col in jurados_aptos:
+            if j_col not in pivot_df.columns:
+                pivot_df[j_col] = None
+
+        exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
+        pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+        pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
+
+        pivot_df.index = pivot_df.index + 1
+        pivot_df.index.name = "#"
+        pivot_df = pivot_df.reset_index()
+        pivot_df["CLASS."] = [f"{idx}º" for idx in pivot_df.index]
+        pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
+
+        cols_finais = ["#", "PARTICIPANTE"] + jurados_aptos + ["TOTAL", "CLASS."]
+        cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
+        tabela_exibicao = pivot_df[cols_finais_existentes].copy()
+
+        for col in jurados_aptos + ["TOTAL"]:
+            if col in tabela_exibicao.columns:
+                tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
+
+        return tabela_exibicao
+
+    if categoria_nome in ["Diamante", "Platina"]:
         st.markdown(f"""
             <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; padding: 8px; text-align: center; margin: 15px 0 10px 0;">
-                <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 15px; font-weight: bold; letter-spacing: 1px;">— {fase_titulo} —</div>
-                <div style="color: #b39b6b; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;">{fase_sub}</div>
+                <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 15px; font-weight: bold; letter-spacing: 1px;">— CLASSIFICAÇÃO ACUMULADA (MÚSICA 1 + MÚSICA 2) —</div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -1202,10 +1238,32 @@ else:
 
         with col_cond:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
-            tabela_cond = gerar_tabela_papel(fase_nome, "Condutores")
+            tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
             st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
 
         with col_condz:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
-            tabela_condz = gerar_tabela_papel(fase_nome, "Conduzidas")
+            tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
             st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
+
+    else:
+        for fase_nome in fases_da_cat:
+            fase_titulo, fase_sub = formatar_fase(fase_nome)
+            st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; padding: 8px; text-align: center; margin: 15px 0 10px 0;">
+                    <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 15px; font-weight: bold; letter-spacing: 1px;">— {fase_titulo} —</div>
+                    <div style="color: #b39b6b; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;">{fase_sub}</div>
+                </div>
+            """, unsafe_allow_html=True)
+
+            col_cond, col_condz = st.columns(2)
+
+            with col_cond:
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+                tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
+                st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
+
+            with col_condz:
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+                tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
+                st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
