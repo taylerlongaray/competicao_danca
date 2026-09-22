@@ -923,7 +923,19 @@ else:
             max-width: 100% !important;
         }
         
-        /* Deixamos o CABEÇALHO 100% PADRÃO, para que a seta fique idêntica às outras abas! */
+        /* FORÇA O CABEÇALHO A SER PRETO SÓLIDO (IGUAL NA TELA DE LOGIN) */
+        header[data-testid="stHeader"] {
+            background-color: #0e1117 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* IMPEDE A SETA DE DESAPARECER */
+        button[kind="header"] {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: inline-flex !important;
+        }
         
         /* Esconde apenas os botões do lado direito (Deploy, Opções, etc.) */
         [data-testid="stToolbar"] {
@@ -1074,4 +1086,24 @@ else:
 
         with col_cond:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
-            tabela_cond
+            tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
+            st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
+
+        with col_condz:
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+            tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
+            st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
+
+    else:
+        for fase_nome in fases_da_cat:
+            col_cond, col_condz = st.columns(2)
+
+            with col_cond:
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+                tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
+                st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
+
+            with col_condz:
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+                tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
+                st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
