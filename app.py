@@ -1,6 +1,8 @@
 import base64
+from io import BytesIO
 import os
 import pandas as pd
+from PIL import Image
 import streamlit as st
 
 st.set_page_config(
@@ -43,24 +45,34 @@ def obter_fundo_css(tipo_tela):
             break
 
     if img_encontrada:
-        with open(img_encontrada, "rb") as f:
-            data = f.read()
-        encoded = base64.b64encode(data).decode()
-        ext = img_encontrada.split(".")[-1].lower()
-        mime = "png" if "png" in ext else "jpeg"
-        return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
+        try:
+            img = Image.open(img_encontrada)
+            img.thumbnail((1920, 1080))
+            buffered = BytesIO()
+            formato = "PNG" if img.format == "PNG" else "JPEG"
+            img.save(buffered, format=formato, optimize=True)
+            encoded = base64.b64encode(buffered.getvalue()).decode()
+            mime = "png" if formato == "PNG" else "jpeg"
+            return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
+        except Exception:
+            return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
     else:
         return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
 
 
 def img_to_base64(file_path):
     if os.path.exists(file_path):
-        with open(file_path, "rb") as f:
-            data = f.read()
-        encoded = base64.b64encode(data).decode()
-        ext = file_path.split(".")[-1].lower()
-        mime = "png" if "png" in ext else "jpeg"
-        return f"data:image/{mime};base64,{encoded}"
+        try:
+            img = Image.open(file_path)
+            img.thumbnail((200, 200))
+            buffered = BytesIO()
+            formato = "PNG" if img.format == "PNG" else "JPEG"
+            img.save(buffered, format=formato, optimize=True)
+            encoded = base64.b64encode(buffered.getvalue()).decode()
+            mime = "png" if formato == "PNG" else "jpeg"
+            return f"data:image/{mime};base64,{encoded}"
+        except Exception:
+            return ""
     return ""
 
 
