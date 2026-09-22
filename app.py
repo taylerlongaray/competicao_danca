@@ -509,15 +509,15 @@ if modo == "Telão (Público)":
         """
         <style>
         .block-container {
-            padding-top: 0.3rem !important;
-            padding-bottom: 0.3rem !important;
+            padding-top: 3.5rem !important;
+            padding-bottom: 2rem !important;
             max-width: 95% !important;
             margin: 0 auto !important;
         }
         h2 {
-            font-size: 20px !important;
-            margin-top: 5px !important;
-            margin-bottom: 10px !important;
+            font-size: 22px !important;
+            margin-top: 10px !important;
+            margin-bottom: 20px !important;
             color: #e5c158 !important;
             font-family: 'Cinzel', Georgia, serif;
             text-align: center;
@@ -1107,7 +1107,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM TÍTULO DA CATEGORIA E TABELAS CENTRALIZADAS ---
+    # --- TELÃO (PÚBLICO) COM ESPAÇAMENTO CENTRALIZADO VERTICALMENTE ---
     with st.sidebar:
         st.markdown("---")
         st.markdown("### Categorias")
@@ -1125,7 +1125,7 @@ else:
 
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
-    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 5px 0 10px 0;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 15px 0 25px 0;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
     
     df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
     fases_da_cat = fases_por_categoria[categoria_nome]
@@ -1213,12 +1213,12 @@ else:
         col_cond, col_condz = st.columns(2)
 
         with col_cond:
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;'>Condutores</h3>", unsafe_allow_html=True)
             tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
             st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
 
         with col_condz:
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;'>Conduzidas</h3>", unsafe_allow_html=True)
             tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
             st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
 
@@ -1227,11 +1227,11 @@ else:
             col_cond, col_condz = st.columns(2)
 
             with col_cond:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;'>Condutores</h3>", unsafe_allow_html=True)
                 tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
                 st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
 
             with col_condz:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;'>Conduzidas</h3>", unsafe_allow_html=True)
                 tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
                 st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
