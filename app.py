@@ -912,7 +912,7 @@ elif modo == "Painel da Organização":
 else:
     # --- TELÃO (PÚBLICO) COM SETA NATIVA PADRÃO ESTILIZADA ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
-    st.markdown(
+   st.markdown(
         """
         <style>
         .block-container {
@@ -927,21 +927,27 @@ else:
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            z-index: 99999 !important;
+            z-index: 999999 !important;
+            pointer-events: none !important;
         }
-        /* Força a setinha padrão nativa do Streamlit (tanto aberta quanto fechada) a ficar visível e destacada */
-        [data-testid="collapsedControl"], [data-testid="stSidebarCollapsedControl"] {
+        /* Força todos os controlos de fechar/abrir a sidebar a ficarem visíveis e clicáveis */
+        [data-testid="collapsedControl"], 
+        [data-testid="stSidebarCollapsedControl"],
+        button[kind="header"] {
             display: flex !important;
             visibility: visible !important;
             opacity: 1 !important;
-            background-color: rgba(20, 15, 10, 0.9) !important;
-            border: 1px solid rgba(212, 175, 55, 0.8) !important;
+            background-color: rgba(20, 15, 10, 0.95) !important;
+            border: 1px solid rgba(212, 175, 55, 0.9) !important;
             border-radius: 6px !important;
             color: #f3e5ab !important;
-            z-index: 999999 !important;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
+            z-index: 9999999 !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.8) !important;
+            pointer-events: auto !important;
         }
-        [data-testid="collapsedControl"] svg, [data-testid="stSidebarCollapsedControl"] svg {
+        [data-testid="collapsedControl"] svg, 
+        [data-testid="stSidebarCollapsedControl"] svg,
+        button[kind="header"] svg {
             fill: #f3e5ab !important;
         }
         [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
