@@ -910,7 +910,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM A SETINHA NATIVA ESTILIZADA E VISÍVEL ---
+    # --- TELÃO (PÚBLICO) COM FORÇAGEM VISUAL DA SETINHA ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
@@ -929,15 +929,20 @@ else:
             box-shadow: none !important;
             z-index: 99999 !important;
         }
-        /* Estiliza e posiciona a setinha nativa para que fique visível e funcional sobre o fundo */
+        /* Força a setinha de recolher/expandir a barra lateral a aparecer visível e estilizada */
         [data-testid="collapsedControl"] {
             display: flex !important;
             visibility: visible !important;
-            background-color: rgba(15, 11, 7, 0.85) !important;
-            border: 1px solid rgba(212, 175, 55, 0.7) !important;
+            opacity: 1 !important;
+            position: fixed !important;
+            top: 10px !important;
+            left: 10px !important;
+            background-color: rgba(15, 11, 7, 0.9) !important;
+            border: 1px solid rgba(212, 175, 55, 0.8) !important;
             border-radius: 6px !important;
             color: #f3e5ab !important;
             z-index: 999999 !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
         }
         [data-testid="collapsedControl"] svg {
             fill: #f3e5ab !important;
