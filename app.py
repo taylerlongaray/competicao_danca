@@ -1092,7 +1092,7 @@ if modo == "Painel do Jurado":
                                 )
                             st.rerun()
                     except ValueError:
-                        st.error("❌ Digite um valor numérico válido para a nota.")
+                        st.error("❌ Digite um valor numérico válido para la nota.")
 
 elif modo == "Painel da Organização":
     st.title("📋 Painel da Organização")
@@ -1114,7 +1114,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM JURADOS FILTRADOS CORRETAMENTE POR PAPEL ---
+    # --- TELÃO (PÚBLICO) SEM COLUNA DE ÍNDICE (#) ---
     st.markdown("""
         <div style="text-align: center; padding: 2px 0 5px 0;">
             <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 26px; letter-spacing: 3px; margin-bottom: 0;'>JACK & JILL — NOITE NAS ARÁBIAS</h1>
@@ -1173,13 +1173,10 @@ else:
         pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
         pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
 
-        pivot_df.index = pivot_df.index + 1
-        pivot_df.index.name = "#"
-        pivot_df = pivot_df.reset_index()
-        pivot_df["CLASS."] = [f"{idx}º" for idx in pivot_df.index]
+        pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-        cols_finais = ["#", "PARTICIPANTE"] + jurados_aptos + ["TOTAL", "CLASS."]
+        cols_finais = ["PARTICIPANTE"] + jurados_aptos + ["TOTAL", "CLASS."]
         cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
         tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
@@ -1212,13 +1209,10 @@ else:
         pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
         pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
 
-        pivot_df.index = pivot_df.index + 1
-        pivot_df.index.name = "#"
-        pivot_df = pivot_df.reset_index()
-        pivot_df["CLASS."] = [f"{idx}º" for idx in pivot_df.index]
+        pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-        cols_finais = ["#", "PARTICIPANTE"] + jurados_aptos + ["TOTAL", "CLASS."]
+        cols_finais = ["PARTICIPANTE"] + jurados_aptos + ["TOTAL", "CLASS."]
         cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
         tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
