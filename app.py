@@ -910,7 +910,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BOTÃO DA BARRA LATERAL VISÍVEL E IMAGEM FIXA ---
+    # --- TELÃO (PÚBLICO) COM APENAS A SETINHA DA BARRA LATERAL E CABEÇALHO TRANSPARENTE ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
@@ -927,16 +927,19 @@ else:
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            z-index: 99999 !important;
         }
-        /* Força a visibilidade e estilo do botão de recolher/expandir a barra lateral */
+        /* Oculta todos os elementos do cabeçalho por defeito */
+        [data-testid="stHeader"] > div {
+            visibility: hidden !important;
+        }
+        /* Torna visível e estiliza apenas o botão da setinha para abrir/fechar a barra lateral */
         [data-testid="collapsedControl"] {
-            display: block !important;
             visibility: visible !important;
+            display: flex !important;
+            background-color: rgba(15, 11, 7, 0.85) !important;
+            border: 1px solid rgba(212, 175, 55, 0.7) !important;
+            border-radius: 4px !important;
             color: #f3e5ab !important;
-            background-color: rgba(20, 15, 10, 0.75) !important;
-            border: 1px solid rgba(212, 175, 55, 0.6) !important;
-            border-radius: 6px !important;
             z-index: 999999 !important;
         }
         [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
