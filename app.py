@@ -911,12 +911,10 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BOTÃO DE ATALHO FLUTUANTE GARANTIDO ---
+    # --- TELÃO (PÚBLICO) ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     
-    # ----------------------------------------------------------------------
-    # INJEÇÃO JAVASCRIPT: CRIA O BOTÃO "☰ MENU" NA TELA E O ATALHO ALT + M
-    # ----------------------------------------------------------------------
+    # Botão Menu inquebrável
     components.html(
         """
         <script>
@@ -951,12 +949,10 @@ else:
             btn.onmouseout = () => { btn.style.background = 'rgba(15, 11, 7, 0.95)'; btn.style.color = '#d4af37'; };
             
             btn.onclick = function() {
-                // Procura a setinha nativa e clica nela
                 const sidebarToggle = parentDoc.querySelector('[data-testid="collapsedControl"]');
                 if (sidebarToggle) {
                     sidebarToggle.click();
                 } else {
-                    // Se já estiver aberta, tenta fechar clicando no 'X' dentro da sidebar
                     const closeBtn = parentDoc.querySelector('section[data-testid="stSidebar"] button');
                     if (closeBtn) closeBtn.click();
                 }
@@ -965,7 +961,6 @@ else:
             parentDoc.body.appendChild(btn);
         }
         
-        // Função para ativar pelo atalho do teclado
         function keyHandler(e) {
             if (e.altKey && e.key.toLowerCase() === 'm') {
                 if (btn) btn.click();
@@ -973,7 +968,6 @@ else:
         }
         parentDoc.addEventListener('keydown', keyHandler);
         
-        // Remove o botão limpo quando você sair da página "Telão"
         window.addEventListener('unload', function() {
             if (btn) btn.remove();
             parentDoc.removeEventListener('keydown', keyHandler);
@@ -983,7 +977,6 @@ else:
         height=0,
         width=0
     )
-    # ----------------------------------------------------------------------
     
     st.markdown(
         """
@@ -1002,7 +995,6 @@ else:
             box-shadow: none !important;
             z-index: 99999 !important;
         }
-        /* Força a setinha de recolher/expandir a barra lateral a aparecer visível e estilizada */
         [data-testid="collapsedControl"] {
             display: flex !important;
             visibility: visible !important;
@@ -1066,21 +1058,51 @@ else:
         st.session_state.revelado = revelar_tudo
 
         st.markdown("---")
-        st.markdown("### Categorias")
-        categoria_nome = st.radio(
+        st.markdown("### Categorias e Fases")
+        
+        # Opções do menu ajustadas para separar as fases de Ouro e Prata
+        opcoes_menu_telao = [
+            "Diamante",
+            "Platina",
+            "Ouro - Fase Classificatória",
+            "Ouro - Fase Final",
+            "Prata - Fase Classificatória",
+            "Prata - Fase Final",
+            "Aprendendo a Voar"
+        ]
+
+        def formatar_icone_menu(c):
+            if "Diamante" in c: return f"💎 {c}"
+            if "Platina" in c: return f"🥈 {c}"
+            if "Ouro" in c: return f"🥇 {c}"
+            if "Prata" in c: return f"🥈 {c}"
+            return f"🕊️ {c}"
+
+        selecao_telao = st.radio(
             "Selecione a Categoria",
-            list(categorias.keys()),
-            format_func=lambda c: f"💎 {c}" if c=="Diamante" else (f"🥈 {c}" if c=="Platina" else (f"🥇 {c}" if c=="Ouro" else (f"🥈 {c}" if c=="Prata" else f"🕊️ {c}"))),
+            opcoes_menu_telao,
+            format_func=formatar_icone_menu,
             label_visibility="collapsed"
         )
 
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
-    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
-    
-    df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
-    fases_da_cat = fases_por_categoria[categoria_nome]
+    # Determinar a categoria interna e qual fase renderizar com base no menu selecionado
+    if "Ouro" in selecao_telao:
+        categoria_nome = "Ouro"
+        fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
+    elif "Prata" in selecao_telao:
+        categoria_nome = "Prata"
+        fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
+    else:
+        categoria_nome = selecao_telao
+        fases_da_cat = fases_por_categoria[categoria_nome]
 
+    df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
+
+    # O Título agora vai refletir exatamente o que está no menu
+    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{selecao_telao.upper()} — RESULTADOS</h2>", unsafe_allow_html=True)
+    
     def gerar_tabela_papel_fase(fase_nome, papel_nome):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
