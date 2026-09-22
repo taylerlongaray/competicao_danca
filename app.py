@@ -842,7 +842,8 @@ if modo == "Painel do Jurado":
                 ("Aprendendo a Voar", "asas.png", "🕊️"),
             ]
 
-            if permissoes_jurado == "TODAS":
+            # CORREÇÃO DAQUI PARA EVITAR O TypeError COM PERMISSÕES EM STRING ("TODAS_GLOBAL")
+            if isinstance(permissoes_jurado, str):
                 cats_info = cats_info_todas
             else:
                 categorias_permitidas = {p["categoria"] for p in permissoes_jurado}
@@ -886,7 +887,7 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_comp = 0
                 st.session_state.idx_crit = 0
 
-            if permissoes_jurado == "TODAS":
+            if isinstance(permissoes_jurado, str):
                 papeis_permitidos_categoria = ["Condutores", "Conduzidas"]
             else:
                 papeis_permitidos_categoria = [p["papel"] for p in permissoes_jurado if p["categoria"] == categoria_escolhida]
