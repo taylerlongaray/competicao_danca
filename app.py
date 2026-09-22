@@ -910,7 +910,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BOTÃO FLUTUANTE E ATALHO DE TECLADO (Ctrl + B) ---
+    # --- TELÃO (PÚBLICO) COM A SETINHA NATIVA ESTILIZADA E VISÍVEL ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
@@ -927,6 +927,20 @@ else:
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
+            z-index: 99999 !important;
+        }
+        /* Estiliza e posiciona a setinha nativa para que fique visível e funcional sobre o fundo */
+        [data-testid="collapsedControl"] {
+            display: flex !important;
+            visibility: visible !important;
+            background-color: rgba(15, 11, 7, 0.85) !important;
+            border: 1px solid rgba(212, 175, 55, 0.7) !important;
+            border-radius: 6px !important;
+            color: #f3e5ab !important;
+            z-index: 999999 !important;
+        }
+        [data-testid="collapsedControl"] svg {
+            fill: #f3e5ab !important;
         }
         [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
             display: none !important;
@@ -934,28 +948,6 @@ else:
         .viewerBadge_container, [data-testid="stStatusWidget"], footer {
             display: none !important;
             visibility: hidden !important;
-        }
-        /* Botão flutuante elegante no canto superior esquerdo */
-        .btn-toggle-sidebar {
-            position: fixed;
-            top: 12px;
-            left: 12px;
-            z-index: 999999;
-            background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(40, 30, 18, 0.95) 100%);
-            color: #f3e5ab;
-            border: 1px solid rgba(212, 175, 55, 0.7);
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-            font-family: 'Cinzel', Georgia, serif;
-            letter-spacing: 1px;
-        }
-        .btn-toggle-sidebar:hover {
-            border-color: rgba(212, 175, 55, 1);
-            background: linear-gradient(135deg, rgba(30, 22, 14, 0.98) 0%, rgba(60, 45, 25, 0.98) 100%);
         }
         h2 {
             font-size: 20px !important;
@@ -985,25 +977,6 @@ else:
             text-align: center !important;
         }
         </style>
-        
-        <button class="btn-toggle-sidebar" onclick="toggleSidebar()">⚙ MENU / TELÃO</button>
-        
-        <script>
-        function toggleSidebar() {
-            const nativeBtn = document.querySelector('[data-testid="collapsedControl"] button') || document.querySelector('[data-testid="collapsedControl"]');
-            if (nativeBtn) {
-                nativeBtn.click();
-            }
-        }
-        
-        // Atalho de teclado: Pressione Ctrl + B para abrir/fechar o menu
-        document.addEventListener('keydown', function(event) {
-            if (event.ctrlKey && event.key.toLowerCase() === 'b') {
-                event.preventDefault();
-                toggleSidebar();
-            }
-        });
-        </script>
         """,
         unsafe_allow_html=True,
     )
