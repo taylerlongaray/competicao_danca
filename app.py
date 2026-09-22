@@ -18,6 +18,8 @@ def obter_fundo_css(tipo_tela):
         candidatos = [
             "fundo_votacao.png",
             "fundo_votacao.jpg",
+            "fundo_votacao.PNG",
+            "fundo_votacao.JPG",
             "fundo_painel.png",
             "fundo_painel.jpg",
             "fundo.png",
@@ -27,6 +29,8 @@ def obter_fundo_css(tipo_tela):
         candidatos = [
             f"fundo_{tipo_tela}.png",
             f"fundo_{tipo_tela}.jpg",
+            f"fundo_{tipo_tela}.PNG",
+            f"fundo_{tipo_tela}.JPG",
             "fundo.png",
             "fundo.jpg",
         ]
@@ -43,7 +47,7 @@ def obter_fundo_css(tipo_tela):
             data = f.read()
         encoded = base64.b64encode(data).decode()
         ext = img_encontrada.split(".")[-1].lower()
-        mime = "png" if ext == "png" else "jpeg"
+        mime = "png" if "png" in ext else "jpeg"
         return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
     else:
         return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
@@ -55,7 +59,7 @@ def img_to_base64(file_path):
             data = f.read()
         encoded = base64.b64encode(data).decode()
         ext = file_path.split(".")[-1].lower()
-        mime = "png" if ext == "png" else "jpeg"
+        mime = "png" if "png" in ext else "jpeg"
         return f"data:image/{mime};base64,{encoded}"
     return ""
 
