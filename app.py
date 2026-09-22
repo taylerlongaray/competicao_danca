@@ -93,7 +93,7 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
     st.session_state.categoria_selecionada = None
 
-# --- Estado da navegação da tela de votação ---
+# --- Estado da navegação do ecrã de votação ---
 if "idx_comp" not in st.session_state:
     st.session_state.idx_comp = 0
 
@@ -910,7 +910,8 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM AJUSTE DE ESPAÇAMENTO E PROPORÇÃO DA IMAGEM ---
+    # --- TELÃO (PÚBLICO) COM BOTÃO DA BARRA LATERAL VISÍVEL E IMAGEM FIXA ---
+    st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
         <style>
@@ -926,6 +927,17 @@ else:
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
+            z-index: 99999 !important;
+        }
+        /* Força a visibilidade e estilo do botão de recolher/expandir a barra lateral */
+        [data-testid="collapsedControl"] {
+            display: block !important;
+            visibility: visible !important;
+            color: #f3e5ab !important;
+            background-color: rgba(20, 15, 10, 0.75) !important;
+            border: 1px solid rgba(212, 175, 55, 0.6) !important;
+            border-radius: 6px !important;
+            z-index: 999999 !important;
         }
         [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
             display: none !important;
