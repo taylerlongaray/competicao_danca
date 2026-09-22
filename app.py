@@ -1107,8 +1107,30 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM ESPAÇAMENTO CENTRALIZADO VERTICALMENTE ---
+    # --- TELÃO (PÚBLICO) COM BOTÃO DE TELA CHEIA E CENTRALIZADO ---
     with st.sidebar:
+        st.markdown("---")
+        st.markdown("### Controlo do Telão")
+        revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
+        st.session_state.revelado = revelar_tudo
+
+        st.markdown(
+            """
+            <button onclick="
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            " style="width: 100%; background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; color: #f3e5ab; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; padding: 8px 10px; font-size: 11px; cursor: pointer; margin-top: 10px; margin-bottom: 10px;">
+                ⛶ TELA CHEIA
+            </button>
+            """,
+            unsafe_allow_html=True,
+        )
+
         st.markdown("---")
         st.markdown("### Categorias")
         categoria_nome = st.radio(
@@ -1117,11 +1139,6 @@ else:
             format_func=lambda c: f"💎 {c}" if c=="Diamante" else (f"🥈 {c}" if c=="Platina" else (f"🥇 {c}" if c=="Ouro" else (f"🥈 {c}" if c=="Prata" else f"🕊️ {c}"))),
             label_visibility="collapsed"
         )
-
-        st.markdown("---")
-        st.markdown("### Controlo do Telão")
-        revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
-        st.session_state.revelado = revelar_tudo
 
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
