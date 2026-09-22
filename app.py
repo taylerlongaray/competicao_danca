@@ -367,7 +367,7 @@ configuracao_jurados = {
 }
 
 
-def obter_todos_jurados_da_categoria(cat):
+def obter_jurados_da_categoria_papel(cat, papel):
     jurados_validos = []
     for username, dados in configuracao_jurados.items():
         perm = dados["permissoes"]
@@ -375,7 +375,7 @@ def obter_todos_jurados_da_categoria(cat):
             jurados_validos.append(dados["nome"])
         elif isinstance(perm, list):
             for p in perm:
-                if p["categoria"] == cat:
+                if p["categoria"] == cat and p["papel"] == papel:
                     jurados_validos.append(dados["nome"])
                     break
     return sorted(list(set(jurados_validos)))
@@ -1114,7 +1114,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) ESTILO DA REFERÊNCIA ---
+    # --- TELÃO (PÚBLICO) COM JURADOS FILTRADOS CORRETAMENTE POR PAPEL ---
     st.markdown("""
         <div style="text-align: center; padding: 2px 0 5px 0;">
             <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 26px; letter-spacing: 3px; margin-bottom: 0;'>JACK & JILL — NOITE NAS ARÁBIAS</h1>
@@ -1142,9 +1142,9 @@ else:
     
     df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
     fases_da_cat = fases_por_categoria[categoria_nome]
-    jurados_aptos = obter_todos_jurados_da_categoria(categoria_nome)
 
     def gerar_tabela_papel_fase(fase_nome, papel_nome):
+        jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
         
         if fase_nome == "Fase Final" and categoria_nome in ["Prata", "Ouro"]:
@@ -1190,6 +1190,7 @@ else:
         return tabela_exibicao
 
     def gerar_tabela_acumulada_diamante_platina(papel_nome):
+        jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         comps = categorias[categoria_nome][papel_nome]
         df_base = pd.DataFrame({"competidor": comps})
 
