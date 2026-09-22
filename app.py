@@ -514,23 +514,6 @@ if modo == "Telão (Público)":
             max-width: 95% !important;
             margin: 0 auto !important;
         }
-        h1 {
-            font-size: 26px !important;
-            margin-bottom: 0px !important;
-            color: #e5c158 !important;
-            font-family: 'Cinzel', Georgia, serif;
-            text-align: center;
-            letter-spacing: 3px;
-        }
-        h2 {
-            font-size: 20px !important;
-            margin-top: 5px !important;
-            margin-bottom: 10px !important;
-            color: #e5c158 !important;
-            font-family: 'Cinzel', Georgia, serif;
-            text-align: center;
-            letter-spacing: 2px;
-        }
         h3 {
             font-size: 13px !important;
             margin-top: 2px !important;
@@ -1114,13 +1097,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) SEM SCROLL E EXPANDIDO ---
-    st.markdown("""
-        <div style="text-align: center; padding: 2px 0 5px 0;">
-            <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 26px; letter-spacing: 3px; margin-bottom: 0;'>JACK & JILL — NOITE NAS ARÁBIAS</h1>
-        </div>
-    """, unsafe_allow_html=True)
-
+    # --- TELÃO (PÚBLICO) SEM OS CABEÇALHOS DO TOPO ---
     with st.sidebar:
         st.markdown("---")
         st.markdown("### Categorias")
@@ -1137,8 +1114,6 @@ else:
         st.session_state.revelado = revelar_tudo
 
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
-    
-    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 10px 0 15px 0;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
     
     df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
     fases_da_cat = fases_por_categoria[categoria_nome]
@@ -1223,12 +1198,6 @@ else:
         return tabela_exibicao
 
     if categoria_nome in ["Diamante", "Platina"]:
-        st.markdown(f"""
-            <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; padding: 8px; text-align: center; margin: 15px 0 10px 0;">
-                <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 15px; font-weight: bold; letter-spacing: 1px;">— CLASSIFICAÇÃO ACUMULADA (MÚSICA 1 + MÚSICA 2) —</div>
-            </div>
-        """, unsafe_allow_html=True)
-
         col_cond, col_condz = st.columns(2)
 
         with col_cond:
@@ -1243,14 +1212,6 @@ else:
 
     else:
         for fase_nome in fases_da_cat:
-            fase_titulo, fase_sub = formatar_fase(fase_nome)
-            st.markdown(f"""
-                <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; padding: 8px; text-align: center; margin: 15px 0 10px 0;">
-                    <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 15px; font-weight: bold; letter-spacing: 1px;">— {fase_titulo} —</div>
-                    <div style="color: #b39b6b; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;">{fase_sub}</div>
-                </div>
-            """, unsafe_allow_html=True)
-
             col_cond, col_condz = st.columns(2)
 
             with col_cond:
