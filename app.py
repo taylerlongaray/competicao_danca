@@ -63,6 +63,9 @@ def img_to_base64(file_path):
 if "votos" not in st.session_state:
     st.session_state.votos = []
 
+if "rascunho_votos" not in st.session_state:
+    st.session_state.rascunho_votos = []
+
 if "revelado" not in st.session_state:
     st.session_state.revelado = False
 
@@ -406,7 +409,8 @@ def registrar_voto(
     nota,
     justificativa,
 ):
-    for voto in st.session_state.votos:
+    # Guarda temporariamente no Rascunho Pessoal do jurado (não vai para o telão ainda)
+    for voto in st.session_state.rascunho_votos:
         if (
             voto["jurado"] == jurado
             and voto["categoria"] == categoria
@@ -419,7 +423,7 @@ def registrar_voto(
             voto["justificativa"] = justificativa
             return
 
-    st.session_state.votos.append({
+    st.session_state.rascunho_votos.append({
         "jurado": jurado,
         "categoria": categoria,
         "fase": fase,
@@ -432,6 +436,18 @@ def registrar_voto(
 
 
 def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
+    # Procura primeiro no rascunho para refletir edições pendentes
+    for voto in st.session_state.rascunho_votos:
+        if (
+            voto["jurado"] == jurado
+            and voto["categoria"] == categoria
+            and voto["fase"] == fase
+            and voto["papel"] == papel
+            and voto["competidor"] == competidor
+            and voto["criterio"] == criterio
+        ):
+            return voto["nota"]
+    # Se não estiver no rascunho, procura nos votos oficiais enviados
     for voto in st.session_state.votos:
         if (
             voto["jurado"] == jurado
@@ -462,6 +478,40 @@ else:
         unsafe_allow_html=True,
     )
     st.sidebar.markdown("---")
+
+    # Bloco de submissão de rascunho na barra lateral para o jurado logado
+    if st.session_state.jurado_logado is not None:
+        st.sidebar.markdown("### 📤 Envio de Votos")
+        rascunhos_jurado_atual = [
+            v for v in st.session_state.rascunho_votos 
+            if v["jurado"] == st.session_state.jurado_logado
+        ]
+        if rascunhos_jurado_atual:
+            st.sidebar.info(f"Tem {len(rascunhos_jurado_atual)} avaliação(ões) em rascunho.")
+            if st.sidebar.button("🚀 Confirmar e Enviar Tudo para o Telão", type="primary", use_container_width=True):
+                # Transfere/Atualiza os rascunhos para os votos oficiais do telão
+                for v_rasc in rascunhos_jurado_atual:
+                    encontrado = False
+                    for v_oficial in st.session_state.votos:
+                        if (
+                            v_oficial["jurado"] == v_rasc["jurado"] and
+                            v_oficial["categoria"] == v_rasc["categoria"] and
+                            v_oficial["fase"] == v_rasc["fase"] and
+                            v_oficial["papel"] == v_rasc["papel"] and
+                            v_oficial["competidor"] == v_rasc["competidor"] and
+                            v_oficial["criterio"] == v_rasc["criterio"]
+                        ):
+                            v_oficial["nota"] = v_rasc["nota"]
+                            v_oficial["justificativa"] = v_rasc["justificativa"]
+                            encontrado = True
+                            break
+                    if not encontrado:
+                        st.session_state.votos.append(v_rasc.copy())
+                st.sidebar.success("✨ Notas enviadas com sucesso para o Telão!")
+                st.rerun()
+        else:
+            st.sidebar.markdown("<p style='color: #8d7a52; font-size: 11px;'>Nenhum rascunho pendente.</p>", unsafe_allow_html=True)
+        st.sidebar.markdown("---")
 
     modo = st.sidebar.radio(
         "Navegação",
@@ -842,7 +892,6 @@ if modo == "Painel do Jurado":
                 ("Aprendendo a Voar", "asas.png", "🕊️"),
             ]
 
-            # CORREÇÃO DAQUI PARA EVITAR O TypeError COM PERMISSÕES EM STRING ("TODAS_GLOBAL")
             if isinstance(permissoes_jurado, str):
                 cats_info = cats_info_todas
             else:
@@ -1128,7 +1177,7 @@ if modo == "Painel do Jurado":
                     )
 
                 if st.button(
-                    "➤  ENVIAR AVALIAÇÃO",
+                    "➤  GUARDAR EM RASCUNHO",
                     type="primary",
                     use_container_width=True,
                     key=f"enviar_{chave_base}",
@@ -1136,7 +1185,7 @@ if modo == "Painel do Jurado":
                     nota_limpa = nota_digitada_str.strip()
                     nota_normalizada = nota_limpa.replace(",", ".")
                     if not nota_limpa:
-                        st.error("❌ Digite uma nota antes de enviar.")
+                        st.error("❌ Digite uma nota antes de guardar.")
                     else:
                         try:
                             val_nota = float(nota_normalizada)
@@ -1158,7 +1207,7 @@ if modo == "Painel do Jurado":
                                 if st.session_state.idx_crit + 1 < total_crit:
                                     st.session_state.idx_crit += 1
                                     st.toast(
-                                        f"✨ Nota registrada para {competidor_escolhido} —"
+                                        f"✨ Rascunho guardado para {competidor_escolhido} —"
                                         f" {criterio_nome}"
                                     )
                                 else:
@@ -1167,7 +1216,7 @@ if modo == "Painel do Jurado":
                                         st.session_state.idx_comp + 1
                                     ) % total_comp
                                     st.toast(
-                                        f"🏅 Avaliação de {competidor_escolhido} concluída!"
+                                        f"🏅 Rascunho de {competidor_escolhido} guardado!"
                                     )
                                 st.rerun()
                         except ValueError:
@@ -1184,10 +1233,10 @@ elif modo == "Painel da Organização":
     if senha_digitada == SENHA_MESTRE:
         st.success("🔓 Acesso autorizado!")
         if not st.session_state.votos:
-            st.warning("Ainda não há votos registrados na competição.")
+            st.warning("Ainda não há votos oficiais enviados ao telão.")
         else:
             df_votos = pd.DataFrame(st.session_state.votos)
-            st.markdown("### Auditoria Completa de Notas e Justificativas")
+            st.markdown("### Auditoria Completa de Notas Oficiais")
             st.dataframe(df_votos, use_container_width=True)
     elif senha_digitada != "":
         st.error("❌ Senha incorreta!")
@@ -1207,7 +1256,7 @@ else:
         st.session_state.revelado = revelar_tudo
 
     if not st.session_state.votos:
-        st.info("💡 Aguardando o envio dos votos pelos jurados. Os resultados aparecerão aqui em tempo real.")
+        st.info("💡 Aguardando a confirmação e envio dos votos pelos jurados. Os resultados aparecerão aqui em tempo real.")
     else:
         df_votos = pd.DataFrame(st.session_state.votos)
         
@@ -1220,7 +1269,7 @@ else:
                 
                 df_cat = df_votos[df_votos["categoria"] == categoria_nome]
                 if df_cat.empty:
-                    st.info(f"Nenhum voto registrado ainda para a categoria {categoria_nome}.")
+                    st.info(f"Nenhum voto confirmado ainda para a categoria {categoria_nome}.")
                     continue
 
                 fases_da_cat = fases_por_categoria[categoria_nome]
@@ -1252,7 +1301,7 @@ else:
                                 
                                 df_papel = df_fase[df_fase["papel"] == papel_nome]
                                 if df_papel.empty:
-                                    st.markdown("<p style='text-align: center; color: #8d7a52; font-size: 10px;'>Aguardando votos...</p>", unsafe_allow_html=True)
+                                    st.markdown("<p style='text-align: center; color: #8d7a52; font-size: 10px;'>Aguardando confirmação...</p>", unsafe_allow_html=True)
                                 else:
                                     df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
                                     pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado", values="nota").reset_index()
