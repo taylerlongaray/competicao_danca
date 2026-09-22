@@ -483,7 +483,7 @@ def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
 if link_jurado_exclusivo:
     modo = "Painel do Jurado"
     st.markdown(
-        '<style>[data-testid="stSidebar"] { display: none !important; } header[data-testid="stHeader"] { display: none !important; }</style>',
+        '<style>[data-testid="stSidebar"] { display: none !important; } [data-testid="stHeader"] { display: none !important; }</style>',
         unsafe_allow_html=True,
     )
 else:
@@ -910,44 +910,50 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) ---
+    # --- TELÃO (PÚBLICO) COM FORÇAGEM VISUAL DA SETINHA ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
-    
     st.markdown(
         """
         <style>
-        /* Afasta o conteúdo do topo para não ficar debaixo da seta lateral */
         .block-container {
-            padding-top: 4rem !important;
+            padding-top: 5.5rem !important;
             padding-bottom: 4rem !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
             max-width: 100% !important;
+            margin: 0 auto !important;
         }
-        
-        /* FORÇA O CABEÇALHO A SER PRETO SÓLIDO (IGUAL NA TELA DE LOGIN) */
-        header[data-testid="stHeader"] {
-            background-color: #0e1117 !important;
-            opacity: 1 !important;
+        [data-testid="stHeader"] {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            z-index: 99999 !important;
+        }
+        /* Força a setinha de recolher/expandir a barra lateral a aparecer visível e estilizada */
+        [data-testid="collapsedControl"] {
+            display: flex !important;
             visibility: visible !important;
-        }
-        
-        /* IMPEDE A SETA DE DESAPARECER */
-        button[kind="header"] {
             opacity: 1 !important;
-            visibility: visible !important;
-            display: inline-flex !important;
+            position: fixed !important;
+            top: 10px !important;
+            left: 10px !important;
+            background-color: rgba(15, 11, 7, 0.9) !important;
+            border: 1px solid rgba(212, 175, 55, 0.8) !important;
+            border-radius: 6px !important;
+            color: #f3e5ab !important;
+            z-index: 999999 !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
         }
-        
-        /* Esconde apenas os botões do lado direito (Deploy, Opções, etc.) */
-        [data-testid="stToolbar"] {
+        [data-testid="collapsedControl"] svg {
+            fill: #f3e5ab !important;
+        }
+        [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
             display: none !important;
         }
-        
-        /* Esconde a marca de água/rodapé do Streamlit */
-        footer {
+        .viewerBadge_container, [data-testid="stStatusWidget"], footer {
             display: none !important;
+            visibility: hidden !important;
         }
-
-        /* --- Estilo da Tabela e Textos do Telão --- */
         h2 {
             font-size: 20px !important;
             margin-top: -10px !important;
