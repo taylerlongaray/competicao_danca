@@ -906,6 +906,7 @@ elif modo == "Painel da Organização":
 
 else:
     # --- TELÃO (PÚBLICO) COM BARRA TRANSPARENTE E SETA DA SIDEBAR MANTIDA ---
+    st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
         <style>
