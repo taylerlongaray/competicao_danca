@@ -486,224 +486,6 @@ else:
 if modo == "Painel do Jurado":
     if st.session_state.jurado_logado is None:
         st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
-    elif st.session_state.categoria_selecionada is None:
-        st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
-    else:
-        st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
-elif modo == "Telão (Público)":
-    st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
-else:
-    st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
-
-st.markdown(
-    """
-    <style>
-    footer {visibility: hidden;}
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-if modo == "Telão (Público)":
-    st.markdown(
-        """
-        <style>
-        .block-container {
-            padding-top: 3.5rem !important;
-            padding-bottom: 2rem !important;
-            max-width: 95% !important;
-            margin: 0 auto !important;
-        }
-        h2 {
-            font-size: 22px !important;
-            margin-top: 10px !important;
-            margin-bottom: 20px !important;
-            color: #e5c158 !important;
-            font-family: 'Cinzel', Georgia, serif;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-        h3 {
-            font-size: 13px !important;
-            margin-top: 2px !important;
-            margin-bottom: 5px !important;
-            color: #f3e5ab !important;
-            font-family: 'Cinzel', Georgia, serif;
-        }
-        [data-testid="stDataFrame"] {
-            font-size: 13px !important;
-        }
-        [data-testid="stDataFrame"] table {
-            font-size: 13px !important;
-        }
-        [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
-            padding: 14px 10px !important;
-            line-height: 1.5 !important;
-            text-align: center !important;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-else:
-    st.markdown(
-        """
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
-        .block-container {
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
-            max-width: 600px !important;
-            margin: 0 auto !important;
-        }
-        h1, h2, h3 {
-            color: #e5c158 !important;
-            font-family: 'Georgia', serif;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-        .saudacao-jurado {
-            font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
-            color: #f3e5ab !important;
-            font-size: 22px !important;
-            font-weight: 700 !important;
-            text-align: center;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-            letter-spacing: 1.5px;
-            margin-bottom: 2px;
-        }
-        div[data-testid="column"]:has(input[type="password"]) {
-            max-width: 320px !important; 
-            margin: 0 auto !important; 
-            float: none !important;
-            background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
-            border: 1px solid rgba(212, 175, 55, 0.5) !important;
-            border-radius: 12px !important;
-            padding: 15px 15px 10px 15px !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
-        }
-        .stTextInput div[data-baseweb="input"] {
-            background-color: rgba(12, 9, 7, 0.95) !important;
-            border: 1px solid rgba(212, 175, 55, 0.45) !important;
-            border-radius: 6px !important;
-        }
-        .stTextInput input {
-            color: #f3e5ab !important;
-            background-color: transparent !important;
-            padding: 6px 10px !important;
-            font-size: 13px !important;
-        }
-        .stButton > button {
-            background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
-            border: 1px solid rgba(212, 175, 55, 0.6) !important;
-            border-radius: 6px !important;
-            color: #f3e5ab !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1px !important;
-            font-weight: 600 !important;
-            padding: 6px 10px !important;
-            font-size: 11px !important;
-        }
-        .stButton > button[kind="primary"] {
-            background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
-            border: 1px solid #e5c158 !important;
-            color: #1a1208 !important;
-            font-weight: 700 !important;
-        }
-        [data-testid="stSidebar"] {
-            background-color: rgba(14, 10, 8, 0.96);
-            border-right: 1px solid rgba(212, 175, 55, 0.15);
-        }
-        .jj-card {
-            background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
-            border: 1px solid rgba(212, 175, 55, 0.45);
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-            padding: 6px 10px;
-            margin-bottom: 6px;
-        }
-        .jj-banner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        .jj-label {
-            color: #b39b6b;
-            font-size: 9px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 1px;
-        }
-        .jj-categoria {
-            font-family: 'Cinzel', 'Georgia', serif;
-            color: #f3e5ab;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            line-height: 1.0;
-        }
-        .jj-fase {
-            font-family: 'Cinzel', 'Georgia', serif;
-            color: #f3e5ab;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-        .jj-musica {
-            color: #b39b6b;
-            font-size: 9px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .jj-nome {
-            font-family: 'Cinzel', 'Georgia', serif;
-            color: #ffffff;
-            font-size: 20px;
-            font-weight: 700;
-            line-height: 1.0;
-            margin: 2px 0 3px 0;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-        }
-        .jj-badge {
-            display: inline-block;
-            border: 1px solid rgba(212, 175, 55, 0.8);
-            border-radius: 14px;
-            padding: 2px 10px;
-            color: #e5c158;
-            font-size: 8px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .jj-crit-nome {
-            font-family: 'Cinzel', 'Georgia', serif;
-            color: #f3e5ab;
-            font-size: 15px;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-top: 1px;
-        }
-        .jj-crit-desc {
-            color: #ded2b4;
-            font-size: 10px;
-            line-height: 1.35;
-        }
-        .jj-crit-desc b { color: #e5c158; }
-        .jj-secao-label {
-            color: #b39b6b;
-            font-size: 9px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-if modo == "Painel do Jurado":
-    if st.session_state.jurado_logado is None:
-        st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
         st.markdown('<div style="height: 38vh;"></div>', unsafe_allow_html=True)
         col_esq, col_login, col_dir = st.columns([1, 10, 1])
         with col_login:
@@ -926,7 +708,7 @@ if modo == "Painel do Jurado":
             )
 
             if permissoes_jurado == "TODAS_GLOBAL":
-                criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança du participante."}
+                criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
             else:
                 criterios_permitidos_nomes = []
                 for p in permissoes_jurado:
@@ -1107,9 +889,17 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BOTÃO DE TELA CHEIA NO TOPO DIREITO ---
+    # --- TELÃO (PÚBLICO) COM BARRA TOPO REMOVIDA E TELA CHEIA ---
     st.markdown(
         """
+        <style>
+        [data-testid="stHeader"] {
+            display: none !important;
+        }
+        [data-testid="stToolbar"] {
+            visibility: hidden !important;
+        }
+        </style>
         <div style="position: fixed; top: 14px; right: 20px; z-index: 999999;">
             <button onclick="
                 if (!document.fullscreenElement) {
