@@ -481,11 +481,23 @@ elif modo == "Telão (Público)":
 else:
     st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
+# CSS global para remover a barra preta superior do Streamlit em todas as telas
+st.markdown(
+    """
+    <style>
+    [data-testid="stHeader"] {
+        display: none !important;
+    }
+    footer {visibility: hidden;}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 if modo == "Telão (Público)":
     st.markdown(
         """
         <style>
-        footer {visibility: hidden;}
         .block-container {
             padding-top: 0.3rem !important;
             padding-bottom: 0.3rem !important;
@@ -544,7 +556,6 @@ else:
         """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
-        footer {visibility: hidden;}
         .block-container {
             padding-top: 0.5rem !important;
             padding-bottom: 0.5rem !important;
