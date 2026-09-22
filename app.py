@@ -481,14 +481,11 @@ elif modo == "Telão (Público)":
 else:
     st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
-# CSS específico: Modo Telão compacto para caber tudo em 1 tela sem scroll
 if modo == "Telão (Público)":
     st.markdown(
         """
         <style>
-        #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
-        header {visibility: hidden;}
         .block-container {
             padding-top: 0.3rem !important;
             padding-bottom: 0.3rem !important;
@@ -528,7 +525,6 @@ if modo == "Telão (Público)":
             letter-spacing: 1px;
             text-align: center;
         }
-        /* Tabelas ultracompactas para caber na tela do PC */
         [data-testid="stDataFrame"] {
             font-size: 10px !important;
         }
@@ -548,9 +544,7 @@ else:
         """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
-        #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
-        header {visibility: hidden;}
         .block-container {
             padding-top: 0.5rem !important;
             padding-bottom: 0.5rem !important;
@@ -711,14 +705,14 @@ if modo == "Painel do Jurado":
             login_digitado = st.text_input(
                 "Usuário",
                 key="login_usuario_jurado",
-                placeholder="👤    Usuário",
+                placeholder="👤    Utilizador",
                 label_visibility="collapsed",
             )
             senha_digitada = st.text_input(
                 "Senha",
                 type="password",
                 key="senha_login_jurado",
-                placeholder="🔒    Senha",
+                placeholder="🔒    Palavra-passe",
                 label_visibility="collapsed",
             )
             st.markdown('<div style="margin-top: 8px;"></div>', unsafe_allow_html=True)
@@ -733,9 +727,9 @@ if modo == "Painel do Jurado":
                             st.query_params["view"] = "jurado"
                         st.rerun()
                     else:
-                        st.error("❌ Senha incorreta!")
+                        st.error("❌ Palavra-passe incorreta!")
                 else:
-                    st.error("❌ Usuário não encontrado.")
+                    st.error("❌ Utilizador não encontrado.")
     elif st.session_state.categoria_selecionada is None:
         st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
         dados_jurado = configuracao_jurados.get(st.session_state.jurado_logado, {"nome": st.session_state.jurado_logado, "permissoes": "TODAS"})
@@ -1092,20 +1086,20 @@ elif modo == "Painel da Organização":
     st.title("📋 Painel da Organização")
     with st.container(border=True):
         senha_digitada = st.text_input(
-            "Digite a senha de acesso da organização", type="password"
+            "Digite a palavra-passe de acesso da organização", type="password"
         )
     SENHA_MESTRE = "danca123"
 
     if senha_digitada == SENHA_MESTRE:
         st.success("🔓 Acesso autorizado!")
         if not st.session_state.votos:
-            st.warning("Ainda não há votos registrados na competição.")
+            st.warning("Ainda não há votos registados na competição.")
         else:
             df_votos = pd.DataFrame(st.session_state.votos)
             st.markdown("### Auditoria Completa de Notas e Justificativas")
             st.dataframe(df_votos, use_container_width=True)
     elif senha_digitada != "":
-        st.error("❌ Senha incorreta!")
+        st.error("❌ Palavra-passe incorreta!")
 
 else:
     # --- TELÃO (PÚBLICO) COMPACTO E COM NOME DOS JURADOS ---
@@ -1117,7 +1111,7 @@ else:
 
     with st.sidebar:
         st.markdown("---")
-        st.markdown("### Controle do Telão")
+        st.markdown("### Controlo do Telão")
         revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
         st.session_state.revelado = revelar_tudo
 
@@ -1126,7 +1120,6 @@ else:
     nomes_abas = list(categorias.keys())
     abas = st.tabs([f"💎 {c}" if c=="Diamante" else f"🥈 {c}" if c=="Platina" else f"🥇 {c}" if c=="Ouro" else f"🥈 {c}" if c=="Prata" else f"🕊️ {c}" for c in nomes_abas])
 
-    # Mapeia os usernames dos jurados para seus nomes reais cadastrados
     todos_jurados_ordenados = sorted(list(configuracao_jurados.keys()))
     mapping_todos_jurados = {j: configuracao_jurados[j]["nome"] for j in todos_jurados_ordenados}
     j_cols_padrao = list(mapping_todos_jurados.values())
