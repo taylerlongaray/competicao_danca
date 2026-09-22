@@ -1043,7 +1043,7 @@ else:
             width: 100%;
             border-collapse: collapse;
             margin: 10px 0;
-            font-size: 13px;
+            font-size: 12px;
             font-family: 'Helvetica Neue', sans-serif;
             color: #f3e5ab;
             background: linear-gradient(135deg, rgba(10, 7, 5, 0.90) 0%, rgba(20, 15, 10, 0.95) 100%);
@@ -1057,17 +1057,17 @@ else:
             color: #e5c158;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             text-align: center !important;
-            padding: 12px 10px;
+            padding: 8px 6px;
             border-bottom: 2px solid #d4af37;
-            white-space: nowrap !important; /* Mantém o nome dos jurados numa linha só, alinhado e padronizado */
+            line-height: 1.2;
         }
         .tabela-dourada td {
             text-align: center !important;
-            padding: 10px;
+            padding: 8px 6px;
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            white-space: nowrap !important; /* Garante consistência perfeita nas células */
+            white-space: nowrap !important;
         }
         .tabela-dourada tbody tr:last-child td {
             border-bottom: none;
@@ -1129,6 +1129,13 @@ else:
 
     st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{selecao_telao.upper()} — RESULTADOS</h2>", unsafe_allow_html=True)
     
+    def formatar_nome_jurado(nome):
+        # Substitui o espaço do meio por uma quebra de linha HTML (<br>)
+        partes = nome.split(" ", 1)
+        if len(partes) > 1:
+            return f"{partes[0]}<br>{partes[1]}"
+        return nome
+
     def gerar_tabela_papel_fase(fase_nome, papel_nome):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
@@ -1141,7 +1148,7 @@ else:
             comps = categorias[categoria_nome][papel_nome]
 
         df_base = pd.DataFrame({"competidor": comps})
-        df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_fase.empty else pd.DataFrame()
+        df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_papel.empty else pd.DataFrame()
 
         if not df_papel.empty:
             df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
@@ -1162,11 +1169,16 @@ else:
         pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_aptos + ["TOTAL"]
+        # Renomeia as colunas dos jurados aplicando o <br> para ficarem em duas linhas
+        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
+        pivot_df = pivot_df.rename(columns=renomeador)
+
+        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
+        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
         cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
         tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
-        for col in jurados_aptos + ["TOTAL"]:
+        for col in jurados_formatados + ["TOTAL"]:
             if col in tabela_exibicao.columns:
                 tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
 
@@ -1198,11 +1210,16 @@ else:
         pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_aptos + ["TOTAL"]
+        # Renomeia as colunas dos jurados aplicando o <br>
+        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
+        pivot_df = pivot_df.rename(columns=renomeador)
+
+        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
+        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
         cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
         tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
-        for col in jurados_aptos + ["TOTAL"]:
+        for col in jurados_formatados + ["TOTAL"]:
             if col in tabela_exibicao.columns:
                 tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
 
