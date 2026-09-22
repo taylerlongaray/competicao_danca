@@ -483,7 +483,7 @@ def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
 if link_jurado_exclusivo:
     modo = "Painel do Jurado"
     st.markdown(
-        '<style>[data-testid="stSidebar"] { display: none !important; } [data-testid="stHeader"] { display: none !important; }</style>',
+        '<style>[data-testid="stSidebar"] { display: none !important; } header[data-testid="stHeader"] { display: none !important; }</style>',
         unsafe_allow_html=True,
     )
 else:
@@ -912,59 +912,34 @@ elif modo == "Painel da Organização":
 else:
     # --- TELÃO (PÚBLICO) ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
+    
     st.markdown(
         """
         <style>
+        /* Afasta o conteúdo do topo para não ficar debaixo do botão da barra lateral */
         .block-container {
-            padding-top: 5.5rem !important;
+            padding-top: 4rem !important;
             padding-bottom: 4rem !important;
-            padding-left: 2.5rem !important;
-            padding-right: 2.5rem !important;
             max-width: 100% !important;
-            margin: 0 auto !important;
-        }
-        [data-testid="stHeader"] {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            /* Impede o cabeçalho invisível de bloquear cliques: */
-            pointer-events: none !important; 
         }
         
-        /* === BOTÃO DE MENU SUPER DESTACADO E CLICÁVEL === */
-        [data-testid="collapsedControl"],
-        [data-testid="stSidebarCollapsedControl"] {
-            display: flex !important;
-            position: fixed !important;
-            top: 15px !important;
-            left: 15px !important;
-            background-color: rgba(212, 175, 55, 0.95) !important; /* Quadrado Dourado Forte */
-            border-radius: 8px !important;
-            width: 45px !important;
-            height: 45px !important;
-            z-index: 9999999 !important;
-            align-items: center !important;
-            justify-content: center !important;
-            pointer-events: auto !important; /* Garante que é clicável */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important;
-            opacity: 1 !important;
-            visibility: visible !important;
+        /* Torna o cabeçalho (onde a seta mora) transparente para não cobrir o seu fundo, 
+           MAS sem desativar os cliques, para que a seta funcione nativamente! */
+        header[data-testid="stHeader"] {
+            background-color: transparent !important;
         }
-        [data-testid="collapsedControl"] svg,
-        [data-testid="stSidebarCollapsedControl"] svg {
-            fill: #140f0a !important; /* Seta Escura para destacar no fundo Dourado */
-            width: 24px !important;
-            height: 24px !important;
+        
+        /* Esconde apenas os botões do lado direito (Deploy, Opções, etc.) */
+        [data-testid="stToolbar"] {
+            display: none !important;
         }
-        /* ============================================== */
+        
+        /* Esconde a marca de água/rodapé do Streamlit */
+        footer {
+            display: none !important;
+        }
 
-        [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
-            display: none !important;
-        }
-        .viewerBadge_container, [data-testid="stStatusWidget"], footer {
-            display: none !important;
-            visibility: hidden !important;
-        }
+        /* --- Estilo da Tabela e Textos do Telão --- */
         h2 {
             font-size: 20px !important;
             margin-top: -10px !important;
