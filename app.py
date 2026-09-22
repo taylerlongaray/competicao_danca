@@ -481,7 +481,7 @@ elif modo == "Telão (Público)":
 else:
     st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
-# CSS Condicional: Se for Telão, usa tela cheia (largo). Se for Painel do Jurado, restringe a largura para mobile.
+# CSS específico: Modo Telão compacto para caber tudo em 1 tela sem scroll
 if modo == "Telão (Público)":
     st.markdown(
         """
@@ -490,16 +490,54 @@ if modo == "Telão (Público)":
         footer {visibility: hidden;}
         header {visibility: hidden;}
         .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 2rem !important;
-            max-width: 98% !important;
+            padding-top: 0.3rem !important;
+            padding-bottom: 0.3rem !important;
+            max-width: 99% !important;
             margin: 0 auto !important;
         }
-        h1, h2, h3 {
+        h1 {
+            font-size: 26px !important;
+            margin-bottom: 0px !important;
+            color: #e5c158 !important;
+            font-family: 'Cinzel', Georgia, serif;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+        h2 {
+            font-size: 20px !important;
+            margin-top: 5px !important;
+            margin-bottom: 10px !important;
             color: #e5c158 !important;
             font-family: 'Cinzel', Georgia, serif;
             text-align: center;
             letter-spacing: 2px;
+        }
+        h3 {
+            font-size: 14px !important;
+            margin-top: 2px !important;
+            margin-bottom: 5px !important;
+            color: #f3e5ab !important;
+            font-family: 'Cinzel', Georgia, serif;
+        }
+        h4 {
+            font-size: 11px !important;
+            margin-top: 2px !important;
+            margin-bottom: 4px !important;
+            color: #e5c158 !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        /* Tabelas ultracompactas para caber na tela do PC */
+        [data-testid="stDataFrame"] {
+            font-size: 10px !important;
+        }
+        [data-testid="stDataFrame"] table {
+            font-size: 10px !important;
+        }
+        [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
+            padding: 1px 4px !important;
+            line-height: 1.1 !important;
         }
         </style>
         """,
@@ -1070,11 +1108,10 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) ESTILO PAINEL PROFISSIONAL ---
+    # --- TELÃO (PÚBLICO) COMPACTO E COM NOME DOS JURADOS ---
     st.markdown("""
-        <div style="text-align: center; padding: 5px 0 15px 0;">
-            <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 38px; letter-spacing: 4px; margin-bottom: 0;'>JACK & JILL</h1>
-            <h3 style='font-family: "Cinzel", Georgia, serif; color: #f3e5ab; font-size: 18px; letter-spacing: 3px; margin-top: 5px;'>NOITE NAS ARÁBIAS — TELÃO</h3>
+        <div style="text-align: center; padding: 2px 0 5px 0;">
+            <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 26px; letter-spacing: 3px; margin-bottom: 0;'>JACK & JILL — NOITE NAS ARÁBIAS</h1>
         </div>
     """, unsafe_allow_html=True)
 
@@ -1089,19 +1126,19 @@ else:
     nomes_abas = list(categorias.keys())
     abas = st.tabs([f"💎 {c}" if c=="Diamante" else f"🥈 {c}" if c=="Platina" else f"🥇 {c}" if c=="Ouro" else f"🥈 {c}" if c=="Prata" else f"🕊️ {c}" for c in nomes_abas])
 
+    # Mapeia os usernames dos jurados para seus nomes reais cadastrados
     todos_jurados_ordenados = sorted(list(configuracao_jurados.keys()))
-    mapping_todos_jurados = {j: f"J{idx+1}" for idx, j in enumerate(todos_jurados_ordenados)}
+    mapping_todos_jurados = {j: configuracao_jurados[j]["nome"] for j in todos_jurados_ordenados}
     j_cols_padrao = list(mapping_todos_jurados.values())
 
     for i, categoria_nome in enumerate(nomes_abas):
         with abas[i]:
-            st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 3px; margin: 25px 0;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 5px 0 10px 0;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
             
             fases_da_cat = fases_por_categoria[categoria_nome]
             
-            # Layout lado a lado para as duas fases/músicas (exatamente como na referência)
             if len(fases_da_cat) > 1:
-                col_fase1, col_fase2 = st.columns(2, gap="large")
+                col_fase1, col_fase2 = st.columns(2, gap="medium")
                 fases_cols = [(fases_da_cat[0], col_fase1), (fases_da_cat[1], col_fase2)]
             else:
                 fases_cols = [(fases_da_cat[0], st.container())]
@@ -1112,21 +1149,20 @@ else:
                 with container_fase:
                     fase_titulo, fase_sub = formatar_fase(fase_nome)
                     st.markdown(f"""
-                        <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.7); border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.6);">
-                            <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 18px; font-weight: bold; letter-spacing: 2px;">— {fase_titulo} —</div>
-                            <div style="color: #b39b6b; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px;">{fase_sub}</div>
+                        <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; padding: 6px; text-align: center; margin-bottom: 8px;">
+                            <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 14px; font-weight: bold; letter-spacing: 1px;">— {fase_titulo} —</div>
+                            <div style="color: #b39b6b; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;">{fase_sub}</div>
                         </div>
                     """, unsafe_allow_html=True)
 
                     df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
                     
-                    # Condutores e Conduzidas lado a lado dentro da etapa
-                    c_cond, c_condurz = st.columns(2, gap="medium")
+                    c_cond, c_condurz = st.columns(2, gap="small")
                     papeis_info = [("Condutores", c_cond), ("Conduzidas", c_condurz)]
                     
                     for papel_nome, col_papel in papeis_info:
                         with col_papel:
-                            st.markdown(f"<h4 style='text-align: center; color: #e5c158; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;'>{papel_nome}</h4>", unsafe_allow_html=True)
+                            st.markdown(f"<h4 style='text-align: center; color: #e5c158; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>{papel_nome}</h4>", unsafe_allow_html=True)
                             
                             if fase_nome == "Fase Final" and categoria_nome in ["Prata", "Ouro"]:
                                 comps = obter_classificados(categoria_nome, papel_nome)
@@ -1174,15 +1210,14 @@ else:
 
                             st.dataframe(tabela_exibicao, use_container_width=True, hide_index=True)
 
-            # Bloco de Classificação Geral Acumulada para categorias com duas fases (Diamante e Platina)
             if categoria_nome in ["Platina", "Diamante"]:
-                st.markdown("---")
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; font-size: 20px; letter-spacing: 2px; margin-top: 25px;'>🌟 CLASSIFICAÇÃO GERAL ACUMULADA (MÚSICA 1 + MÚSICA 2)</h3>", unsafe_allow_html=True)
+                st.markdown("<hr style='margin: 5px 0; border-color: rgba(212,175,55,0.3);'/>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; font-size: 13px; letter-spacing: 1px; margin: 4px 0;'>🌟 CLASSIFICAÇÃO GERAL ACUMULADA (MÚSICA 1 + MÚSICA 2)</h3>", unsafe_allow_html=True)
                 
-                g_cond, g_condurz = st.columns(2, gap="large")
+                g_cond, g_condurz = st.columns(2, gap="medium")
                 for g_idx, (g_papel, col_g) in enumerate([("Condutores", g_cond), ("Conduzidas", g_condurz)]):
                     with col_g:
-                        st.markdown(f"<h4 style='text-align: center; color: #f3e5ab; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;'>Geral — {g_papel}</h4>", unsafe_allow_html=True)
+                        st.markdown(f"<h4 style='text-align: center; color: #f3e5ab; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;'>Geral — {g_papel}</h4>", unsafe_allow_html=True)
                         df_g = df_cat[df_cat["papel"] == g_papel] if not df_cat.empty else pd.DataFrame()
                         
                         if not df_g.empty:
