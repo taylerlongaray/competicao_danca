@@ -63,9 +63,6 @@ def img_to_base64(file_path):
 if "votos" not in st.session_state:
     st.session_state.votos = []
 
-if "rascunho_votos" not in st.session_state:
-    st.session_state.rascunho_votos = []
-
 if "revelado" not in st.session_state:
     st.session_state.revelado = False
 
@@ -409,7 +406,8 @@ def registrar_voto(
     nota,
     justificativa,
 ):
-    for voto in st.session_state.rascunho_votos:
+    # Envia diretamente para os votos oficiais (aparece instantaneamente no telão)
+    for voto in st.session_state.votos:
         if (
             voto["jurado"] == jurado
             and voto["categoria"] == categoria
@@ -422,7 +420,7 @@ def registrar_voto(
             voto["justificativa"] = justificativa
             return
 
-    st.session_state.rascunho_votos.append({
+    st.session_state.votos.append({
         "jurado": jurado,
         "categoria": categoria,
         "fase": fase,
@@ -435,16 +433,6 @@ def registrar_voto(
 
 
 def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
-    for voto in st.session_state.rascunho_votos:
-        if (
-            voto["jurado"] == jurado
-            and voto["categoria"] == categoria
-            and voto["fase"] == fase
-            and voto["papel"] == papel
-            and voto["competidor"] == competidor
-            and voto["criterio"] == criterio
-        ):
-            return voto["nota"]
     for voto in st.session_state.votos:
         if (
             voto["jurado"] == jurado
@@ -912,10 +900,6 @@ if modo == "Painel do Jurado":
                     st.session_state.grupo_atual = nova_grupo
                     st.session_state.idx_comp = 0
                     st.session_state.idx_crit = 0
-                    # Limpa a tela de revisão se trocar de grupo/fase
-                    rev_key = f"revisao_ativa_{st.session_state.jurado_logado}_{categoria_escolhida}_{nova_fase}_{nova_grupo}"
-                    if rev_key in st.session_state:
-                        del st.session_state[rev_key]
                     st.rerun()
 
             fase_escolhida = st.session_state.fase_atual
@@ -923,9 +907,6 @@ if modo == "Painel do Jurado":
             papel_escolhido = (
                 "Condutores" if tipo_selecionado == "Condutor" else "Conduzidas"
             )
-
-            # Chave de revisão específica para este jurado, categoria, fase e papel
-            revisao_key = f"revisao_ativa_{st.session_state.jurado_logado}_{categoria_escolhida}_{fase_escolhida}_{papel_escolhido}"
 
             arquivo_icone, emoji_icone = icones_categoria.get(
                 categoria_escolhida, ("", "✦")
@@ -945,284 +926,225 @@ if modo == "Painel do Jurado":
                 unsafe_allow_html=True,
             )
 
-            # Se o jurado já concluiu todos os competidores, exibe a tela de revisão/confirmação final
-            if st.session_state.get(revisao_key, False):
+            precisa_filtrar_classificados = (
+                fase_escolhida == "Fase Final"
+                and categoria_escolhida in ["Prata", "Ouro"]
+            )
+
+            if precisa_filtrar_classificados:
+                competidores_qualificados = obter_classificados(
+                    categoria_escolhida, papel_escolhido
+                )
+            else:
+                competidores_qualificados = categorias[categoria_escolhida][
+                    papel_escolhido
+                ]
+
+            if not competidores_qualificados:
+                st.warning(
+                    f"⚠️ A Fase Classificatória para {papel_escolhido} em"
+                    f" {categoria_escolhida} ainda não possui votos suficientes para"
+                    " definir automaticamente os classificados da Fase Final."
+                )
+            else:
+                competidores_ordenados = sorted(competidores_qualificados)
+                total_comp = len(competidores_ordenados)
+
+                if st.session_state.idx_comp >= total_comp:
+                    st.session_state.idx_comp = 0
+                competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
+
                 st.markdown(
-                    f"""<div class="jj-card jj-avaliando" style="padding: 15px; text-align: center; margin-bottom: 10px;">
-                        <div class="jj-label" style="color: #e5c158; font-size: 11px;">Avaliação Concluída!</div>
-                        <div class="jj-nome" style="font-size: 21px; margin: 8px 0;">Resumo dos seus rascunhos</div>
-                        <p style="color: #ded2b4; font-size: 11px; margin-bottom: 10px;">Você avaliou todos os competidores de <b>{papel_escolhido}</b> ({categoria_escolhida}). Reveja abaixo ou envie diretamente para o telão:</p>
+                    f"""<div class="jj-card jj-avaliando" style="margin-bottom: 4px; padding: 6px 10px;">
+                        <div class="jj-label">Selecionar Competidor</div>
+                        <span class="jj-badge" style="padding: 2px 10px; font-size: 8px; margin-top: 2px;">{tipo_selecionado.upper()}</span>
                     </div>""",
                     unsafe_allow_html=True,
                 )
 
-                # Mostrar tabela de rascunhos deste jurado para esta categoria/fase/papel
-                rascunhos_atuais = [
-                    v for v in st.session_state.rascunho_votos
-                    if v["jurado"] == st.session_state.jurado_logado
-                    and v["categoria"] == categoria_escolhida
-                    and v["fase"] == fase_escolhida
-                    and v["papel"] == papel_escolhido
-                ]
-
-                if rascunhos_atuais:
-                    df_rasc = pd.DataFrame(rascunhos_atuais)[["competidor", "criterio", "nota", "justificativa"]]
-                    df_rasc.columns = ["Participante", "Critério", "Nota", "Comentário"]
-                    st.dataframe(df_rasc, use_container_width=True, hide_index=True)
-
-                col_btn1, col_btn2 = st.columns(2)
-                with col_btn1:
-                    if st.button("✏️ REVISAR NOTAS", use_container_width=True):
-                        st.session_state[revisao_key] = False
-                        st.session_state.idx_comp = 0
-                        st.session_state.idx_crit = 0
-                        st.rerun()
-                with col_btn2:
-                    if st.button("🚀 ENVIAR TUDO AO TELÃO", type="primary", use_container_width=True):
-                        # Transfere os rascunhos para os votos oficiais do telão
-                        for v_rasc in rascunhos_atuais:
-                            encontrado = False
-                            for v_oficial in st.session_state.votos:
-                                if (
-                                    v_oficial["jurado"] == v_rasc["jurado"] and
-                                    v_oficial["categoria"] == v_rasc["categoria"] and
-                                    v_oficial["fase"] == v_rasc["fase"] and
-                                    v_oficial["papel"] == v_rasc["papel"] and
-                                    v_oficial["competidor"] == v_rasc["competidor"] and
-                                    v_oficial["criterio"] == v_rasc["criterio"]
-                                ):
-                                    v_oficial["nota"] = v_rasc["nota"]
-                                    v_oficial["justificativa"] = v_rasc["justificativa"]
-                                    encontrado = True
-                                    break
-                            if not encontrado:
-                                st.session_state.votos.append(v_rasc.copy())
-                        
-                        st.success("✨ Notas enviadas com sucesso para o Telão!")
-                        st.balloons()
-            else:
-                precisa_filtrar_classificados = (
-                    fase_escolhida == "Fase Final"
-                    and categoria_escolhida in ["Prata", "Ouro"]
+                competidor_escolhido = st.selectbox(
+                    "Competidor",
+                    options=competidores_ordenados,
+                    index=st.session_state.idx_comp,
+                    key="select_competidor_movel",
+                    label_visibility="collapsed"
                 )
 
-                if precisa_filtrar_classificados:
-                    competidores_qualificados = obter_classificados(
-                        categoria_escolhida, papel_escolhido
-                    )
+                novo_idx = competidores_ordenados.index(competidor_escolhido)
+                if novo_idx != st.session_state.idx_comp:
+                    st.session_state.idx_comp = novo_idx
+                    st.session_state.idx_crit = 0
+                    st.rerun()
+
+                st.markdown(
+                    f"""<div class="jj-card jj-avaliando" style="margin-bottom: 6px; padding: 8px 10px; background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(40, 30, 18, 0.98) 100%);">
+                        <div class="jj-label" style="color: #e5c158;">Estado Atual</div>
+                        <div class="jj-nome" style="font-size: 19px; margin: 2px 0;">Avaliando {competidor_escolhido}</div>
+                    </div>""",
+                    unsafe_allow_html=True,
+                )
+
+                if permissoes_jurado == "TODAS_GLOBAL":
+                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
                 else:
-                    competidores_qualificados = categorias[categoria_escolhida][
-                        papel_escolhido
-                    ]
-
-                if not competidores_qualificados:
-                    st.warning(
-                        f"⚠️ A Fase Classificatória para {papel_escolhido} em"
-                        f" {categoria_escolhida} ainda não possui votos suficientes para"
-                        " definir automaticamente os classificados da Fase Final."
-                    )
-                else:
-                    competidores_ordenados = sorted(competidores_qualificados)
-                    total_comp = len(competidores_ordenados)
-
-                    if st.session_state.idx_comp >= total_comp:
-                        st.session_state.idx_comp = 0
-                    competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
-
-                    st.markdown(
-                        f"""<div class="jj-card jj-avaliando" style="margin-bottom: 4px; padding: 6px 10px;">
-                            <div class="jj-label">Selecionar Competidor</div>
-                            <span class="jj-badge" style="padding: 2px 10px; font-size: 8px; margin-top: 2px;">{tipo_selecionado.upper()}</span>
-                        </div>""",
-                        unsafe_allow_html=True,
-                    )
-
-                    competidor_escolhido = st.selectbox(
-                        "Competidor",
-                        options=competidores_ordenados,
-                        index=st.session_state.idx_comp,
-                        key="select_competidor_movel",
-                        label_visibility="collapsed"
-                    )
-
-                    novo_idx = competidores_ordenados.index(competidor_escolhido)
-                    if novo_idx != st.session_state.idx_comp:
-                        st.session_state.idx_comp = novo_idx
-                        st.session_state.idx_crit = 0
-                        st.rerun()
-
-                    st.markdown(
-                        f"""<div class="jj-card jj-avaliando" style="margin-bottom: 6px; padding: 8px 10px; background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(40, 30, 18, 0.98) 100%);">
-                            <div class="jj-label" style="color: #e5c158;">Estado Atual</div>
-                            <div class="jj-nome" style="font-size: 19px; margin: 2px 0;">Avaliando {competidor_escolhido}</div>
-                        </div>""",
-                        unsafe_allow_html=True,
-                    )
-
-                    if permissoes_jurado == "TODAS_GLOBAL":
-                        criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
-                    else:
-                        criterios_permitidos_nomes = []
-                        for p in permissoes_jurado:
-                            if p["categoria"] == categoria_escolhida and p["papel"] == papel_escolhido:
-                                criterios_permitidos_nomes.extend(p["criterios"])
-                        
-                        todos_crit_cat = criterios_por_categoria[categoria_escolhida]
-                        criterios = {k: v for k, v in todos_crit_cat.items() if k in criterios_permitidos_nomes}
-
-                    if not criterios:
-                        st.warning(f"⚠️ Não possui critérios atribuídos para avaliar {papel_escolhido} na categoria {categoria_escolhida}.")
-                        st.stop()
-
-                    lista_criterios = list(criterios.items())
-                    total_crit = len(lista_criterios)
-
-                    if st.session_state.idx_crit >= total_crit:
-                        st.session_state.idx_crit = 0
-
-                    criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
-
-                    st.markdown(
-                        f"""<div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;"><div class="jj-crit-head"><div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div><div style="flex: 1; padding: 0 6px;"><div class="jj-label">Critério</div><div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div></div><div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor" style="margin: 4px 0 4px 0;"/><div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
-                        unsafe_allow_html=True,
-                    )
-
-                    chave_base = (
-                        f"{st.session_state.jurado_logado}|{categoria_escolhida}|"
-                        f"{fase_escolhida}|{papel_escolhido}|{competidor_escolhido}|"
-                        f"{criterio_nome}"
-                    )
-                    chave_nota_input = f"nota_input_{chave_base}"
-
-                    if chave_nota_input not in st.session_state:
-                        nota_salva = buscar_nota_salva(
-                            st.session_state.jurado_logado,
-                            categoria_escolhida,
-                            fase_escolhida,
-                            papel_escolhido,
-                            competidor_escolhido,
-                            criterio_nome,
-                        )
-                        st.session_state[chave_nota_input] = (
-                            str(nota_salva).replace(".", ",") if nota_salva is not None else ""
-                        )
-
-                    st.markdown(
-                        """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card div[data-baseweb="input"]:focus-within { border-color: rgba(212, 175, 55, 1) !important; box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; } .st-key-nota_card input::placeholder { color: rgba(243, 229, 171, 0.4) !important; }</style>""",
-                        unsafe_allow_html=True,
-                    )
-
-                    with st.container(key="nota_card"):  
-                        st.markdown(
-                            '<div class="jj-secao-label">Sua Nota</div>',
-                            unsafe_allow_html=True,
-                        )
-                        nota_digitada_str = st.text_input(
-                            "SUA NOTA",
-                            value=st.session_state[chave_nota_input],
-                            key=f"txt_nota_{chave_base}",
-                            placeholder="Digite sua nota de 1 a 10...",
-                            max_chars=5,
-                            label_visibility="collapsed",
-                        )
-
-                    st.markdown(
-                        """<style>
-                        .st-key-coment_card { 
-                            background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); 
-                            border: 1px solid rgba(212, 175, 55, 0.45); 
-                            border-radius: 10px; 
-                            box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
-                            padding: 8px 10px 10px 10px; 
-                            margin-bottom: 6px; 
-                        } 
-                        .st-key-coment_card textarea { 
-                            background-color: rgba(10, 7, 5, 0.92) !important; 
-                            border: 1px solid rgba(212, 175, 55, 0.35) !important; 
-                            border-radius: 6px !important; 
-                            color: #f3e5ab !important; 
-                            font-size: 12px !important; 
-                            height: 45px !important; 
-                            margin-bottom: 0px !important;
-                        } 
-                        .st-key-coment_card textarea::placeholder { 
-                            color: rgba(243, 229, 171, 0.35) !important; 
-                        }
-                        .st-key-coment_card p {
-                            margin: 0 !important;
-                            padding: 0 !important;
-                        }
-                        </style>""",
-                        unsafe_allow_html=True,
-                    )
-
-                    chave_comentario = f"coment_{chave_base}"
+                    criterios_permitidos_nomes = []
+                    for p in permissoes_jurado:
+                        if p["categoria"] == categoria_escolhida and p["papel"] == papel_escolhido:
+                            criterios_permitidos_nomes.extend(p["criterios"])
                     
-                    with st.container(key="coment_card"):
-                        st.markdown(
-                            '<div class="jj-secao-label" style="margin-bottom: 4px;">Comentários:</div>',
-                            unsafe_allow_html=True,
-                        )
-                        comentario = st.text_area(
-                            "COMENTÁRIOS",
-                            key=chave_comentario,
-                            placeholder="Deixe seu comentário aqui...",
-                            max_chars=300,
-                            height=45,
-                            label_visibility="collapsed",
-                        )
-                        st.markdown(
-                            f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:-8px;'>{len(comentario)}/300</div>",
-                            unsafe_allow_html=True,
-                        )
+                    todos_crit_cat = criterios_por_categoria[categoria_escolhida]
+                    criterios = {k: v for k, v in todos_crit_cat.items() if k in criterios_permitidos_nomes}
 
-                    if st.button(
-                        "➤  GUARDAR E PRÓXIMO",
-                        type="primary",
-                        use_container_width=True,
-                        key=f"enviar_{chave_base}",
-                    ):
-                        nota_limpa = nota_digitada_str.strip()
-                        nota_normalizada = nota_limpa.replace(",", ".")
-                        if not nota_limpa:
-                            st.error("❌ Digite uma nota antes de continuar.")
-                        else:
-                            try:
-                                val_nota = float(nota_normalizada)
-                                if not (1 <= val_nota <= 10):
-                                    st.error("❌ A nota deve ser entre 1 e 10.")
-                                else:
-                                    registrar_voto(
-                                        st.session_state.jurado_logado,
-                                        categoria_escolhida,
-                                        fase_escolhida,
-                                        papel_escolhido,
-                                        competidor_escolhido,
-                                        criterio_nome,
-                                        val_nota,
-                                        comentario,
+                if not criterios:
+                    st.warning(f"⚠️ Não possui critérios atribuídos para avaliar {papel_escolhido} na categoria {categoria_escolhida}.")
+                    st.stop()
+
+                lista_criterios = list(criterios.items())
+                total_crit = len(lista_criterios)
+
+                if st.session_state.idx_crit >= total_crit:
+                    st.session_state.idx_crit = 0
+
+                criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
+
+                st.markdown(
+                    f"""<div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;"><div class="jj-crit-head"><div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div><div style="flex: 1; padding: 0 6px;"><div class="jj-label">Critério</div><div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div></div><div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor" style="margin: 4px 0 4px 0;"/><div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
+                    unsafe_allow_html=True,
+                )
+
+                chave_base = (
+                    f"{st.session_state.jurado_logado}|{categoria_escolhida}|"
+                    f"{fase_escolhida}|{papel_escolhido}|{competidor_escolhido}|"
+                    f"{criterio_nome}"
+                )
+                chave_nota_input = f"nota_input_{chave_base}"
+
+                if chave_nota_input not in st.session_state:
+                    nota_salva = buscar_nota_salva(
+                        st.session_state.jurado_logado,
+                        categoria_escolhida,
+                        fase_escolhida,
+                        papel_escolhido,
+                        competidor_escolhido,
+                        criterio_nome,
+                    )
+                    st.session_state[chave_nota_input] = (
+                        str(nota_salva).replace(".", ",") if nota_salva is not None else ""
+                    )
+
+                st.markdown(
+                    """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card div[data-baseweb="input"]:focus-within { border-color: rgba(212, 175, 55, 1) !important; box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; } .st-key-nota_card input::placeholder { color: rgba(243, 229, 171, 0.4) !important; }</style>""",
+                    unsafe_allow_html=True,
+                )
+
+                with st.container(key="nota_card"):  
+                    st.markdown(
+                        '<div class="jj-secao-label">Sua Nota</div>',
+                        unsafe_allow_html=True,
+                    )
+                    nota_digitada_str = st.text_input(
+                        "SUA NOTA",
+                        value=st.session_state[chave_nota_input],
+                        key=f"txt_nota_{chave_base}",
+                        placeholder="Digite sua nota de 1 a 10...",
+                        max_chars=5,
+                        label_visibility="collapsed",
+                    )
+
+                st.markdown(
+                    """<style>
+                    .st-key-coment_card { 
+                        background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); 
+                        border: 1px solid rgba(212, 175, 55, 0.45); 
+                        border-radius: 10px; 
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
+                        padding: 8px 10px 10px 10px; 
+                        margin-bottom: 6px; 
+                    } 
+                    .st-key-coment_card textarea { 
+                        background-color: rgba(10, 7, 5, 0.92) !important; 
+                        border: 1px solid rgba(212, 175, 55, 0.35) !important; 
+                        border-radius: 6px !important; 
+                        color: #f3e5ab !important; 
+                        font-size: 12px !important; 
+                        height: 45px !important; 
+                        margin-bottom: 0px !important;
+                    } 
+                    .st-key-coment_card textarea::placeholder { 
+                        color: rgba(243, 229, 171, 0.35) !important; 
+                    }
+                    .st-key-coment_card p {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    </style>""",
+                    unsafe_allow_html=True,
+                )
+
+                chave_comentario = f"coment_{chave_base}"
+                
+                with st.container(key="coment_card"):
+                    st.markdown(
+                        '<div class="jj-secao-label" style="margin-bottom: 4px;">Comentários:</div>',
+                        unsafe_allow_html=True,
+                    )
+                    comentario = st.text_area(
+                        "COMENTÁRIOS",
+                        key=chave_comentario,
+                        placeholder="Deixe seu comentário aqui...",
+                        max_chars=300,
+                        height=45,
+                        label_visibility="collapsed",
+                    )
+                    st.markdown(
+                        f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:-8px;'>{len(comentario)}/300</div>",
+                        unsafe_allow_html=True,
+                    )
+
+                if st.button(
+                    "➤  ENVIAR AVALIAÇÃO",
+                    type="primary",
+                    use_container_width=True,
+                    key=f"enviar_{chave_base}",
+                ):
+                    nota_limpa = nota_digitada_str.strip()
+                    nota_normalizada = nota_limpa.replace(",", ".")
+                    if not nota_limpa:
+                        st.error("❌ Digite uma nota antes de enviar.")
+                    else:
+                        try:
+                            val_nota = float(nota_normalizada)
+                            if not (1 <= val_nota <= 10):
+                                st.error("❌ A nota deve ser entre 1 e 10.")
+                            else:
+                                registrar_voto(
+                                    st.session_state.jurado_logado,
+                                    categoria_escolhida,
+                                    fase_escolhida,
+                                    papel_escolhido,
+                                    competidor_escolhido,
+                                    criterio_nome,
+                                    val_nota,
+                                    comentario,
+                                )
+                                st.session_state[chave_nota_input] = nota_limpa.replace(".", ",")
+
+                                if st.session_state.idx_crit + 1 < total_crit:
+                                    st.session_state.idx_crit += 1
+                                    st.toast(
+                                        f"✨ Nota enviada para o Telão — {competidor_escolhido} ({criterio_nome})"
                                     )
-                                    st.session_state[chave_nota_input] = nota_limpa.replace(".", ",")
-
-                                    # Verifica se é o último critério do último competidor
-                                    is_ultimo_criterio = (st.session_state.idx_crit + 1 >= total_crit)
-                                    is_ultimo_competidor = (st.session_state.idx_comp + 1 >= total_comp)
-
-                                    if is_ultimo_criterio and is_ultimo_competidor:
-                                        # Chegou ao fim de todos os competidores desta categoria/papel! Ativa a revisão
-                                        st.session_state[revisao_key] = True
-                                        st.toast(f"🎉 Avaliação de {papel_escolhido} concluída! Revise suas notas.")
-                                    elif is_ultimo_criterio:
-                                        st.session_state.idx_crit = 0
-                                        st.session_state.idx_comp += 1
-                                        st.toast(f"✨ Avançando para o próximo competidor...")
-                                    else:
-                                        st.session_state.idx_crit += 1
-                                        st.toast(f"✨ Próximo critério...")
-                                    
-                                    st.rerun()
-                            except ValueError:
-                                st.error("❌ Digite um valor numérico válido para a nota.")
+                                else:
+                                    st.session_state.idx_crit = 0
+                                    st.session_state.idx_comp = (
+                                        st.session_state.idx_comp + 1
+                                    ) % total_comp
+                                    st.toast(
+                                        f"🏅 Avaliação de {competidor_escolhido} concluída e enviada!"
+                                    )
+                                st.rerun()
+                        except ValueError:
+                            st.error("❌ Digite um valor numérico válido para a nota.")
 
 elif modo == "Painel da Organização":
     st.title("📋 Painel da Organização")
@@ -1235,10 +1157,10 @@ elif modo == "Painel da Organização":
     if senha_digitada == SENHA_MESTRE:
         st.success("🔓 Acesso autorizado!")
         if not st.session_state.votos:
-            st.warning("Ainda não há votos enviados ao telão.")
+            st.warning("Ainda não há votos registrados na competição.")
         else:
             df_votos = pd.DataFrame(st.session_state.votos)
-            st.markdown("### Auditoria Completa de Notas Oficiais")
+            st.markdown("### Auditoria Completa de Notas e Justificativas")
             st.dataframe(df_votos, use_container_width=True)
     elif senha_digitada != "":
         st.error("❌ Senha incorreta!")
@@ -1258,7 +1180,7 @@ else:
         st.session_state.revelado = revelar_tudo
 
     if not st.session_state.votos:
-        st.info("💡 Aguardando o envio oficial dos votos pelos jurados. Os resultados aparecerão aqui em tempo real.")
+        st.info("💡 Aguardando o envio dos votos pelos jurados. Os resultados aparecerão aqui em tempo real.")
     else:
         df_votos = pd.DataFrame(st.session_state.votos)
         
@@ -1271,7 +1193,7 @@ else:
                 
                 df_cat = df_votos[df_votos["categoria"] == categoria_nome]
                 if df_cat.empty:
-                    st.info(f"Nenhum voto confirmado ainda para a categoria {categoria_nome}.")
+                    st.info(f"Nenhum voto registrado ainda para a categoria {categoria_nome}.")
                     continue
 
                 fases_da_cat = fases_por_categoria[categoria_nome]
@@ -1303,7 +1225,7 @@ else:
                                 
                                 df_papel = df_fase[df_fase["papel"] == papel_nome]
                                 if df_papel.empty:
-                                    st.markdown("<p style='text-align: center; color: #8d7a52; font-size: 10px;'>Aguardando envio...</p>", unsafe_allow_html=True)
+                                    st.markdown("<p style='text-align: center; color: #8d7a52; font-size: 10px;'>Aguardando votos...</p>", unsafe_allow_html=True)
                                 else:
                                     df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
                                     pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado", values="nota").reset_index()
