@@ -1114,7 +1114,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM ALTURA DINÂMICA SEM ESPAÇOS VAZIOS ---
+    # --- TELÃO (PÚBLICO) COM ALTURA EXATA SEM SOBRAS ---
     st.markdown("""
         <div style="text-align: center; padding: 2px 0 5px 0;">
             <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 26px; letter-spacing: 3px; margin-bottom: 0;'>JACK & JILL — NOITE NAS ARÁBIAS</h1>
@@ -1234,13 +1234,13 @@ else:
         with col_cond:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
             tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
-            altura_cond = (len(tabela_cond) + 1) * 35 + 10
+            altura_cond = len(tabela_cond) * 32 + 38
             st.dataframe(tabela_cond, use_container_width=True, hide_index=True, height=altura_cond)
 
         with col_condz:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
             tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
-            altura_condz = (len(tabela_condz) + 1) * 35 + 10
+            altura_condz = len(tabela_condz) * 32 + 38
             st.dataframe(tabela_condz, use_container_width=True, hide_index=True, height=altura_condz)
 
     else:
@@ -1258,11 +1258,11 @@ else:
             with col_cond:
                 st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
                 tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
-                altura_cond = (len(tabela_cond) + 1) * 35 + 10
+                altura_cond = len(tabela_cond) * 32 + 38
                 st.dataframe(tabela_cond, use_container_width=True, hide_index=True, height=altura_cond)
 
             with col_condz:
                 st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
                 tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
-                altura_condz = (len(tabela_condz) + 1) * 35 + 10
+                altura_condz = len(tabela_condz) * 32 + 38
                 st.dataframe(tabela_condz, use_container_width=True, hide_index=True, height=altura_condz)
