@@ -2,6 +2,7 @@ import base64
 import os
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="Jack & Jill - Noite nas Arábias",
@@ -781,7 +782,7 @@ if modo == "Painel do Jurado":
                 unsafe_allow_html=True,
             )
 
-            with st.container(key="nota_card"):  
+            with st.container(key="nota_card"):
                 st.markdown(
                     '<div class="jj-secao-label">Sua Nota</div>',
                     unsafe_allow_html=True,
@@ -910,8 +911,80 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM FORÇAGEM VISUAL DA SETINHA ---
+    # --- TELÃO (PÚBLICO) COM BOTÃO DE ATALHO FLUTUANTE GARANTIDO ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
+    
+    # ----------------------------------------------------------------------
+    # INJEÇÃO JAVASCRIPT: CRIA O BOTÃO "☰ MENU" NA TELA E O ATALHO ALT + M
+    # ----------------------------------------------------------------------
+    components.html(
+        """
+        <script>
+        const parentDoc = window.parent.document;
+        let btn = parentDoc.getElementById('atalho-sidebar-telao');
+        
+        if (!btn) {
+            btn = parentDoc.createElement('button');
+            btn.id = 'atalho-sidebar-telao';
+            btn.innerHTML = '☰ MENU';
+            btn.title = 'Abrir Barra Lateral (Atalho: Alt + M)';
+            
+            Object.assign(btn.style, {
+                position: 'fixed',
+                top: '12px',
+                left: '12px',
+                zIndex: '9999999',
+                padding: '8px 14px',
+                background: 'rgba(15, 11, 7, 0.95)',
+                color: '#d4af37',
+                border: '1px solid #d4af37',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                fontFamily: 'sans-serif',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.6)',
+                transition: 'all 0.3s'
+            });
+            
+            btn.onmouseover = () => { btn.style.background = '#d4af37'; btn.style.color = '#000'; };
+            btn.onmouseout = () => { btn.style.background = 'rgba(15, 11, 7, 0.95)'; btn.style.color = '#d4af37'; };
+            
+            btn.onclick = function() {
+                // Procura a setinha nativa e clica nela
+                const sidebarToggle = parentDoc.querySelector('[data-testid="collapsedControl"]');
+                if (sidebarToggle) {
+                    sidebarToggle.click();
+                } else {
+                    // Se já estiver aberta, tenta fechar clicando no 'X' dentro da sidebar
+                    const closeBtn = parentDoc.querySelector('section[data-testid="stSidebar"] button');
+                    if (closeBtn) closeBtn.click();
+                }
+            };
+            
+            parentDoc.body.appendChild(btn);
+        }
+        
+        // Função para ativar pelo atalho do teclado
+        function keyHandler(e) {
+            if (e.altKey && e.key.toLowerCase() === 'm') {
+                if (btn) btn.click();
+            }
+        }
+        parentDoc.addEventListener('keydown', keyHandler);
+        
+        // Remove o botão limpo quando você sair da página "Telão"
+        window.addEventListener('unload', function() {
+            if (btn) btn.remove();
+            parentDoc.removeEventListener('keydown', keyHandler);
+        });
+        </script>
+        """,
+        height=0,
+        width=0
+    )
+    # ----------------------------------------------------------------------
+    
     st.markdown(
         """
         <style>
