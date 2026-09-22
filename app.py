@@ -514,6 +514,15 @@ if modo == "Telão (Público)":
             max-width: 95% !important;
             margin: 0 auto !important;
         }
+        h2 {
+            font-size: 20px !important;
+            margin-top: 5px !important;
+            margin-bottom: 10px !important;
+            color: #e5c158 !important;
+            font-family: 'Cinzel', Georgia, serif;
+            text-align: center;
+            letter-spacing: 2px;
+        }
         h3 {
             font-size: 13px !important;
             margin-top: 2px !important;
@@ -530,6 +539,7 @@ if modo == "Telão (Público)":
         [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
             padding: 14px 10px !important;
             line-height: 1.5 !important;
+            text-align: center !important;
         }
         </style>
         """,
@@ -1097,7 +1107,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) SEM OS CABEÇALHOS DO TOPO ---
+    # --- TELÃO (PÚBLICO) COM TÍTULO DA CATEGORIA E TABELAS CENTRALIZADAS ---
     with st.sidebar:
         st.markdown("---")
         st.markdown("### Categorias")
@@ -1114,6 +1124,8 @@ else:
         st.session_state.revelado = revelar_tudo
 
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
+    
+    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 5px 0 10px 0;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
     
     df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
     fases_da_cat = fases_por_categoria[categoria_nome]
