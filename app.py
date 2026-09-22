@@ -729,7 +729,7 @@ if modo == "Painel do Jurado":
             )
 
             if permissoes_jurado == "TODAS_GLOBAL":
-                criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
+                criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança du participante."}
             else:
                 criterios_permitidos_nomes = []
                 for p in permissoes_jurado:
@@ -910,7 +910,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BOTÃO FLUTUANTE ROBUSTO DE CONTROLO DO MENU ---
+    # --- TELÃO (PÚBLICO) COM BOTÃO DE MENU ROBUSTO E DINÂMICO ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
@@ -936,7 +936,7 @@ else:
             display: none !important;
             visibility: hidden !important;
         }
-        /* Botão flutuante elegante que funciona quer a barra esteja aberta ou fechada */
+        /* Botão flutuante funcional no topo esquerdo */
         .btn-toggle-sidebar {
             position: fixed;
             top: 12px;
@@ -991,13 +991,19 @@ else:
 
         <script>
         function toggleSidebar() {
-            // Procura pelo botão nativo quer esteja aberta (collapsedControl) ou fechada (stSidebarCollapsedControl)
-            const btn = document.querySelector('[data-testid="collapsedControl"] button') || 
-                        document.querySelector('[data-testid="collapsedControl"]') || 
-                        document.querySelector('[data-testid="stSidebarCollapsedControl"] button') || 
-                        document.querySelector('[data-testid="stSidebarCollapsedControl"]');
-            if (btn) {
-                btn.click();
+            // Varredura abrangente por qualquer botão de recolha/expansão da sidebar do Streamlit
+            const buttons = document.querySelectorAll('button');
+            for (let btn of buttons) {
+                const label = btn.getAttribute('aria-label') || '';
+                if (label.toLowerCase().includes('sidebar') || label.toLowerCase().includes('menu') || btn.closest('[data-testid="collapsedControl"]') || btn.closest('[data-testid="stSidebarCollapsedControl"]')) {
+                    btn.click();
+                    return;
+                }
+            }
+            // Método alternativo simulando clique no elemento nativo se existir no DOM
+            const nativeEl = document.querySelector('[data-testid="collapsedControl"]') || document.querySelector('[data-testid="stSidebarCollapsedControl"]');
+            if (nativeEl) {
+                nativeEl.click();
             }
         }
         </script>
