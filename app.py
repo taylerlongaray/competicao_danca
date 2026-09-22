@@ -1,6 +1,8 @@
 import base64
+from io import BytesIO
 import os
 import pandas as pd
+from PIL import Image
 import streamlit as st
 
 st.set_page_config(
@@ -18,6 +20,8 @@ def obter_fundo_css(tipo_tela):
         candidatos = [
             "fundo_votacao.png",
             "fundo_votacao.jpg",
+            "fundo_votacao.PNG",
+            "fundo_votacao.JPG",
             "fundo_painel.png",
             "fundo_painel.jpg",
             "fundo.png",
@@ -27,6 +31,8 @@ def obter_fundo_css(tipo_tela):
         candidatos = [
             f"fundo_{tipo_tela}.png",
             f"fundo_{tipo_tela}.jpg",
+            f"fundo_{tipo_tela}.PNG",
+            f"fundo_{tipo_tela}.JPG",
             "fundo.png",
             "fundo.jpg",
         ]
@@ -39,24 +45,41 @@ def obter_fundo_css(tipo_tela):
             break
 
     if img_encontrada:
-        with open(img_encontrada, "rb") as f:
-            data = f.read()
-        encoded = base64.b64encode(data).decode()
-        ext = img_encontrada.split(".")[-1].lower()
-        mime = "png" if ext == "png" else "jpeg"
-        return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
+        try:
+            img = Image.open(img_encontrada)
+            img.thumbnail((1920, 1080))
+            buffered = BytesIO()
+            formato = "PNG" if img.format == "PNG" else "JPEG"
+            img.save(buffered, format=formato, optimize=True)
+            encoded = base64.b64encode(buffered.getvalue()).decode()
+            mime = "png" if formato == "PNG" else "jpeg"
+            
+            # Se for o telão, ajustamos para preencher o ecrã do PC/projetor de forma centralizada
+            if tipo_tela == "telao":
+                bg_style = "background-size: cover; background-position: center center !important; background-repeat: no-repeat; background-attachment: fixed;"
+            else:
+                bg_style = "background-size: cover; background-position: top center !important; background-attachment: fixed;"
+
+            return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.15), rgba(5, 4, 3, 0.25)), url("data:image/{mime};base64,{encoded}"); {bg_style} color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
+        except Exception:
+            return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
     else:
         return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
 
 
 def img_to_base64(file_path):
     if os.path.exists(file_path):
-        with open(file_path, "rb") as f:
-            data = f.read()
-        encoded = base64.b64encode(data).decode()
-        ext = file_path.split(".")[-1].lower()
-        mime = "png" if ext == "png" else "jpeg"
-        return f"data:image/{mime};base64,{encoded}"
+        try:
+            img = Image.open(file_path)
+            img.thumbnail((200, 200))
+            buffered = BytesIO()
+            formato = "PNG" if img.format == "PNG" else "JPEG"
+            img.save(buffered, format=formato, optimize=True)
+            encoded = base64.b64encode(buffered.getvalue()).decode()
+            mime = "png" if formato == "PNG" else "jpeg"
+            return f"data:image/{mime};base64,{encoded}"
+        except Exception:
+            return ""
     return ""
 
 
@@ -889,60 +912,25 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM LARGURA TOTAL E CABEÇALHO TRANSPARENTE ---
+    # --- TELÃO (PÚBLICO) COM BARRA TRANSPARENTE E SETA DA SIDEBAR MANTIDA ---
+    st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     st.markdown(
         """
         <style>
-        /* Ocupa 100% da largura da tela do telão */
-        .block-container {
-            padding-top: 2rem !important;
-            padding-bottom: 1.5rem !important;
-            padding-left: 2rem !important;
-            padding-right: 2rem !important;
-            max-width: 100% !important;
-            margin: 0 auto !important;
-        }
-        /* Torna o cabeçalho superior transparente mantendo apenas a seta da sidebar */
+        /* Deixa o fundo da barra de topo transparente e sem sombra preta pesada */
         [data-testid="stHeader"] {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
         }
-        /* Oculta botões de toolbar e menu desnecessários */
-        [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
+        /* Esconde elementos extras desnecessários do topo */
+        [data-testid="stDecoration"] {
             display: none !important;
         }
-        /* Esconde o selo/coroa vermelha do Streamlit e o rodapé */
+        /* Esconde a coroa/selo vermelho do Streamlit e o rodapé no canto inferior direito */
         .viewerBadge_container, [data-testid="stStatusWidget"], footer {
             display: none !important;
             visibility: hidden !important;
-        }
-        h2 {
-            font-size: 22px !important;
-            margin-top: 5px !important;
-            margin-bottom: 20px !important;
-            color: #e5c158 !important;
-            font-family: 'Cinzel', Georgia, serif;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-        h3 {
-            font-size: 13px !important;
-            margin-top: 2px !important;
-            margin-bottom: 5px !important;
-            color: #f3e5ab !important;
-            font-family: 'Cinzel', Georgia, serif;
-        }
-        [data-testid="stDataFrame"] {
-            font-size: 13px !important;
-        }
-        [data-testid="stDataFrame"] table {
-            font-size: 13px !important;
-        }
-        [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
-            padding: 14px 10px !important;
-            line-height: 1.5 !important;
-            text-align: center !important;
         }
         </style>
         """,
