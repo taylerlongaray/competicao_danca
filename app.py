@@ -139,12 +139,12 @@ except Exception:
 
 categorias = {
     "Diamante": {
-        "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
-        "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
+        "Condutores": ["Alan Demarch", "Henrique Vargas", "Léo Mello", "Luan Ruduit", "Maick Martins", "William Ferreira"],
+        "Conduzidas": ["Caroline Guedes", "Cleo Santanna", "Marluce Dimare", "Sah Graziela", "Sidiane Correa", "Vih Alves"],
     },
     "Platina": {
-        "Condutores": ["Jean", "Deivid", "Catriel", "Douglas Clo"],
-        "Conduzidas": ["Fabi", "Tefynha", "Nanda", "Cassi"],
+        "Condutores": ["Alisson Lopes", "Anderson Oliveira", "Catriel Pereira", "Deivid Nascimento", "Douglas Clo", "Jean Pierre"],
+        "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
     },
     "Ouro": {
         "Condutores": ["Isma", "Jonatan Santos", "Ciro", "Lukas"],
@@ -1130,7 +1130,6 @@ else:
     st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{selecao_telao.upper()} — RESULTADOS</h2>", unsafe_allow_html=True)
     
     def formatar_nome_jurado(nome):
-        # Substitui o espaço do meio por uma quebra de linha HTML (<br>)
         partes = nome.split(" ", 1)
         if len(partes) > 1:
             return f"{partes[0]}<br>{partes[1]}"
@@ -1169,7 +1168,6 @@ else:
         pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-        # Renomeia as colunas dos jurados aplicando o <br> para ficarem em duas linhas
         renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
         pivot_df = pivot_df.rename(columns=renomeador)
 
@@ -1210,7 +1208,6 @@ else:
         pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-        # Renomeia as colunas dos jurados aplicando o <br>
         renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
         pivot_df = pivot_df.rename(columns=renomeador)
 
