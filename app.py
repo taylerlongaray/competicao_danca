@@ -1035,16 +1035,43 @@ else:
             color: #f3e5ab !important;
             font-family: 'Cinzel', Georgia, serif;
         }
-        [data-testid="stDataFrame"] {
-            font-size: 12px !important;
+        
+        /* -----------------------------------------------------
+           ESTILOS MÁGICOS DA TABELA PRETA E DOURADA (TEMA ARÁBIAS)
+           ----------------------------------------------------- */
+        .tabela-dourada {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 13px;
+            font-family: 'Helvetica Neue', sans-serif;
+            color: #f3e5ab;
+            background: linear-gradient(135deg, rgba(10, 7, 5, 0.90) 0%, rgba(20, 15, 10, 0.95) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.6);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
         }
-        [data-testid="stDataFrame"] table {
-            font-size: 12px !important;
+        .tabela-dourada thead {
+            background-color: rgba(15, 11, 7, 1);
         }
-        [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
-            padding: 10px 8px !important;
-            line-height: 1.4 !important;
+        .tabela-dourada th {
+            color: #e5c158;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             text-align: center !important;
+            padding: 12px 10px;
+            border-bottom: 2px solid #d4af37;
+        }
+        .tabela-dourada td {
+            text-align: center !important;
+            padding: 10px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .tabela-dourada tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .tabela-dourada tbody tr:hover {
+            background-color: rgba(212, 175, 55, 0.15);
         }
         </style>
         """,
@@ -1060,7 +1087,6 @@ else:
         st.markdown("---")
         st.markdown("### Categorias e Fases")
         
-        # Opções do menu ajustadas para separar as fases de Ouro e Prata
         opcoes_menu_telao = [
             "Diamante",
             "Platina",
@@ -1087,7 +1113,6 @@ else:
 
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
-    # Determinar a categoria interna e qual fase renderizar com base no menu selecionado
     if "Ouro" in selecao_telao:
         categoria_nome = "Ouro"
         fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
@@ -1100,7 +1125,6 @@ else:
 
     df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
 
-    # O Título agora vai refletir exatamente o que está no menu
     st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{selecao_telao.upper()} — RESULTADOS</h2>", unsafe_allow_html=True)
     
     def gerar_tabela_papel_fase(fase_nome, papel_nome):
@@ -1188,12 +1212,12 @@ else:
         with col_cond:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
             tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
-            st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
+            st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
 
         with col_condz:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
             tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
-            st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
+            st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
 
     else:
         for fase_nome in fases_da_cat:
@@ -1202,9 +1226,9 @@ else:
             with col_cond:
                 st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
                 tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
-                st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
+                st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
 
             with col_condz:
                 st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
                 tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
-                st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
+                st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
