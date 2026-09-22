@@ -927,21 +927,37 @@ else:
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
+            /* Impede o cabeçalho invisível de bloquear cliques: */
+            pointer-events: none !important; 
         }
-        /* Destaca o botão nativo de recolher/expandir para que não suma no fundo escuro */
-        [data-testid="collapsedControl"] {
-            background-color: rgba(20, 15, 10, 0.8) !important;
-            border: 1px solid rgba(212, 175, 55, 0.5) !important;
+        
+        /* === BOTÃO DE MENU SUPER DESTACADO E CLICÁVEL === */
+        [data-testid="collapsedControl"],
+        [data-testid="stSidebarCollapsedControl"] {
+            display: flex !important;
+            position: fixed !important;
+            top: 15px !important;
+            left: 15px !important;
+            background-color: rgba(212, 175, 55, 0.95) !important; /* Quadrado Dourado Forte */
             border-radius: 8px !important;
-            margin-top: 10px !important;
-            margin-left: 10px !important;
-            z-index: 999999 !important;
+            width: 45px !important;
+            height: 45px !important;
+            z-index: 9999999 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: auto !important; /* Garante que é clicável */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
         [data-testid="collapsedControl"] svg,
-        [data-testid="stSidebarCollapseButton"] svg {
-            fill: #f3e5ab !important;
-            color: #f3e5ab !important;
+        [data-testid="stSidebarCollapsedControl"] svg {
+            fill: #140f0a !important; /* Seta Escura para destacar no fundo Dourado */
+            width: 24px !important;
+            height: 24px !important;
         }
+        /* ============================================== */
+
         [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
             display: none !important;
         }
