@@ -1,8 +1,6 @@
 import base64
-from io import BytesIO
 import os
 import pandas as pd
-from PIL import Image
 import streamlit as st
 
 st.set_page_config(
@@ -16,26 +14,39 @@ st.set_page_config(
 def obter_fundo_css(tipo_tela):
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
+    candidatos = []
     if tipo_tela == "votacao":
         candidatos = [
             "fundo_votacao.png",
             "fundo_votacao.jpg",
-            "fundo_votacao.PNG",
-            "fundo_votacao.JPG",
             "fundo_painel.png",
             "fundo_painel.jpg",
             "fundo.png",
             "fundo.jpg",
         ]
+    elif tipo_tela == "telao":
+        candidatos = [
+            "fundo_telao.png",
+            "fundo_telao.jpg",
+            "fundo.png",
+            "fundo.jpg",
+            "fundo_painel.png",
+            "fundo_painel.jpg",
+        ]
     else:
         candidatos = [
             f"fundo_{tipo_tela}.png",
             f"fundo_{tipo_tela}.jpg",
-            f"fundo_{tipo_tela}.PNG",
-            f"fundo_{tipo_tela}.JPG",
             "fundo.png",
             "fundo.jpg",
         ]
+
+    try:
+        for arq in os.listdir(base_dir):
+            if arq.lower().endswith((".png", ".jpg", ".jpeg")) and arq not in candidatos:
+                candidatos.append(arq)
+    except Exception:
+        pass
 
     img_encontrada = None
     for arquivo in candidatos:
@@ -45,41 +56,28 @@ def obter_fundo_css(tipo_tela):
             break
 
     if img_encontrada:
-        try:
-            img = Image.open(img_encontrada)
-            img.thumbnail((1920, 1080))
-            buffered = BytesIO()
-            formato = "PNG" if img.format == "PNG" else "JPEG"
-            img.save(buffered, format=formato, optimize=True)
-            encoded = base64.b64encode(buffered.getvalue()).decode()
-            mime = "png" if formato == "PNG" else "jpeg"
-            
-            # Se for o telão, ajustamos para preencher o ecrã do PC/projetor de forma centralizada
-            if tipo_tela == "telao":
-                bg_style = "background-size: cover; background-position: center center !important; background-repeat: no-repeat; background-attachment: fixed;"
-            else:
-                bg_style = "background-size: cover; background-position: top center !important; background-attachment: fixed;"
-
-            return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.15), rgba(5, 4, 3, 0.25)), url("data:image/{mime};base64,{encoded}"); {bg_style} color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
-        except Exception:
-            return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
+        with open(img_encontrada, "rb") as f:
+            data = f.read()
+        encoded = base64.b64encode(data).decode()
+        ext = img_encontrada.split(".")[-1].lower()
+        mime = "png" if ext == "png" else "jpeg"
+        
+        if tipo_tela == "telao":
+            return f"""<style>.stApp {{ background-image: url("data:image/{mime};base64,{encoded}"); background-size: 100% 100% !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
+        else:
+            return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
     else:
         return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
 
 
 def img_to_base64(file_path):
     if os.path.exists(file_path):
-        try:
-            img = Image.open(file_path)
-            img.thumbnail((200, 200))
-            buffered = BytesIO()
-            formato = "PNG" if img.format == "PNG" else "JPEG"
-            img.save(buffered, format=formato, optimize=True)
-            encoded = base64.b64encode(buffered.getvalue()).decode()
-            mime = "png" if formato == "PNG" else "jpeg"
-            return f"data:image/{mime};base64,{encoded}"
-        except Exception:
-            return ""
+        with open(file_path, "rb") as f:
+            data = f.read()
+        encoded = base64.b64encode(data).decode()
+        ext = file_path.split(".")[-1].lower()
+        mime = "png" if ext == "png" else "jpeg"
+        return f"data:image/{mime};base64,{encoded}"
     return ""
 
 
@@ -912,25 +910,56 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM BARRA TRANSPARENTE E SETA DA SIDEBAR MANTIDA ---
-    st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
+    # --- TELÃO (PÚBLICO) COM AJUSTE DE ESPAÇAMENTO E PROPORÇÃO DA IMAGEM ---
     st.markdown(
         """
         <style>
-        /* Deixa o fundo da barra de topo transparente e sem sombra preta pesada */
+        .block-container {
+            padding-top: 5.5rem !important;
+            padding-bottom: 4rem !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+        }
         [data-testid="stHeader"] {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
         }
-        /* Esconde elementos extras desnecessários do topo */
-        [data-testid="stDecoration"] {
+        [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
             display: none !important;
         }
-        /* Esconde a coroa/selo vermelho do Streamlit e o rodapé no canto inferior direito */
         .viewerBadge_container, [data-testid="stStatusWidget"], footer {
             display: none !important;
             visibility: hidden !important;
+        }
+        h2 {
+            font-size: 20px !important;
+            margin-top: -10px !important;
+            margin-bottom: 15px !important;
+            color: #e5c158 !important;
+            font-family: 'Cinzel', Georgia, serif;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        h3 {
+            font-size: 13px !important;
+            margin-top: 2px !important;
+            margin-bottom: 5px !important;
+            color: #f3e5ab !important;
+            font-family: 'Cinzel', Georgia, serif;
+        }
+        [data-testid="stDataFrame"] {
+            font-size: 12px !important;
+        }
+        [data-testid="stDataFrame"] table {
+            font-size: 12px !important;
+        }
+        [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
+            padding: 10px 8px !important;
+            line-height: 1.4 !important;
+            text-align: center !important;
         }
         </style>
         """,
@@ -954,7 +983,7 @@ else:
 
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
-    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 15px 0 25px 0;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
     
     df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
     fases_da_cat = fases_por_categoria[categoria_nome]
@@ -1042,12 +1071,12 @@ else:
         col_cond, col_condz = st.columns(2)
 
         with col_cond:
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;'>Condutores</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
             tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
             st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
 
         with col_condz:
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;'>Conduzidas</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
             tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
             st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
 
@@ -1056,11 +1085,11 @@ else:
             col_cond, col_condz = st.columns(2)
 
             with col_cond:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;'>Condutores</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
                 tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
                 st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
 
             with col_condz:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;'>Conduzidas</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
                 tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
                 st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
