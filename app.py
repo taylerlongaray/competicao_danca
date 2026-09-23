@@ -434,7 +434,6 @@ def obter_jurados_da_categoria_papel(cat, papel):
                     jurados_validos.append(dados["nome"])
                     break
     
-    # Ordem alfabética (Alex sempre vai para o fim)
     jurados_ordenados = sorted(list(set(jurados_validos)), key=lambda x: (1 if "Alex" in x else 0, x))
     return jurados_ordenados
 
@@ -542,11 +541,15 @@ else:
     )
     st.sidebar.markdown("---")
 
-    modo = st.sidebar.radio(
-        "Navegação",
-        ["Painel do Jurado", "Painel da Organização", "Telão (Público)"],
-        label_visibility="collapsed",
-    )
+    # Se o jurado estiver logado no link padrão, bloqueamos o acesso aos painéis de organização/telão no menu lateral
+    if st.session_state.jurado_logado is not None:
+        modo = "Painel do Jurado"
+    else:
+        modo = st.sidebar.radio(
+            "Navegação",
+            ["Painel do Jurado", "Painel da Organização", "Telão (Público)"],
+            label_visibility="collapsed",
+        )
 
 if modo == "Painel do Jurado":
     if st.session_state.jurado_logado is None:
@@ -1258,12 +1261,75 @@ elif modo == "Painel da Organização":
     if senha_digitada == SENHA_MESTRE:
         votos_atuais = carregar_votos()
         st.success("🔓 Acesso autorizado!")
-        if not votos_atuais:
-            st.warning("Ainda não há votos registrados na competição.")
+        
+        # --- BOTÃO DE RESET / LIMPEZA DE TESTES ---
+        st.markdown("### ⚠️ Gestão de Dados e Testes")
+        st.warning("Usa este botão apenas para apagar os votos de teste antes do evento oficial começar. Esta ação não pode ser desfeita.")
+        
+        if st.button("🗑️ APAGAR TODOS OS VOTOS E REINICIAR", type="secondary"):
+            salvar_votos([])
+            st.success("✨ Sistema limpo com sucesso! Pronto para o evento.")
+            st.rerun()
+
+        st.markdown("---")
+        st.markdown("### 📄 Relatório Geral de Avaliações e Comentários")
+        st.markdown("Descarregue o documento consolidado com todas as notas, critérios e comentários de todos os jurados.")
+        
+        if votos_atuais:
+            html_relatorio = """
+            <html>
+            <head>
+            <meta charset="utf-8">
+            <style>
+                body { font-family: Helvetica, Arial, sans-serif; color: #333; margin: 20px; }
+                h1 { text-align: center; color: #b8860b; border-bottom: 2px solid #b8860b; padding-bottom: 10px; }
+                h2 { color: #555; border-bottom: 1px solid #ccc; margin-top: 30px; padding-bottom: 5px; }
+                .voto-card { background: #fdfcf7; border: 1px solid #e3d3a1; padding: 10px 15px; margin-bottom: 10px; border-radius: 6px; }
+                .meta { font-size: 12px; color: #666; margin-bottom: 4px; }
+                .comentario { font-style: italic; color: #444; background: #fff; padding: 6px; border-left: 3px solid #b8860b; margin-top: 6px; }
+            </style>
+            </head>
+            <body>
+            <h1>Relatório de Avaliações — Jack & Jill: Noite nas Arábias</h1>
+            """
+            
+            df_rel = pd.DataFrame(votos_atuais)
+            for cat in sorted(df_rel["categoria"].unique()):
+                html_relatorio += f"<h2>Categoria: {cat}</h2>"
+                df_cat = df_rel[df_rel["categoria"] == cat]
+                for fase in sorted(df_cat["fase"].unique()):
+                    html_relatorio += f"<h3>Fase: {fase}</h3>"
+                    df_fase = df_cat[df_cat["fase"] == fase]
+                    for comp in sorted(df_fase["competidor"].unique()):
+                        html_relatorio += f"<h4>Participante: {comp}</h4>"
+                        df_comp = df_fase[df_fase["competidor"] == comp]
+                        for _, row in df_comp.iterrows():
+                            jurado_nome = configuracao_jurados.get(row['jurado'], {}).get('nome', row['jurado'])
+                            just = row['justificativa'] if row['justificativa'] else "Sem comentários registados."
+                            html_relatorio += f"""
+                            <div class="voto-card">
+                                <div class="meta"><b>Jurado:</b> {jurado_nome} | <b>Critério:</b> {row['criterio']} | <b>Papel:</b> {row['papel']} | <b>Nota:</b> <b>{row['nota']}</b></div>
+                                <div class="comentario"><b>Comentário:</b> "{just}"</div>
+                            </div>
+                            """
+            html_relatorio += "</body></html>"
+            
+            st.download_button(
+                label="📥 Descarregar Relatório Completo (HTML/PDF)",
+                data=html_relatorio,
+                file_name="Relatorio_Avaliacoes_JackAndJill.html",
+                mime="text/html",
+                type="primary"
+            )
         else:
+            st.info("Ainda não existem votos ou comentários registados para gerar o relatório.")
+
+        st.markdown("---")
+        st.markdown("### Auditoria Completa de Notas")
+        if votos_atuais:
             df_votos = pd.DataFrame(votos_atuais)
-            st.markdown("### Auditoria Completa de Notas e Justificativas")
             st.dataframe(df_votos, use_container_width=True)
+            
     elif senha_digitada != "":
         st.error("❌ Senha incorreta!")
 
@@ -1573,7 +1639,6 @@ else:
         exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
         vis_cols = [j for j in exist_j_cols if "Alex" not in j]
         
-        # Lógica de Ranking e Total Parcial vs Completo
         if not revelado_atual:
             pivot_df["TOTAL_RANKING"] = pivot_df[vis_cols].sum(axis=1, min_count=1)
             pivot_df["TOTAL"] = pivot_df[vis_cols].sum(axis=1, min_count=1)
