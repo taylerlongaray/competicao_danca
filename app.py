@@ -139,71 +139,52 @@ except Exception:
 
 categorias = {
     "Diamante": {
-        "Condutores": ["Alan Demarch", "Henrique Vargas", "Léo Mello", "Luan Ruduit", "Maick Martins", "William Ferreira"],
-        "Conduzidas": ["Caroline Guedes", "Cleo Santanna", "Marluce Dimare", "Sah Graziela", "Sidiane Correa", "Vih Alves"],
+        "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
+        "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
     },
     "Platina": {
-        "Condutores": ["Alisson Lopes", "Anderson Oliveira", "Catriel Pereira", "Deivid Nascimento", "Douglas Clo", "Jean Pierre"],
-        "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
+        "Condutores": ["Jean", "Deivid", "Catriel", "Douglas Clo"],
+        "Conduzidas": ["Fabi", "Tefynha", "Nanda", "Cassi"],
     },
     "Ouro": {
-        "Condutores": ["Ciro Lima", "E. Duarte", "Edilson", "Fabiano", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Tom", "Wellisson"],
+        "Condutores": ["Isma", "Jonatan Santos", "Ciro", "Lukas"],
         "Conduzidas": [
-            "Andreza Godoi",
-            "Angélica",
-            "Daia Lopes",
-            "Franciely Lopes",
-            "Giovanna Cento",
-            "Joice Alves",
-            "Julia Graciela",
-            "Juliana Ferraz",
-            "Marcia Araujo",
-            "Marya Costa",
-            "Michele Longarai",
-            "Nanda Ramos",
-            "Thayh Martins",
-            "Valesca Bordon",
+            "Joice",
+            "Fran",
+            "Daia",
+            "Marcia",
+            "Juliana",
+            "Thaizete",
+            "Andreza",
+            "Julia",
+            "Michele",
         ],
     },
     "Prata": {
         "Condutores": [
-            "Alisson Gregori",
-            "Albieri Fagundes",
-            "Antonio Vargas",
-            "Cleiton",
-            "Fernando Souza",
-            "Iuri Martins",
-            "John",
+            "Marcão",
             "Léo",
-            "Marcao Meireles",
-            "Michel",
-            "Raí Machado",
-            "Rogério Eich",
             "Rogério F",
-            "Toni",
-            "Toretto",
+            "Cleiton",
+            "Michel",
+            "Alisson",
         ],
         "Conduzidas": [
-            "Ana Cris Couto",
-            "Daiane Soares",
-            "Dienifer Steffen",
-            "Franciele",
-            "Ge",
-            "Gili Costa",
-            "Juliana",
-            "Larissa Westphal",
-            "Lidiana",
-            "Lilica",
+            "Sabrina",
             "Lolo",
             "Nathalia",
-            "Paulynha Han",
-            "Sabrina",
+            "Anachris",
+            "Ge",
+            "Daiane",
+            "Lidiana",
+            "Dienifer",
             "Shay",
+            "Lilica",
         ],
     },
     "Aprendendo a Voar": {
-        "Condutores": ["Anderson", "Bruno Vanassi", "Edu", "Ezequiel Silveira", "Ivan Dutra", "Gilmar Gemelli", "Luis", "Talysson"],
-        "Conduzidas": ["Carla Sabio", "Elisangela Grund", "Nahuana Rolante", "Pati", "Paula", "Raquel", "Sheila Josiane", "Sylvana"],
+        "Condutores": ["Bruno", "Ivan", "Luis"],
+        "Conduzidas": ["Pati", "Sheila", "Michelle", "Carla"],
     },
 }
 
@@ -679,14 +660,14 @@ if modo == "Painel do Jurado":
             os.path.join(os.path.dirname(__file__), arquivo_icone)
         )
         if icone_b64:
-            icone_html = f'<img src="{icone_b64}" class="jj-banner-img"/>'
+            icone_html = f'<img src="{icone_b64}" style="width: 24px; height: 24px; object-fit: contain;"/>'
         else:
             icone_html = emoji_icone
 
         fase_titulo, fase_sub = formatar_fase(fase_escolhida)
 
         st.markdown(
-            f"""<div class="jj-card jj-banner"><div class="jj-banner-left"><div class="jj-banner-icon">{icone_html}</div><div><div class="jj-label">Categoria</div><div class="jj-categoria">{categoria_escolhida.upper()}</div></div></div><div class="jj-banner-right"><div class="jj-fase">{fase_titulo}</div><div class="jj-musica">{fase_sub}</div></div></div>""",
+            f"""<div class="jj-card jj-banner" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-banner-left" style="gap: 8px;"><div class="jj-banner-icon">{icone_html}</div><div><div class="jj-label">Categoria</div><div class="jj-categoria">{categoria_escolhida.upper()}</div></div></div><div class="jj-banner-right" style="padding-left: 8px;"><div class="jj-fase">{fase_titulo}</div><div class="jj-musica">{fase_sub}</div></div></div>""",
             unsafe_allow_html=True,
         )
 
@@ -719,9 +700,9 @@ if modo == "Painel do Jurado":
             competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
             st.markdown(
-                f"""<div class="jj-card jj-avaliando">
+                f"""<div class="jj-card jj-avaliando" style="margin-bottom: 4px; padding: 6px 10px;">
                     <div class="jj-label">Selecionar Competidor</div>
-                    <span class="jj-badge">{tipo_selecionado.upper()}</span>
+                    <span class="jj-badge" style="padding: 2px 10px; font-size: 8px; margin-top: 2px;">{tipo_selecionado.upper()}</span>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -741,9 +722,9 @@ if modo == "Painel do Jurado":
                 st.rerun()
 
             st.markdown(
-                f"""<div class="jj-card jj-avaliando">
-                    <div class="jj-label">Estado Atual</div>
-                    <div class="jj-nome">Avaliando {competidor_escolhido}</div>
+                f"""<div class="jj-card jj-avaliando" style="margin-bottom: 6px; padding: 8px 10px; background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(40, 30, 18, 0.98) 100%);">
+                    <div class="jj-label" style="color: #e5c158;">Estado Atual</div>
+                    <div class="jj-nome" style="font-size: 19px; margin: 2px 0;">Avaliando {competidor_escolhido}</div>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -772,7 +753,7 @@ if modo == "Painel do Jurado":
             criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
             st.markdown(
-                f"""<div class="jj-card"><div class="jj-crit-head"><div class="jj-crit-icon">♪</div><div><div class="jj-label">Critério</div><div class="jj-crit-nome">{criterio_nome}</div></div><div class="jj-contador">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor"/><div class="jj-crit-desc"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
+                f"""<div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;"><div class="jj-crit-head"><div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div><div style="flex: 1; padding: 0 6px;"><div class="jj-label">Critério</div><div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div></div><div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor" style="margin: 4px 0 4px 0;"/><div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
                 unsafe_allow_html=True,
             )
 
@@ -796,6 +777,11 @@ if modo == "Painel do Jurado":
                     str(nota_salva).replace(".", ",") if nota_salva is not None else ""
                 )
 
+            st.markdown(
+                """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card div[data-baseweb="input"]:focus-within { border-color: rgba(212, 175, 55, 1) !important; box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; } .st-key-nota_card input::placeholder { color: rgba(243, 229, 171, 0.4) !important; }</style>""",
+                unsafe_allow_html=True,
+            )
+
             with st.container(key="nota_card"):
                 st.markdown(
                     '<div class="jj-secao-label">Sua Nota</div>',
@@ -810,23 +796,53 @@ if modo == "Painel do Jurado":
                     label_visibility="collapsed",
                 )
 
+            st.markdown(
+                """<style>
+                .st-key-coment_card { 
+                    background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); 
+                    border: 1px solid rgba(212, 175, 55, 0.45); 
+                    border-radius: 10px; 
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
+                    padding: 8px 10px 10px 10px; 
+                    margin-bottom: 6px; 
+                } 
+                .st-key-coment_card textarea { 
+                    background-color: rgba(10, 7, 5, 0.92) !important; 
+                    border: 1px solid rgba(212, 175, 55, 0.35) !important; 
+                    border-radius: 6px !important; 
+                    color: #f3e5ab !important; 
+                    font-size: 12px !important; 
+                    height: 45px !important; 
+                    margin-bottom: 0px !important;
+                } 
+                .st-key-coment_card textarea::placeholder { 
+                    color: rgba(243, 229, 171, 0.35) !important; 
+                }
+                .st-key-coment_card p {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                </style>""",
+                unsafe_allow_html=True,
+            )
+
             chave_comentario = f"coment_{chave_base}"
             
             with st.container(key="coment_card"):
                 st.markdown(
-                    '<div class="jj-secao-label">Comentários (Opcional)</div>',
+                    '<div class="jj-secao-label" style="margin-bottom: 4px;">Comentários:</div>',
                     unsafe_allow_html=True,
                 )
                 comentario = st.text_area(
                     "COMENTÁRIOS",
                     key=chave_comentario,
-                    placeholder="Deixe um comentário sobre a apresentação...",
+                    placeholder="Deixe seu comentário aqui...",
                     max_chars=300,
-                    height=70,
+                    height=45,
                     label_visibility="collapsed",
                 )
                 st.markdown(
-                    f"<div style='text-align:right; color:#8d7a52; font-size:10px;'>{len(comentario)}/300</div>",
+                    f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:-8px;'>{len(comentario)}/300</div>",
                     unsafe_allow_html=True,
                 )
 
@@ -895,9 +911,12 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) ---
+    # --- TELÃO (PÚBLICO) COM BOTÃO DE ATALHO FLUTUANTE GARANTIDO ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     
+    # ----------------------------------------------------------------------
+    # INJEÇÃO JAVASCRIPT: CRIA O BOTÃO "☰ MENU" NA TELA E O ATALHO ALT + M
+    # ----------------------------------------------------------------------
     components.html(
         """
         <script>
@@ -932,10 +951,12 @@ else:
             btn.onmouseout = () => { btn.style.background = 'rgba(15, 11, 7, 0.95)'; btn.style.color = '#d4af37'; };
             
             btn.onclick = function() {
+                // Procura a setinha nativa e clica nela
                 const sidebarToggle = parentDoc.querySelector('[data-testid="collapsedControl"]');
                 if (sidebarToggle) {
                     sidebarToggle.click();
                 } else {
+                    // Se já estiver aberta, tenta fechar clicando no 'X' dentro da sidebar
                     const closeBtn = parentDoc.querySelector('section[data-testid="stSidebar"] button');
                     if (closeBtn) closeBtn.click();
                 }
@@ -944,6 +965,7 @@ else:
             parentDoc.body.appendChild(btn);
         }
         
+        // Função para ativar pelo atalho do teclado
         function keyHandler(e) {
             if (e.altKey && e.key.toLowerCase() === 'm') {
                 if (btn) btn.click();
@@ -951,6 +973,7 @@ else:
         }
         parentDoc.addEventListener('keydown', keyHandler);
         
+        // Remove o botão limpo quando você sair da página "Telão"
         window.addEventListener('unload', function() {
             if (btn) btn.remove();
             parentDoc.removeEventListener('keydown', keyHandler);
@@ -960,6 +983,7 @@ else:
         height=0,
         width=0
     )
+    # ----------------------------------------------------------------------
     
     st.markdown(
         """
@@ -978,6 +1002,7 @@ else:
             box-shadow: none !important;
             z-index: 99999 !important;
         }
+        /* Força a setinha de recolher/expandir a barra lateral a aparecer visível e estilizada */
         [data-testid="collapsedControl"] {
             display: flex !important;
             visibility: visible !important;
@@ -1018,42 +1043,16 @@ else:
             color: #f3e5ab !important;
             font-family: 'Cinzel', Georgia, serif;
         }
-        
-        .tabela-dourada {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 12px;
-            font-family: 'Helvetica Neue', sans-serif;
-            color: #f3e5ab;
-            background: linear-gradient(135deg, rgba(10, 7, 5, 0.90) 0%, rgba(20, 15, 10, 0.95) 100%);
-            border: 1px solid rgba(212, 175, 55, 0.6);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+        [data-testid="stDataFrame"] {
+            font-size: 12px !important;
         }
-        .tabela-dourada thead {
-            background-color: rgba(15, 11, 7, 1);
+        [data-testid="stDataFrame"] table {
+            font-size: 12px !important;
         }
-        .tabela-dourada th {
-            color: #e5c158;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
+            padding: 10px 8px !important;
+            line-height: 1.4 !important;
             text-align: center !important;
-            padding: 8px 6px;
-            border-bottom: 2px solid #d4af37;
-            line-height: 1.2;
-        }
-        .tabela-dourada td {
-            text-align: center !important;
-            padding: 8px 6px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            white-space: nowrap !important;
-        }
-        .tabela-dourada tbody tr:last-child td {
-            border-bottom: none;
-        }
-        .tabela-dourada tbody tr:hover {
-            background-color: rgba(212, 175, 55, 0.15);
         }
         </style>
         """,
@@ -1067,53 +1066,20 @@ else:
         st.session_state.revelado = revelar_tudo
 
         st.markdown("---")
-        st.markdown("### Categorias e Fases")
-        
-        opcoes_menu_telao = [
-            "Diamante",
-            "Platina",
-            "Ouro - Fase Classificatória",
-            "Ouro - Fase Final",
-            "Prata - Fase Classificatória",
-            "Prata - Fase Final",
-            "Aprendendo a Voar"
-        ]
-
-        def formatar_icone_menu(c):
-            if "Diamante" in c: return f"💎 {c}"
-            if "Platina" in c: return f"🥈 {c}"
-            if "Ouro" in c: return f"🥇 {c}"
-            if "Prata" in c: return f"🥈 {c}"
-            return f"🕊️ {c}"
-
-        selecao_telao = st.radio(
+        st.markdown("### Categorias")
+        categoria_nome = st.radio(
             "Selecione a Categoria",
-            opcoes_menu_telao,
-            format_func=formatar_icone_menu,
+            list(categorias.keys()),
+            format_func=lambda c: f"💎 {c}" if c=="Diamante" else (f"🥈 {c}" if c=="Platina" else (f"🥇 {c}" if c=="Ouro" else (f"🥈 {c}" if c=="Prata" else f"🕊️ {c}"))),
             label_visibility="collapsed"
         )
 
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
-    if "Ouro" in selecao_telao:
-        categoria_nome = "Ouro"
-        fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
-    elif "Prata" in selecao_telao:
-        categoria_nome = "Prata"
-        fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
-    else:
-        categoria_nome = selecao_telao
-        fases_da_cat = fases_por_categoria[categoria_nome]
-
-    df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
-
-    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{selecao_telao.upper()} — RESULTADOS</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
     
-    def formatar_nome_jurado(nome):
-        partes = nome.split(" ", 1)
-        if len(partes) > 1:
-            return f"{partes[0]}<br>{partes[1]}"
-        return nome
+    df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
+    fases_da_cat = fases_por_categoria[categoria_nome]
 
     def gerar_tabela_papel_fase(fase_nome, papel_nome):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
@@ -1148,15 +1114,11 @@ else:
         pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
-        pivot_df = pivot_df.rename(columns=renomeador)
-
-        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
-        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
+        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_aptos + ["TOTAL"]
         cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
         tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
-        for col in jurados_formatados + ["TOTAL"]:
+        for col in jurados_aptos + ["TOTAL"]:
             if col in tabela_exibicao.columns:
                 tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
 
@@ -1188,15 +1150,11 @@ else:
         pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
-        pivot_df = pivot_df.rename(columns=renomeador)
-
-        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
-        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
+        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_aptos + ["TOTAL"]
         cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
         tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
-        for col in jurados_formatados + ["TOTAL"]:
+        for col in jurados_aptos + ["TOTAL"]:
             if col in tabela_exibicao.columns:
                 tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
 
@@ -1208,12 +1166,12 @@ else:
         with col_cond:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
             tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
-            st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+            st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
 
         with col_condz:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
             tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
-            st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+            st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
 
     else:
         for fase_nome in fases_da_cat:
@@ -1222,9 +1180,9 @@ else:
             with col_cond:
                 st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
                 tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
-                st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+                st.dataframe(tabela_cond, use_container_width=True, hide_index=True)
 
             with col_condz:
                 st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
                 tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
-                st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+                st.dataframe(tabela_condz, use_container_width=True, hide_index=True)
