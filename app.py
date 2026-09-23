@@ -1269,7 +1269,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM AUTO-REFRESH CONTÍNUO (A CADA 3 SEGUNDOS) ---
+    # --- TELÃO (PÚBLICO) COM AUTO-REFRESH SEM CACHE (A CADA 2 SEGUNDOS) ---
     components.html(
         """
         <script>
@@ -1323,11 +1323,13 @@ else:
         }
         parentDoc.addEventListener('keydown', keyHandler);
         
-        // Auto-refresh contínuo a cada 3 segundos usando setInterval para atualizar o telão automaticamente
+        // Auto-refresh a cada 2 segundos forçando nova requisição sem cache do navegador
         if (!window.telaoIntervalo) {
             window.telaoIntervalo = setInterval(function(){
-                window.location.reload();
-            }, 3000);
+                const url = new URL(parentDoc.location.href);
+                url.searchParams.set('t', Date.now());
+                parentDoc.location.replace(url.toString());
+            }, 2000);
         }
         
         window.addEventListener('unload', function() {
@@ -1550,7 +1552,7 @@ else:
             comps = categorias[categoria_nome][papel_nome]
 
         df_base = pd.DataFrame({"competidor": comps})
-        df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_fase.empty else pd.DataFrame()
+        df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_papel.empty else pd.DataFrame()
 
         if not df_papel.empty:
             df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
