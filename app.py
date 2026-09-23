@@ -324,8 +324,8 @@ configuracao_jurados = {
             {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]}
         ]
     },
-    "cassiano/luan": {
-        "nome": "Cassiano Fontana / Luan Ruduit",
+    "cassiano": {
+        "nome": "Cassiano Fontana",
         "senha": "8516",
         "permissoes": [
             {"categoria": "Prata", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
@@ -1060,7 +1060,7 @@ if modo == "Painel do Jurado":
                 )
 
                 if permissoes_jurado == "TODAS_GLOBAL":
-                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança du participante."}
+                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
                 else:
                     criterios_permitidos_nomes = []
                     for p in permissoes_jurado:
