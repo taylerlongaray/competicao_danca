@@ -112,7 +112,6 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
     st.session_state.categoria_selecionada = None
 
-# --- Estado da navegação do ecrã de votação ---
 if "idx_comp" not in st.session_state:
     st.session_state.idx_comp = 0
 
@@ -437,7 +436,9 @@ def obter_jurados_da_categoria_papel(cat, papel):
                 if p["categoria"] == cat and p["papel"] == papel:
                     jurados_validos.append(dados["nome"])
                     break
-    jurados_ordenados = sorted(list(set(jurados_validos)), key=lambda x: 1 if "Alex Alves" in x else 0)
+    
+    # ORDEM ALFABÉTICA (Mas empurra o "Alex" sempre para o final da lista)
+    jurados_ordenados = sorted(list(set(jurados_validos)), key=lambda x: (1 if "Alex" in x else 0, x))
     return jurados_ordenados
 
 
@@ -563,7 +564,6 @@ else:
     st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
 
-# --- CSS DO LAYOUT DA VOTAÇÃO INTACTO ---
 st.markdown(
     """
 <style>
@@ -1273,14 +1273,12 @@ elif modo == "Painel da Organização":
 else:
     # --- TELÃO (PÚBLICO) ---
     
-    # Auto-Refresh Automático (novo e mais fiável)
     try:
         from streamlit_autorefresh import st_autorefresh
         st_autorefresh(interval=2000, limit=None, key="refresh_telao")
     except ImportError:
         st.error("⚠️ Instale o pacote executando: pip install streamlit-autorefresh")
 
-    # Botão de MENU DE VOLTA!
     components.html(
         """
         <script>
@@ -1402,7 +1400,6 @@ else:
             font-family: 'Cinzel', Georgia, serif;
         }
         
-        /* Tabela padrão (Ouro, Prata, etc.) */
         .tabela-dourada {
             width: 100%;
             border-collapse: collapse;
@@ -1440,7 +1437,6 @@ else:
             background-color: rgba(212, 175, 55, 0.15);
         }
 
-        /* Tabela Compacta para Diamante e Platina (Música 1 e Música 2 por jurado) */
         .tabela-dourada-compacta {
             width: 100%;
             border-collapse: collapse;
@@ -1568,8 +1564,16 @@ else:
                 pivot_df[j_col] = None
 
         exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
+        
+        # LOGICA DA NOTA OCULTA E RANKING
+        if not st.session_state.revelado:
+            vis_cols = [j for j in exist_j_cols if "Alex" not in j]
+            pivot_df["TOTAL_RANKING"] = pivot_df[vis_cols].sum(axis=1, min_count=1)
+        else:
+            pivot_df["TOTAL_RANKING"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+
         pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
-        pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
+        pivot_df = pivot_df.sort_values(by="TOTAL_RANKING", ascending=False, na_position="last").reset_index(drop=True)
 
         pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
@@ -1582,9 +1586,18 @@ else:
         cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
         tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
-        for col in jurados_formatados + ["TOTAL"]:
-            if col in tabela_exibicao.columns:
-                tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
+        for j in jurados_formatados:
+            if j in tabela_exibicao.columns:
+                if not st.session_state.revelado and "Alex" in j:
+                    tabela_exibicao[j] = tabela_exibicao[j].apply(lambda x: "🔒" if pd.notnull(x) and str(x) != "nan" else "-")
+                else:
+                    tabela_exibicao[j] = tabela_exibicao[j].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
+        
+        if "TOTAL" in tabela_exibicao.columns:
+            if not st.session_state.revelado:
+                tabela_exibicao["TOTAL"] = "🔒"
+            else:
+                tabela_exibicao["TOTAL"] = tabela_exibicao["TOTAL"].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and str(x) != "nan" else "-")
 
         return tabela_exibicao.to_html(index=False, classes="tabela-dourada", escape=False)
 
@@ -1617,20 +1630,35 @@ else:
         lista_linhas = []
         for comp in comps:
             totais_jurados = []
+            totais_visiveis = []
             for j in jurados_aptos:
                 f1 = dados_tabela[comp][j]['f1']
                 f2 = dados_tabela[comp][j]['f2']
                 val_f1 = f1 if f1 is not None else 0
                 val_f2 = f2 if f2 is not None else 0
-                totais_jurados.append(val_f1 + val_f2)
-            total_geral = sum(totais_jurados) if any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos) else -1
+                soma_j = val_f1 + val_f2
+                
+                totais_jurados.append(soma_j)
+                if "Alex" not in j:
+                    totais_visiveis.append(soma_j)
+                    
+            tem_nota_geral = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos)
+            tem_nota_visivel = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos if "Alex" not in j)
+
+            total_geral = sum(totais_jurados) if tem_nota_geral else -1
+            total_ord = sum(totais_visiveis) if tem_nota_visivel else -1
+            
             lista_linhas.append({
                 "competidor": comp,
                 "dados": dados_tabela[comp],
-                "total": total_geral
+                "total": total_geral,
+                "total_ord": total_ord
             })
             
-        lista_linhas.sort(key=lambda x: x["total"], reverse=True)
+        if st.session_state.revelado:
+            lista_linhas.sort(key=lambda x: x["total"], reverse=True)
+        else:
+            lista_linhas.sort(key=lambda x: x["total_ord"], reverse=True)
         
         html = '<table class="tabela-dourada-compacta">'
         html += '<thead>'
@@ -1661,24 +1689,32 @@ else:
             
             soma_competidor = 0
             tem_nota = False
+            
             for j in jurados_aptos:
                 f1 = linha["dados"][j]['f1']
                 f2 = linha["dados"][j]['f2']
                 
-                str_f1 = f"{f1:.1f}" if f1 is not None else "-"
-                str_f2 = f"{f2:.1f}" if f2 is not None else "-"
-                
+                if not st.session_state.revelado and "Alex" in j:
+                    str_f1 = "🔒" if f1 is not None else "-"
+                    str_f2 = "🔒" if f2 is not None else "-"
+                else:
+                    str_f1 = f"{f1:.1f}" if f1 is not None else "-"
+                    str_f2 = f"{f2:.1f}" if f2 is not None else "-"
+                    if f1 is not None:
+                        soma_competidor += f1
+                        tem_nota = True
+                    if f2 is not None:
+                        soma_competidor += f2
+                        tem_nota = True
+                        
                 html += f'<td>{str_f1}</td>'
                 html += f'<td>{str_f2}</td>'
-                
-                if f1 is not None:
-                    soma_competidor += f1
-                    tem_nota = True
-                if f2 is not None:
-                    soma_competidor += f2
-                    tem_nota = True
                     
-            str_total = f"{soma_competidor:.1f}" if tem_nota else "-"
+            if not st.session_state.revelado:
+                str_total = "🔒" if tem_nota else "-"
+            else:
+                str_total = f"{soma_competidor:.1f}" if tem_nota else "-"
+                
             html += f'<td><b>{str_total}</b></td>'
             html += '</tr>'
             
