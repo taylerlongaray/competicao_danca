@@ -2,7 +2,6 @@ import base64
 import os
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="Jack & Jill - Noite nas Arábias",
@@ -15,7 +14,6 @@ st.set_page_config(
 def obter_fundo_css(tipo_tela):
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
-    candidatos = []
     if tipo_tela == "votacao":
         candidatos = [
             "fundo_votacao.png",
@@ -25,15 +23,6 @@ def obter_fundo_css(tipo_tela):
             "fundo.png",
             "fundo.jpg",
         ]
-    elif tipo_tela == "telao":
-        candidatos = [
-            "fundo_telao.png",
-            "fundo_telao.jpg",
-            "fundo.png",
-            "fundo.jpg",
-            "fundo_painel.png",
-            "fundo_painel.jpg",
-        ]
     else:
         candidatos = [
             f"fundo_{tipo_tela}.png",
@@ -41,13 +30,6 @@ def obter_fundo_css(tipo_tela):
             "fundo.png",
             "fundo.jpg",
         ]
-
-    try:
-        for arq in os.listdir(base_dir):
-            if arq.lower().endswith((".png", ".jpg", ".jpeg")) and arq not in candidatos:
-                candidatos.append(arq)
-    except Exception:
-        pass
 
     img_encontrada = None
     for arquivo in candidatos:
@@ -62,11 +44,7 @@ def obter_fundo_css(tipo_tela):
         encoded = base64.b64encode(data).decode()
         ext = img_encontrada.split(".")[-1].lower()
         mime = "png" if ext == "png" else "jpeg"
-        
-        if tipo_tela == "telao":
-            return f"""<style>.stApp {{ background-image: url("data:image/{mime};base64,{encoded}"); background-size: 100% 100% !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
-        else:
-            return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
+        return f"""<style>.stApp {{ background-image: linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.20)), url("data:image/{mime};base64,{encoded}"); background-size: cover; background-position: top center !important; background-attachment: fixed; color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; }}</style>"""
     else:
         return """<style>.stApp { background-color: #090706; color: #f3e5ab; }</style>"""
 
@@ -94,7 +72,7 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
     st.session_state.categoria_selecionada = None
 
-# --- Estado da navegação do ecrã de votação ---
+# --- Estado da navegação da tela de votação ---
 if "idx_comp" not in st.session_state:
     st.session_state.idx_comp = 0
 
@@ -139,71 +117,52 @@ except Exception:
 
 categorias = {
     "Diamante": {
-        "Condutores": ["Alan Demarch", "Henrique Vargas", "Léo Mello", "Luan Ruduit", "Maick Martins", "William Ferreira"],
-        "Conduzidas": ["Caroline Guedes", "Cleo Santanna", "Marluce Dimare", "Sah Graziela", "Sidiane Correa", "Vih Alves"],
+        "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
+        "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
     },
     "Platina": {
-        "Condutores": ["Alisson Lopes", "Anderson Oliveira", "Catriel Pereira", "Deivid Nascimento", "Douglas Clo", "Jean Pierre"],
-        "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
+        "Condutores": ["Jean", "Deivid", "Catriel", "Douglas Clo"],
+        "Conduzidas": ["Fabi", "Tefynha", "Nanda", "Cassi"],
     },
     "Ouro": {
-        "Condutores": ["Ciro Lima", "E. Duarte", "Edilson", "Fabiano", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Tom", "Wellisson"],
+        "Condutores": ["Isma", "Jonatan Santos", "Ciro", "Lukas"],
         "Conduzidas": [
-            "Andreza Godoi",
-            "Angélica",
-            "Daia Lopes",
-            "Franciely Lopes",
-            "Giovanna Cento",
-            "Joice Alves",
-            "Julia Graciela",
-            "Juliana Ferraz",
-            "Marcia Araujo",
-            "Marya Costa",
-            "Michele Longarai",
-            "Nanda Ramos",
-            "Thayh Martins",
-            "Valesca Bordon",
+            "Joice",
+            "Fran",
+            "Daia",
+            "Marcia",
+            "Juliana",
+            "Thaizete",
+            "Andreza",
+            "Julia",
+            "Michele",
         ],
     },
     "Prata": {
         "Condutores": [
-            "Alisson Gregori",
-            "Albieri Fagundes",
-            "Antonio Vargas",
-            "Cleiton",
-            "Fernando Souza",
-            "Iuri Martins",
-            "John",
+            "Marcão",
             "Léo",
-            "Marcao Meireles",
-            "Michel",
-            "Raí Machado",
-            "Rogério Eich",
             "Rogério F",
-            "Toni",
-            "Toretto",
+            "Cleiton",
+            "Michel",
+            "Alisson",
         ],
         "Conduzidas": [
-            "Ana Cris Couto",
-            "Daiane Soares",
-            "Dienifer Steffen",
-            "Franciele",
-            "Ge",
-            "Gili Costa",
-            "Juliana",
-            "Larissa Westphal",
-            "Lidiana",
-            "Lilica",
+            "Sabrina",
             "Lolo",
             "Nathalia",
-            "Paulynha Han",
-            "Sabrina",
+            "Anachris",
+            "Ge",
+            "Daiane",
+            "Lidiana",
+            "Dienifer",
             "Shay",
+            "Lilica",
         ],
     },
     "Aprendendo a Voar": {
-        "Condutores": ["Anderson", "Bruno Vanassi", "Edu", "Ezequiel Silveira", "Ivan Dutra", "Gilmar Gemelli", "Luis", "Talysson"],
-        "Conduzidas": ["Carla Sabio", "Elisangela Grund", "Nahuana Rolante", "Pati", "Paula", "Raquel", "Sheila Josiane", "Sylvana"],
+        "Condutores": ["Bruno", "Ivan", "Luis"],
+        "Conduzidas": ["Pati", "Sheila", "Michelle", "Carla"],
     },
 }
 
@@ -408,20 +367,6 @@ configuracao_jurados = {
 }
 
 
-def obter_jurados_da_categoria_papel(cat, papel):
-    jurados_validos = []
-    for username, dados in configuracao_jurados.items():
-        perm = dados["permissoes"]
-        if perm == "TODAS_GLOBAL":
-            jurados_validos.append(dados["nome"])
-        elif isinstance(perm, list):
-            for p in perm:
-                if p["categoria"] == cat and p["papel"] == papel:
-                    jurados_validos.append(dados["nome"])
-                    break
-    return sorted(list(set(jurados_validos)))
-
-
 def obter_classificados(categoria, papel):
     if not st.session_state.votos:
         return []
@@ -503,7 +448,7 @@ def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
 if link_jurado_exclusivo:
     modo = "Painel do Jurado"
     st.markdown(
-        '<style>[data-testid="stSidebar"] { display: none !important; } [data-testid="stHeader"] { display: none !important; }</style>',
+        '<style>[data-testid="stSidebar"] { display: none !important; }</style>',
         unsafe_allow_html=True,
     )
 else:
@@ -522,6 +467,244 @@ else:
         "Navegação",
         ["Painel do Jurado", "Painel da Organização", "Telão (Público)"],
         label_visibility="collapsed",
+    )
+
+if modo == "Painel do Jurado":
+    if st.session_state.jurado_logado is None:
+        st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
+    elif st.session_state.categoria_selecionada is None:
+        st.markdown(obter_fundo_css("categorias"), unsafe_allow_html=True)
+    else:
+        st.markdown(obter_fundo_css("votacao"), unsafe_allow_html=True)
+elif modo == "Telão (Público)":
+    st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
+else:
+    st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
+
+# CSS global para remover a barra preta superior do Streamlit em todas as telas
+st.markdown(
+    """
+    <style>
+    [data-testid="stHeader"] {
+        display: none !important;
+    }
+    footer {visibility: hidden;}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+if modo == "Telão (Público)":
+    st.markdown(
+        """
+        <style>
+        .block-container {
+            padding-top: 0.3rem !important;
+            padding-bottom: 0.3rem !important;
+            max-width: 99% !important;
+            margin: 0 auto !important;
+        }
+        h1 {
+            font-size: 26px !important;
+            margin-bottom: 0px !important;
+            color: #e5c158 !important;
+            font-family: 'Cinzel', Georgia, serif;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+        h2 {
+            font-size: 20px !important;
+            margin-top: 5px !important;
+            margin-bottom: 10px !important;
+            color: #e5c158 !important;
+            font-family: 'Cinzel', Georgia, serif;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        h3 {
+            font-size: 14px !important;
+            margin-top: 2px !important;
+            margin-bottom: 5px !important;
+            color: #f3e5ab !important;
+            font-family: 'Cinzel', Georgia, serif;
+        }
+        h4 {
+            font-size: 11px !important;
+            margin-top: 2px !important;
+            margin-bottom: 4px !important;
+            color: #e5c158 !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        [data-testid="stDataFrame"] {
+            font-size: 10px !important;
+        }
+        [data-testid="stDataFrame"] table {
+            font-size: 10px !important;
+        }
+        [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
+            padding: 1px 4px !important;
+            line-height: 1.1 !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        """
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&display=swap');
+        .block-container {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+            max-width: 600px !important;
+            margin: 0 auto !important;
+        }
+        h1, h2, h3 {
+            color: #e5c158 !important;
+            font-family: 'Georgia', serif;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .saudacao-jurado {
+            font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
+            color: #f3e5ab !important;
+            font-size: 22px !important;
+            font-weight: 700 !important;
+            text-align: center;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            letter-spacing: 1.5px;
+            margin-bottom: 2px;
+        }
+        div[data-testid="column"]:has(input[type="password"]) {
+            max-width: 320px !important; 
+            margin: 0 auto !important; 
+            float: none !important;
+            background: linear-gradient(135deg, rgba(15, 11, 7, 0.95) 0%, rgba(30, 21, 12, 0.98) 100%) !important;
+            border: 1px solid rgba(212, 175, 55, 0.5) !important;
+            border-radius: 12px !important;
+            padding: 15px 15px 10px 15px !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
+        }
+        .stTextInput div[data-baseweb="input"] {
+            background-color: rgba(12, 9, 7, 0.95) !important;
+            border: 1px solid rgba(212, 175, 55, 0.45) !important;
+            border-radius: 6px !important;
+        }
+        .stTextInput input {
+            color: #f3e5ab !important;
+            background-color: transparent !important;
+            padding: 6px 10px !important;
+            font-size: 13px !important;
+        }
+        .stButton > button {
+            background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
+            border: 1px solid rgba(212, 175, 55, 0.6) !important;
+            border-radius: 6px !important;
+            color: #f3e5ab !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            font-weight: 600 !important;
+            padding: 6px 10px !important;
+            font-size: 11px !important;
+        }
+        .stButton > button[kind="primary"] {
+            background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important;
+            border: 1px solid #e5c158 !important;
+            color: #1a1208 !important;
+            font-weight: 700 !important;
+        }
+        [data-testid="stSidebar"] {
+            background-color: rgba(14, 10, 8, 0.96);
+            border-right: 1px solid rgba(212, 175, 55, 0.15);
+        }
+        .jj-card {
+            background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            padding: 6px 10px;
+            margin-bottom: 6px;
+        }
+        .jj-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .jj-label {
+            color: #b39b6b;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1px;
+        }
+        .jj-categoria {
+            font-family: 'Cinzel', 'Georgia', serif;
+            color: #f3e5ab;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            line-height: 1.0;
+        }
+        .jj-fase {
+            font-family: 'Cinzel', 'Georgia', serif;
+            color: #f3e5ab;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .jj-musica {
+            color: #b39b6b;
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .jj-nome {
+            font-family: 'Cinzel', 'Georgia', serif;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.0;
+            margin: 2px 0 3px 0;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        }
+        .jj-badge {
+            display: inline-block;
+            border: 1px solid rgba(212, 175, 55, 0.8);
+            border-radius: 14px;
+            padding: 2px 10px;
+            color: #e5c158;
+            font-size: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .jj-crit-nome {
+            font-family: 'Cinzel', 'Georgia', serif;
+            color: #f3e5ab;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-top: 1px;
+        }
+        .jj-crit-desc {
+            color: #ded2b4;
+            font-size: 10px;
+            line-height: 1.35;
+        }
+        .jj-crit-desc b { color: #e5c158; }
+        .jj-secao-label {
+            color: #b39b6b;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
     )
 
 if modo == "Painel do Jurado":
@@ -620,432 +803,8 @@ if modo == "Painel do Jurado":
         jurado_str = f"jurado={st.session_state.jurado_logado}&"
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-        # -------------------------------------------------------------------
-        # TELA DE VOTAÇÃO — layout mobile ajustado para reproduzir o modelo
-        # de referência. A lógica de votação abaixo permanece a mesma.
-        # -------------------------------------------------------------------
-        st.markdown("""
-        <style>
-        /* ================================================================
-           BASE DA TELA DE VOTAÇÃO
-           ================================================================ */
-        header[data-testid="stHeader"],
-        footer,
-        [data-testid="stToolbar"],
-        [data-testid="stDecoration"],
-        label[data-baseweb="label"] {
-            display: none !important;
-        }
-
-        .block-container {
-            padding-top: 4.2rem !important;
-            padding-bottom: 0.55rem !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            max-width: 100% !important;
-        }
-
-        /* O Streamlit cria espaçamento automático entre os blocos.
-           Zeramos esse espaçamento e controlamos as distâncias nos próprios
-           elementos para o layout não ganhar altura extra no celular. */
-        .block-container div[data-testid="stVerticalBlock"] {
-            gap: 0 !important;
-        }
-
-        /* ================================================================
-           CARTÕES
-           ================================================================ */
-        .jj-card,
-        .st-key-nota_card,
-        .st-key-coment_card,
-        [data-testid="stExpander"] {
-            box-sizing: border-box !important;
-            background: rgba(10, 7, 5, 0.60) !important;
-            border: 1px solid rgba(212, 175, 55, 0.28) !important;
-            border-radius: 9px !important;
-            box-shadow: none !important;
-        }
-
-        .jj-card {
-            padding: 11px 14px !important;
-            margin: 0 0 9px 0 !important;
-        }
-
-        .st-key-nota_card,
-        .st-key-coment_card {
-            padding: 11px 14px !important;
-            margin: 0 0 9px 0 !important;
-        }
-
-        /* ================================================================
-           EXPANDER "AJUSTAR FASE E GRUPO"
-           ================================================================ */
-        [data-testid="stExpander"] {
-            margin: 0 0 25px 0 !important;
-            overflow: hidden !important;
-        }
-
-        [data-testid="stExpander"] details summary {
-            min-height: 47px !important;
-            box-sizing: border-box !important;
-            padding: 0 14px !important;
-        }
-
-        [data-testid="stExpander"] details summary p {
-            margin: 0 !important;
-            font-size: 11px !important;
-            line-height: 1 !important;
-            color: #e5c158 !important;
-        }
-
-        [data-testid="stExpander"] details > div {
-            padding: 8px 14px 12px 14px !important;
-        }
-
-        /* ================================================================
-           TEXTOS
-           ================================================================ */
-        .jj-label,
-        .jj-secao-label {
-            color: #9e8a59 !important;
-            font-size: 9px !important;
-            line-height: 1.15 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1.6px !important;
-        }
-
-        .jj-secao-label {
-            display: block !important;
-            margin: 0 0 8px 0 !important;
-        }
-
-        /* ================================================================
-           BANNER DA CATEGORIA
-           ================================================================ */
-        .jj-banner {
-            min-height: 79px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-        }
-
-        .jj-banner-left {
-            display: flex !important;
-            align-items: center !important;
-            gap: 10px !important;
-        }
-
-        .jj-banner-img {
-            width: 27px !important;
-            height: 27px !important;
-            object-fit: contain !important;
-        }
-
-        .jj-categoria {
-            color: #e5c158 !important;
-            font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
-            font-size: 24px !important;
-            font-weight: bold !important;
-            letter-spacing: 1px !important;
-            line-height: 1.0 !important;
-        }
-
-        .jj-banner-right {
-            text-align: right !important;
-            border-left: 1px solid rgba(212, 175, 55, 0.35) !important;
-            padding-left: 13px !important;
-            min-width: 88px !important;
-        }
-
-        .jj-fase {
-            color: #fff !important;
-            font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
-            font-size: 15px !important;
-            font-weight: bold !important;
-            letter-spacing: 1px !important;
-            line-height: 1.05 !important;
-        }
-
-        .jj-musica {
-            color: #9e8a59 !important;
-            font-size: 9px !important;
-            line-height: 1.25 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1px !important;
-        }
-
-        /* ================================================================
-           SELEÇÃO / ESTADO ATUAL
-           ================================================================ */
-        .jj-avaliando {
-            text-align: center !important;
-        }
-
-        .jj-badge {
-            border: 1px solid rgba(212, 175, 55, 0.55) !important;
-            border-radius: 20px !important;
-            padding: 4px 13px !important;
-            font-size: 9px !important;
-            line-height: 1 !important;
-            color: #d4af37 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1px !important;
-            display: inline-block !important;
-            margin-top: 5px !important;
-        }
-
-        .jj-nome {
-            color: #fff !important;
-            font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
-            font-size: 18px !important;
-            font-weight: normal !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1px !important;
-            line-height: 1.05 !important;
-            margin-top: 4px !important;
-        }
-
-        /* O select fica visualmente separado do cartão "Selecionar
-           Competidor", exatamente como na referência. */
-        [data-testid="stSelectbox"] {
-            margin: -1px 0 15px 0 !important;
-        }
-
-        [data-testid="stSelectbox"] > div {
-            width: 100% !important;
-        }
-
-        div[data-baseweb="select"] > div {
-            min-height: 60px !important;
-            height: 60px !important;
-            box-sizing: border-box !important;
-            background: #25262d !important;
-            border: none !important;
-            border-radius: 8px !important;
-            box-shadow: none !important;
-        }
-
-        div[data-baseweb="select"] [data-baseweb="select"] {
-            min-height: 60px !important;
-        }
-
-        div[data-baseweb="select"] input {
-            color: #fff !important;
-        }
-
-        div[data-baseweb="select"] [role="option"],
-        div[data-baseweb="select"] [aria-selected="true"] {
-            font-size: 15px !important;
-        }
-
-        /* ================================================================
-           CARTÃO DO CRITÉRIO
-           ================================================================ */
-        .jj-crit-head {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-        }
-
-        .jj-crit-icon {
-            flex: 0 0 40px !important;
-            width: 40px !important;
-            height: 40px !important;
-            border: 1px solid rgba(212, 175, 55, 0.50) !important;
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            color: #e5c158 !important;
-            font-size: 18px !important;
-            margin-right: 10px !important;
-            box-sizing: border-box !important;
-        }
-
-        .jj-crit-nome {
-            color: #fff !important;
-            font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
-            font-size: 14px !important;
-            font-weight: bold !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.6px !important;
-            line-height: 1.05 !important;
-        }
-
-        .jj-contador {
-            flex: 0 0 auto !important;
-            border: 1px solid rgba(212, 175, 55, 0.55) !important;
-            border-radius: 14px !important;
-            padding: 4px 9px !important;
-            font-size: 9px !important;
-            line-height: 1 !important;
-            color: #9e8a59 !important;
-        }
-
-        .jj-divisor {
-            border: none !important;
-            border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
-            margin: 10px 0 !important;
-        }
-
-        .jj-crit-desc {
-            color: #aaa !important;
-            font-size: 10px !important;
-            line-height: 1.4 !important;
-        }
-
-        /* ================================================================
-           NOTA E COMENTÁRIOS
-           ================================================================ */
-        div[data-baseweb="input"] {
-            min-height: 60px !important;
-            height: 60px !important;
-            box-sizing: border-box !important;
-            background: #25262d !important;
-            border: none !important;
-            border-radius: 8px !important;
-            box-shadow: none !important;
-        }
-
-        div[data-baseweb="input"] input {
-            height: 60px !important;
-            box-sizing: border-box !important;
-            color: #fff !important;
-            padding: 0 14px !important;
-            font-size: 16px !important;
-        }
-
-        div[data-baseweb="input"] input::placeholder {
-            color: #85858b !important;
-            opacity: 1 !important;
-        }
-
-        div[data-baseweb="textarea"] {
-            background: transparent !important;
-            border: 1px solid rgba(212, 175, 55, 0.35) !important;
-            border-radius: 8px !important;
-            box-shadow: none !important;
-        }
-
-        div[data-baseweb="textarea"] textarea {
-            color: #fff !important;
-            background: transparent !important;
-            padding: 10px 12px !important;
-            font-size: 12px !important;
-            line-height: 1.4 !important;
-            min-height: 101px !important;
-            height: 101px !important;
-            box-sizing: border-box !important;
-            resize: none !important;
-        }
-
-        div[data-baseweb="textarea"] textarea::placeholder {
-            color: #777 !important;
-            opacity: 1 !important;
-        }
-
-        /* ================================================================
-           BOTÃO ENVIAR
-           ================================================================ */
-        div[data-testid="stButton"] {
-            margin-top: 22px !important;
-        }
-
-        div[data-testid="stButton"] button[kind="primary"] {
-            min-height: 61px !important;
-            height: 61px !important;
-            box-sizing: border-box !important;
-            background: linear-gradient(90deg, #e5c158 0%, #d4af37 50%, #c49b2e 100%) !important;
-            color: #17120b !important;
-            border: none !important;
-            border-radius: 7px !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
-            padding: 0 14px !important;
-            width: 100% !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1.2px !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.45) !important;
-        }
-
-        /* ================================================================
-           BOTÕES SUPERIORES
-           ================================================================ */
-        .top-bar-custom {
-            position: fixed !important;
-            top: 17px !important;
-            left: 19px !important;
-            right: 19px !important;
-            z-index: 99999 !important;
-            display: flex !important;
-            justify-content: space-between !important;
-            pointer-events: none !important;
-        }
-
-        .top-btn {
-            width: 114px !important;
-            min-height: 39px !important;
-            box-sizing: border-box !important;
-            background: rgba(18, 13, 8, 0.45) !important;
-            color: #c4aa6b !important;
-            text-decoration: none !important;
-            border: 1px solid rgba(212,175,55,0.55) !important;
-            border-radius: 5px !important;
-            padding: 4px 10px !important;
-            font-size: 8px !important;
-            line-height: 1.25 !important;
-            font-family: sans-serif !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.6px !important;
-            pointer-events: auto !important;
-            text-align: center !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-
-        /* ================================================================
-           AJUSTES ESPECÍFICOS PARA CELULAR
-           ================================================================ */
-        @media (max-width: 700px) {
-            .block-container {
-                padding-top: 4.2rem !important;
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
-            }
-
-            .jj-card {
-                padding: 10px 14px !important;
-                margin-bottom: 9px !important;
-            }
-
-            .jj-banner {
-                min-height: 79px !important;
-            }
-
-            .jj-categoria {
-                font-size: 24px !important;
-            }
-
-            .jj-crit-desc {
-                font-size: 10px !important;
-            }
-
-            /* Mantém a área inteira visível em celulares altos como o da
-               referência, sem criar scroll horizontal. */
-            .stApp {
-                overflow-x: hidden !important;
-            }
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
-        # Injeta os botões de navegação superiores
         st.markdown(
-            f"""<div class="top-bar-custom">
-                <a href="{logout_url}" class="top-btn">← SAIR</a>
-                <a href="{trocar_url}" class="top-btn">TROCAR<br>CATEGORIA</a>
-            </div>""",
+            f"""<div style="position: fixed; top: 12px; left: 12px; right: 12px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; pointer-events: none;"><a href="{logout_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; pointer-events: auto;">← Sair</a><a href="{trocar_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 8.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.15; pointer-events: auto;">Trocar<br>Categoria</a></div>""",
             unsafe_allow_html=True,
         )
 
@@ -1072,7 +831,7 @@ if modo == "Painel do Jurado":
                 if len(papeis_permitidos_categoria) == 1:
                     papel_unico = papeis_permitidos_categoria[0]
                     nova_grupo = "Condutor" if papel_unico == "Condutores" else "Conduzida"
-                    st.markdown(f"<div style='font-size:11px; color:#e5c158; padding-top:10px;'>Grupo: <b>{nova_grupo}</b></div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='font-size:11px; color:#e5c158; padding-top:15px;'>Grupo: <b>{nova_grupo}</b></div>", unsafe_allow_html=True)
                 else:
                     nova_grupo = st.radio(
                         "Grupo",
@@ -1103,26 +862,14 @@ if modo == "Painel do Jurado":
             os.path.join(os.path.dirname(__file__), arquivo_icone)
         )
         if icone_b64:
-            icone_html = f'<img src="{icone_b64}" class="jj-banner-img"/>'
+            icone_html = f'<img src="{icone_b64}" style="width: 24px; height: 24px; object-fit: contain;"/>'
         else:
             icone_html = emoji_icone
 
         fase_titulo, fase_sub = formatar_fase(fase_escolhida)
 
         st.markdown(
-            f"""<div class="jj-card jj-banner">
-                <div class="jj-banner-left">
-                    {icone_html}
-                    <div>
-                        <div class="jj-label" style="margin-bottom:0;">CATEGORIA</div>
-                        <div class="jj-categoria">{categoria_escolhida.upper()}</div>
-                    </div>
-                </div>
-                <div class="jj-banner-right">
-                    <div class="jj-fase">{fase_titulo}</div>
-                    <div class="jj-musica">{fase_sub}</div>
-                </div>
-            </div>""",
+            f"""<div class="jj-card jj-banner" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-banner-left" style="gap: 8px;"><div class="jj-banner-icon">{icone_html}</div><div><div class="jj-label">Categoria</div><div class="jj-categoria">{categoria_escolhida.upper()}</div></div></div><div class="jj-banner-right" style="padding-left: 8px;"><div class="jj-fase">{fase_titulo}</div><div class="jj-musica">{fase_sub}</div></div></div>""",
             unsafe_allow_html=True,
         )
 
@@ -1154,11 +901,10 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_comp = 0
             competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
-            # Cartão "Selecionar Competidor"
             st.markdown(
-                f"""<div class="jj-card jj-avaliando">
-                    <div class="jj-label" style="margin-bottom:2px;">SELECIONAR COMPETIDOR</div>
-                    <span class="jj-badge">{tipo_selecionado.upper()}</span>
+                f"""<div class="jj-card jj-avaliando" style="margin-bottom: 4px; padding: 6px 10px;">
+                    <div class="jj-label">Selecionar Competidor</div>
+                    <span class="jj-badge" style="padding: 2px 10px; font-size: 8px; margin-top: 2px;">{tipo_selecionado.upper()}</span>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -1177,11 +923,10 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_crit = 0
                 st.rerun()
 
-            # Cartão Estado Atual
             st.markdown(
-                f"""<div class="jj-card jj-avaliando">
-                    <div class="jj-label" style="margin-bottom:2px;">ESTADO ATUAL</div>
-                    <div class="jj-nome">AVALIANDO {competidor_escolhido.upper()}</div>
+                f"""<div class="jj-card jj-avaliando" style="margin-bottom: 6px; padding: 8px 10px; background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(40, 30, 18, 0.98) 100%);">
+                    <div class="jj-label" style="color: #e5c158;">Estado Atual</div>
+                    <div class="jj-nome" style="font-size: 19px; margin: 2px 0;">Avaliando {competidor_escolhido}</div>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -1193,7 +938,7 @@ if modo == "Painel do Jurado":
                 for p in permissoes_jurado:
                     if p["categoria"] == categoria_escolhida and p["papel"] == papel_escolhido:
                         criterios_permitidos_nomes.extend(p["criterios"])
-
+                
                 todos_crit_cat = criterios_por_categoria[categoria_escolhida]
                 criterios = {k: v for k, v in todos_crit_cat.items() if k in criterios_permitidos_nomes}
 
@@ -1209,22 +954,8 @@ if modo == "Painel do Jurado":
 
             criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
-            # Cartão Critério
             st.markdown(
-                f"""<div class="jj-card">
-                    <div class="jj-crit-head">
-                        <div style="display: flex; align-items: center;">
-                            <div class="jj-crit-icon">♪</div>
-                            <div>
-                                <div class="jj-label" style="margin-bottom:0;">CRITÉRIO</div>
-                                <div class="jj-crit-nome">{criterio_nome.upper()}</div>
-                            </div>
-                        </div>
-                        <div class="jj-contador">{st.session_state.idx_crit + 1}/{total_crit}</div>
-                    </div>
-                    <hr class="jj-divisor"/>
-                    <div class="jj-crit-desc"><b>O que avaliar:</b> {criterio_desc}</div>
-                </div>""",
+                f"""<div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;"><div class="jj-crit-head"><div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div><div style="flex: 1; padding: 0 6px;"><div class="jj-label">Critério</div><div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div></div><div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor" style="margin: 4px 0 4px 0;"/><div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
                 unsafe_allow_html=True,
             )
 
@@ -1248,8 +979,16 @@ if modo == "Painel do Jurado":
                     str(nota_salva).replace(".", ",") if nota_salva is not None else ""
                 )
 
-            with st.container(key="nota_card"):
-                st.markdown('<div class="jj-secao-label">SUA NOTA</div>', unsafe_allow_html=True)
+            st.markdown(
+                """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card div[data-baseweb="input"]:focus-within { border-color: rgba(212, 175, 55, 1) !important; box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; } .st-key-nota_card input::placeholder { color: rgba(243, 229, 171, 0.4) !important; }</style>""",
+                unsafe_allow_html=True,
+            )
+
+            with st.container(key="nota_card"):  
+                st.markdown(
+                    '<div class="jj-secao-label">Sua Nota</div>',
+                    unsafe_allow_html=True,
+                )
                 nota_digitada_str = st.text_input(
                     "SUA NOTA",
                     value=st.session_state[chave_nota_input],
@@ -1259,22 +998,58 @@ if modo == "Painel do Jurado":
                     label_visibility="collapsed",
                 )
 
-            chave_comentario = f"coment_{chave_base}"
+            st.markdown(
+                """<style>
+                .st-key-coment_card { 
+                    background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); 
+                    border: 1px solid rgba(212, 175, 55, 0.45); 
+                    border-radius: 10px; 
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
+                    padding: 8px 10px 10px 10px; 
+                    margin-bottom: 6px; 
+                } 
+                .st-key-coment_card textarea { 
+                    background-color: rgba(10, 7, 5, 0.92) !important; 
+                    border: 1px solid rgba(212, 175, 55, 0.35) !important; 
+                    border-radius: 6px !important; 
+                    color: #f3e5ab !important; 
+                    font-size: 12px !important; 
+                    height: 45px !important; 
+                    margin-bottom: 0px !important;
+                } 
+                .st-key-coment_card textarea::placeholder { 
+                    color: rgba(243, 229, 171, 0.35) !important; 
+                }
+                .st-key-coment_card p {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                </style>""",
+                unsafe_allow_html=True,
+            )
 
+            chave_comentario = f"coment_{chave_base}"
+            
             with st.container(key="coment_card"):
-                st.markdown('<div class="jj-secao-label">COMENTÁRIOS:</div>', unsafe_allow_html=True)
+                st.markdown(
+                    '<div class="jj-secao-label" style="margin-bottom: 4px;">Comentários:</div>',
+                    unsafe_allow_html=True,
+                )
                 comentario = st.text_area(
                     "COMENTÁRIOS",
                     key=chave_comentario,
                     placeholder="Deixe seu comentário aqui...",
                     max_chars=300,
-                    height=101,
+                    height=45,
                     label_visibility="collapsed",
                 )
-                st.markdown(f"<div style='text-align:right; color:#8d7a52; font-size:8px; margin-top:4px;'>{len(comentario)}/300</div>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:-8px;'>{len(comentario)}/300</div>",
+                    unsafe_allow_html=True,
+                )
 
             if st.button(
-                "➤ ENVIAR AVALIAÇÃO",
+                "➤  ENVIAR AVALIAÇÃO",
                 type="primary",
                 use_container_width=True,
                 key=f"enviar_{chave_base}",
@@ -1338,170 +1113,12 @@ elif modo == "Painel da Organização":
         st.error("❌ Palavra-passe incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) ---
-    st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
-    
-    components.html(
-        """
-        <script>
-        const parentDoc = window.parent.document;
-        let btn = parentDoc.getElementById('atalho-sidebar-telao');
-        
-        if (!btn) {
-            btn = parentDoc.createElement('button');
-            btn.id = 'atalho-sidebar-telao';
-            btn.innerHTML = '☰ MENU';
-            btn.title = 'Abrir Barra Lateral (Atalho: Alt + M)';
-            
-            Object.assign(btn.style, {
-                position: 'fixed',
-                top: '12px',
-                left: '12px',
-                zIndex: '9999999',
-                padding: '8px 14px',
-                background: 'rgba(15, 11, 7, 0.95)',
-                color: '#d4af37',
-                border: '1px solid #d4af37',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                fontSize: '14px',
-                fontFamily: 'sans-serif',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.6)',
-                transition: 'all 0.3s'
-            });
-            
-            btn.onmouseover = () => { btn.style.background = '#d4af37'; btn.style.color = '#000'; };
-            btn.onmouseout = () => { btn.style.background = 'rgba(15, 11, 7, 0.95)'; btn.style.color = '#d4af37'; };
-            
-            btn.onclick = function() {
-                const sidebarToggle = parentDoc.querySelector('[data-testid="collapsedControl"]');
-                if (sidebarToggle) {
-                    sidebarToggle.click();
-                } else {
-                    const closeBtn = parentDoc.querySelector('section[data-testid="stSidebar"] button');
-                    if (closeBtn) closeBtn.click();
-                }
-            };
-            
-            parentDoc.body.appendChild(btn);
-        }
-        
-        function keyHandler(e) {
-            if (e.altKey && e.key.toLowerCase() === 'm') {
-                if (btn) btn.click();
-            }
-        }
-        parentDoc.addEventListener('keydown', keyHandler);
-        
-        window.addEventListener('unload', function() {
-            if (btn) btn.remove();
-            parentDoc.removeEventListener('keydown', keyHandler);
-        });
-        </script>
-        """,
-        height=0,
-        width=0
-    )
-    
-    st.markdown(
-        """
-        <style>
-        .block-container {
-            padding-top: 5.5rem !important;
-            padding-bottom: 4rem !important;
-            padding-left: 2.5rem !important;
-            padding-right: 2.5rem !important;
-            max-width: 100% !important;
-            margin: 0 auto !important;
-        }
-        [data-testid="stHeader"] {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            z-index: 99999 !important;
-        }
-        [data-testid="collapsedControl"] {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            position: fixed !important;
-            top: 10px !important;
-            left: 10px !important;
-            background-color: rgba(15, 11, 7, 0.9) !important;
-            border: 1px solid rgba(212, 175, 55, 0.8) !important;
-            border-radius: 6px !important;
-            color: #f3e5ab !important;
-            z-index: 999999 !important;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
-        }
-        [data-testid="collapsedControl"] svg {
-            fill: #f3e5ab !important;
-        }
-        [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
-            display: none !important;
-        }
-        .viewerBadge_container, [data-testid="stStatusWidget"], footer {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        h2 {
-            font-size: 20px !important;
-            margin-top: -10px !important;
-            margin-bottom: 15px !important;
-            color: #e5c158 !important;
-            font-family: 'Cinzel', Georgia, serif;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-        h3 {
-            font-size: 13px !important;
-            margin-top: 2px !important;
-            margin-bottom: 5px !important;
-            color: #f3e5ab !important;
-            font-family: 'Cinzel', Georgia, serif;
-        }
-        
-        .tabela-dourada {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 12px;
-            font-family: 'Helvetica Neue', sans-serif;
-            color: #f3e5ab;
-            background: linear-gradient(135deg, rgba(10, 7, 5, 0.90) 0%, rgba(20, 15, 10, 0.95) 100%);
-            border: 1px solid rgba(212, 175, 55, 0.6);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
-        }
-        .tabela-dourada thead {
-            background-color: rgba(15, 11, 7, 1);
-        }
-        .tabela-dourada th {
-            color: #e5c158;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-align: center !important;
-            padding: 8px 6px;
-            border-bottom: 2px solid #d4af37;
-            line-height: 1.2;
-        }
-        .tabela-dourada td {
-            text-align: center !important;
-            padding: 8px 6px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            white-space: nowrap !important;
-        }
-        .tabela-dourada tbody tr:last-child td {
-            border-bottom: none;
-        }
-        .tabela-dourada tbody tr:hover {
-            background-color: rgba(212, 175, 55, 0.15);
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    # --- TELÃO (PÚBLICO) COMPACTO E COM NOME DOS JURADOS ---
+    st.markdown("""
+        <div style="text-align: center; padding: 2px 0 5px 0;">
+            <h1 style='font-family: "Cinzel", Georgia, serif; color: #e5c158; font-size: 26px; letter-spacing: 3px; margin-bottom: 0;'>JACK & JILL — NOITE NAS ARÁBIAS</h1>
+        </div>
+    """, unsafe_allow_html=True)
 
     with st.sidebar:
         st.markdown("---")
@@ -1509,165 +1126,121 @@ else:
         revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
         st.session_state.revelado = revelar_tudo
 
-        st.markdown("---")
-        st.markdown("### Categorias e Fases")
-        
-        opcoes_menu_telao = [
-            "Diamante",
-            "Platina",
-            "Ouro - Fase Classificatória",
-            "Ouro - Fase Final",
-            "Prata - Fase Classificatória",
-            "Prata - Fase Final",
-            "Aprendendo a Voar"
-        ]
-
-        def formatar_icone_menu(c):
-            if "Diamante" in c: return f"💎 {c}"
-            if "Platina" in c: return f"🥈 {c}"
-            if "Ouro" in c: return f"🥇 {c}"
-            if "Prata" in c: return f"🥈 {c}"
-            return f"🕊️ {c}"
-
-        selecao_telao = st.radio(
-            "Selecione a Categoria",
-            opcoes_menu_telao,
-            format_func=formatar_icone_menu,
-            label_visibility="collapsed"
-        )
-
     df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
-    if "Ouro" in selecao_telao:
-        categoria_nome = "Ouro"
-        fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
-    elif "Prata" in selecao_telao:
-        categoria_nome = "Prata"
-        fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
-    else:
-        categoria_nome = selecao_telao
-        fases_da_cat = fases_por_categoria[categoria_nome]
+    nomes_abas = list(categorias.keys())
+    abas = st.tabs([f"💎 {c}" if c=="Diamante" else f"🥈 {c}" if c=="Platina" else f"🥇 {c}" if c=="Ouro" else f"🥈 {c}" if c=="Prata" else f"🕊️ {c}" for c in nomes_abas])
 
-    df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
+    todos_jurados_ordenados = sorted(list(configuracao_jurados.keys()))
+    mapping_todos_jurados = {j: configuracao_jurados[j]["nome"] for j in todos_jurados_ordenados}
+    j_cols_padrao = list(mapping_todos_jurados.values())
 
-    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{selecao_telao.upper()} — RESULTADOS</h2>", unsafe_allow_html=True)
-    
-    def formatar_nome_jurado(nome):
-        partes = nome.split(" ", 1)
-        if len(partes) > 1:
-            return f"{partes[0]}<br>{partes[1]}"
-        return nome
-
-    def gerar_tabela_papel_fase(fase_nome, papel_nome):
-        jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
-        df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
-        
-        if fase_nome == "Fase Final" and categoria_nome in ["Prata", "Ouro"]:
-            comps = obter_classificados(categoria_nome, papel_nome)
-            if not comps:
-                comps = categorias[categoria_nome][papel_nome]
-        else:
-            comps = categorias[categoria_nome][papel_nome]
-
-        df_base = pd.DataFrame({"competidor": comps})
-        df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_fase.empty else pd.DataFrame()
-
-        if not df_papel.empty:
-            df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
-            df_notas_jurado["jurado_nome"] = df_notas_jurado["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
-            pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado_nome", values="nota").reset_index()
-            pivot_df = pd.merge(df_base, pivot_df, on="competidor", how="left")
-        else:
-            pivot_df = df_base.copy()
-
-        for j_col in jurados_aptos:
-            if j_col not in pivot_df.columns:
-                pivot_df[j_col] = None
-
-        exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
-        pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
-        pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
-
-        pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
-        pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
-
-        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
-        pivot_df = pivot_df.rename(columns=renomeador)
-
-        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
-        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
-        cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
-        tabela_exibicao = pivot_df[cols_finais_existentes].copy()
-
-        for col in jurados_formatados + ["TOTAL"]:
-            if col in tabela_exibicao.columns:
-                tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
-
-        return tabela_exibicao
-
-    def gerar_tabela_acumulada_diamante_platina(papel_nome):
-        jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
-        comps = categorias[categoria_nome][papel_nome]
-        df_base = pd.DataFrame({"competidor": comps})
-
-        if not df_cat.empty:
-            df_fase_jurado = df_cat[df_cat["papel"] == papel_nome].groupby(["competidor", "fase", "jurado"])["nota"].mean().reset_index()
-            df_total_jurado = df_fase_jurado.groupby(["competidor", "jurado"])["nota"].sum().reset_index()
-            df_total_jurado["jurado_nome"] = df_total_jurado["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
+    for i, categoria_nome in enumerate(nomes_abas):
+        with abas[i]:
+            st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px; margin: 5px 0 10px 0;'>{categoria_nome.upper()} — RESULTADO</h2>", unsafe_allow_html=True)
             
-            pivot_df = df_total_jurado.pivot(index="competidor", columns="jurado_nome", values="nota").reset_index()
-            pivot_df = pd.merge(df_base, pivot_df, on="competidor", how="left")
-        else:
-            pivot_df = df_base.copy()
+            fases_da_cat = fases_por_categoria[categoria_nome]
+            
+            if len(fases_da_cat) > 1:
+                col_fase1, col_fase2 = st.columns(2, gap="medium")
+                fases_cols = [(fases_da_cat[0], col_fase1), (fases_da_cat[1], col_fase2)]
+            else:
+                fases_cols = [(fases_da_cat[0], st.container())]
 
-        for j_col in jurados_aptos:
-            if j_col not in pivot_df.columns:
-                pivot_df[j_col] = None
+            df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
 
-        exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
-        pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
-        pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
+            for fase_nome, container_fase in fases_cols:
+                with container_fase:
+                    fase_titulo, fase_sub = formatar_fase(fase_nome)
+                    st.markdown(f"""
+                        <div style="background: linear-gradient(135deg, rgba(20,15,10,0.95) 0%, rgba(40,30,18,0.95) 100%); border: 1px solid rgba(212,175,55,0.6); border-radius: 6px; padding: 6px; text-align: center; margin-bottom: 8px;">
+                            <div style="font-family: Cinzel, Georgia, serif; color: #f3e5ab; font-size: 14px; font-weight: bold; letter-spacing: 1px;">— {fase_titulo} —</div>
+                            <div style="color: #b39b6b; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;">{fase_sub}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
 
-        pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
-        pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
+                    df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
+                    
+                    c_cond, c_condurz = st.columns(2, gap="small")
+                    papeis_info = [("Condutores", c_cond), ("Conduzidas", c_condurz)]
+                    
+                    for papel_nome, col_papel in papeis_info:
+                        with col_papel:
+                            st.markdown(f"<h4 style='text-align: center; color: #e5c158; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>{papel_nome}</h4>", unsafe_allow_html=True)
+                            
+                            if fase_nome == "Fase Final" and categoria_nome in ["Prata", "Ouro"]:
+                                comps = obter_classificados(categoria_nome, papel_nome)
+                                if not comps:
+                                    comps = categorias[categoria_nome][papel_nome]
+                            else:
+                                comps = categorias[categoria_nome][papel_nome]
 
-        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
-        pivot_df = pivot_df.rename(columns=renomeador)
+                            df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_fase.empty else pd.DataFrame()
+                            
+                            if not df_papel.empty:
+                                df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
+                                pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado", values="nota").reset_index()
+                                
+                                pivot_df = pivot_df.rename(columns=mapping_todos_jurados)
+                                for j_col in j_cols_padrao:
+                                    if j_col not in pivot_df.columns:
+                                        pivot_df[j_col] = None
+                                
+                                exist_j_cols = [j for j in j_cols_padrao if j in pivot_df.columns]
+                                pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+                                pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
+                            else:
+                                data_dict = {"competidor": sorted(comps)}
+                                for j_col in j_cols_padrao:
+                                    data_dict[j_col] = [None] * len(comps)
+                                pivot_df = pd.DataFrame(data_dict)
+                                pivot_df["TOTAL"] = None
+                            
+                            pivot_df.index = pivot_df.index + 1
+                            pivot_df.index.name = "#"
+                            pivot_df = pivot_df.reset_index()
+                            
+                            pivot_df["CLASS."] = [f"{idx}º" for idx in pivot_df.index]
+                            pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
+                            
+                            cols_finais = ["#", "PARTICIPANTE"] + j_cols_padrao + ["TOTAL", "CLASS."]
+                            cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
+                            
+                            tabela_exibicao = pivot_df[cols_finais_existentes].copy()
+                            
+                            for col in j_cols_padrao + ["TOTAL"]:
+                                if col in tabela_exibicao.columns:
+                                    tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
 
-        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
-        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
-        cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
-        tabela_exibicao = pivot_df[cols_finais_existentes].copy()
+                            st.dataframe(tabela_exibicao, use_container_width=True, hide_index=True)
 
-        for col in jurados_formatados + ["TOTAL"]:
-            if col in tabela_exibicao.columns:
-                tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
-
-        return tabela_exibicao
-
-    if categoria_nome in ["Diamante", "Platina"]:
-        col_cond, col_condz = st.columns(2)
-
-        with col_cond:
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
-            tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
-            st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
-
-        with col_condz:
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
-            tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
-            st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
-
-    else:
-        for fase_nome in fases_da_cat:
-            col_cond, col_condz = st.columns(2)
-
-            with col_cond:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
-                tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
-                st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
-
-            with col_condz:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
-                tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
-                st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+            if categoria_nome in ["Platina", "Diamante"]:
+                st.markdown("<hr style='margin: 5px 0; border-color: rgba(212,175,55,0.3);'/>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; font-size: 13px; letter-spacing: 1px; margin: 4px 0;'>🌟 CLASSIFICAÇÃO GERAL ACUMULADA (MÚSICA 1 + MÚSICA 2)</h3>", unsafe_allow_html=True)
+                
+                g_cond, g_condurz = st.columns(2, gap="medium")
+                for g_idx, (g_papel, col_g) in enumerate([("Condutores", g_cond), ("Conduzidas", g_condurz)]):
+                    with col_g:
+                        st.markdown(f"<h4 style='text-align: center; color: #f3e5ab; font-size: 10px; text-transform: uppercase; margin-bottom: 2px;'>Geral — {g_papel}</h4>", unsafe_allow_html=True)
+                        df_g = df_cat[df_cat["papel"] == g_papel] if not df_cat.empty else pd.DataFrame()
+                        
+                        if not df_g.empty:
+                            fase_means = df_g.groupby(["competidor", "fase"])["nota"].mean().reset_index()
+                            total_score = fase_means.groupby("competidor")["nota"].sum().reset_index()
+                            total_score.columns = ["PARTICIPANTE", "PONTUAÇÃO TOTAL"]
+                            total_score = total_score.sort_values(by="PONTUAÇÃO TOTAL", ascending=False).reset_index(drop=True)
+                            total_score.index = total_score.index + 1
+                            total_score.index.name = "#"
+                            total_score = total_score.reset_index()
+                            total_score["CLASS."] = [f"{idx}º" for idx in total_score.index]
+                            total_score["PONTUAÇÃO TOTAL"] = total_score["PONTUAÇÃO TOTAL"].apply(lambda x: f"{x:.1f}")
+                            
+                            st.dataframe(total_score[["#", "PARTICIPANTE", "PONTUAÇÃO TOTAL", "CLASS."]], use_container_width=True, hide_index=True)
+                        else:
+                            comps_geral = sorted(categorias[categoria_nome][g_papel])
+                            data_geral = {"PARTICIPANTE": comps_geral, "PONTUAÇÃO TOTAL": ["-"] * len(comps_geral), "CLASS.": [f"{i+1}º" for i in range(len(comps_geral))]}
+                            df_vazio_geral = pd.DataFrame(data_geral)
+                            df_vazio_geral.index = df_vazio_geral.index + 1
+                            df_vazio_geral.index.name = "#"
+                            df_vazio_geral = df_vazio_geral.reset_index()
+                            st.dataframe(df_vazio_geral[["#", "PARTICIPANTE", "PONTUAÇÃO TOTAL", "CLASS."]], use_container_width=True, hide_index=True)
