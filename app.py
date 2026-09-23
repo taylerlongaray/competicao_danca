@@ -620,25 +620,51 @@ if modo == "Painel do Jurado":
         jurado_str = f"jurado={st.session_state.jurado_logado}&"
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-        # INJEÇÃO DO CSS ORIGINAL EXATO
+        # ---------------------------------------------------------
+        # CSS ULTRA-COMPACTO: Margens mínimas e sem gaps gigantes
+        # ---------------------------------------------------------
         st.markdown("""
         <style>
         /* Oculta os labels padrões do Streamlit */
         label[data-baseweb="label"] { display: none !important; }
         
+        /* Reduz o topo, a base e o espaço geral de todo o ecrã */
+        .block-container {
+            padding-top: 3.2rem !important;
+            padding-bottom: 1rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        
+        /* Remove o gap (espaçamento vertical gigante) entre cada elemento do Streamlit */
+        div[data-testid="stVerticalBlock"] {
+            gap: 0.2rem !important; 
+        }
+
+        /* Menu ajustável super fino */
+        [data-testid="stExpander"] details summary {
+            min-height: 2rem !important;
+            padding: 0.4rem 1rem !important;
+            font-size: 12px !important;
+        }
+        [data-testid="stExpander"] details {
+            margin-bottom: 2px !important;
+        }
+        
+        /* Base comum dos cartões, agora muito mais compactos */
         .jj-card {
             background: rgba(14, 10, 7, 0.9) !important;
             border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 8px !important;
-            padding: 16px 20px !important;
-            margin-bottom: 16px !important;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
+            border-radius: 6px !important;
+            padding: 8px 12px !important; 
+            margin-bottom: 0px !important; /* Zero margem extra para não somar com o Streamlit */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6) !important;
         }
         .jj-label {
             color: #9e8a59;
-            font-size: 10px;
+            font-size: 8px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             margin-bottom: 2px;
         }
         
@@ -647,21 +673,22 @@ if modo == "Painel do Jurado":
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 10px 14px !important; 
         }
         .jj-banner-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
         .jj-banner-img {
-            width: 24px !important;
-            height: 24px !important;
+            width: 22px !important;
+            height: 22px !important;
             object-fit: contain;
         }
         .jj-categoria {
             color: #e5c158;
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 22px;
+            font-size: 18px; /* Reduzido para caber melhor */
             font-weight: bold;
             letter-spacing: 1px;
             line-height: 1.1;
@@ -669,18 +696,18 @@ if modo == "Painel do Jurado":
         .jj-banner-right {
             text-align: right;
             border-left: 1px solid rgba(212, 175, 55, 0.3);
-            padding-left: 16px;
+            padding-left: 10px;
         }
         .jj-fase {
             color: #e5c158;
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: bold;
             letter-spacing: 1px;
         }
         .jj-musica {
             color: #9e8a59;
-            font-size: 10px;
+            font-size: 8.5px;
             text-transform: uppercase;
         }
 
@@ -691,26 +718,27 @@ if modo == "Painel do Jurado":
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 6px 12px !important; /* Altura super fina */
         }
         .jj-badge {
             border: 1px solid rgba(212, 175, 55, 0.6);
             border-radius: 20px;
-            padding: 2px 14px;
-            font-size: 9px;
+            padding: 2px 12px;
+            font-size: 8.5px;
             color: #d4af37;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 6px;
+            margin-top: 2px;
             display: inline-block;
         }
         .jj-nome {
             color: #ffffff;
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 18px;
+            font-size: 15px; 
             font-weight: normal;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         /* Critério */
@@ -722,19 +750,19 @@ if modo == "Painel do Jurado":
         .jj-crit-icon {
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 22px;
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #e5c158;
-            font-size: 14px;
-            margin-right: 12px;
+            font-size: 11px;
+            margin-right: 8px;
         }
         .jj-crit-nome {
             color: #e5c158;
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -742,39 +770,44 @@ if modo == "Painel do Jurado":
         .jj-contador {
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 12px;
-            padding: 2px 10px;
-            font-size: 10px;
+            padding: 1px 6px;
+            font-size: 8px;
             color: #9e8a59;
         }
         .jj-divisor {
             border: none;
             border-top: 1px solid rgba(212, 175, 55, 0.2);
-            margin: 12px 0;
+            margin: 6px 0; /* Linha com quase nenhum espaçamento */
         }
         .jj-crit-desc {
             color: #cccccc;
-            font-size: 11px;
-            line-height: 1.5;
+            font-size: 9.5px;
+            line-height: 1.3;
         }
         
         /* Input Containers (Sua Nota / Comentários) */
         .st-key-nota_card, .st-key-coment_card {
             background: rgba(14, 10, 7, 0.9) !important;
             border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 8px !important;
-            padding: 12px 16px 16px 16px !important;
-            margin-bottom: 16px !important;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
+            border-radius: 6px !important;
+            padding: 6px 12px 10px 12px !important; /* Espaçamento interno mínimo */
+            margin-bottom: 2px !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6) !important;
         }
         .jj-secao-label {
             color: #9e8a59;
-            font-size: 10px;
+            font-size: 8.5px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 8px;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
         
-        /* Inputs Nativos Streamlit */
+        /* Select e Inputs Nativos Streamlit (Finos) */
+        div[data-baseweb="select"] > div {
+            padding-top: 4px !important;
+            padding-bottom: 4px !important;
+        }
+        
         div[data-baseweb="input"] {
             background-color: #1f1b19 !important;
             border-radius: 6px !important;
@@ -785,6 +818,8 @@ if modo == "Painel do Jurado":
         }
         div[data-baseweb="input"] input {
             color: #fff !important;
+            padding: 6px 12px !important;
+            font-size: 13px !important;
         }
         
         div[data-baseweb="textarea"] {
@@ -797,6 +832,9 @@ if modo == "Painel do Jurado":
         }
         div[data-baseweb="textarea"] textarea {
             color: #fff !important;
+            padding: 6px 12px !important;
+            font-size: 12px !important;
+            min-height: 45px !important; /* Caixa de comentários mais baixa */
         }
 
         /* Botao Enviar Dourado */
@@ -805,13 +843,14 @@ if modo == "Painel do Jurado":
             color: #000 !important;
             border: none !important;
             font-weight: bold !important;
-            font-size: 14px !important;
-            padding: 8px 16px !important;
+            font-size: 13px !important;
+            padding: 6px 12px !important; /* Altura do botão mais fina */
             border-radius: 6px !important;
             width: 100% !important;
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+            margin-top: 2px !important;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -927,7 +966,7 @@ if modo == "Painel do Jurado":
             competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
             st.markdown(
-                f"""<div class="jj-card jj-avaliando" style="padding-bottom: 8px;">
+                f"""<div class="jj-card jj-avaliando">
                     <div class="jj-label">Selecionar Competidor</div>
                     <span class="jj-badge">{tipo_selecionado.upper()}</span>
                 </div>""",
@@ -1037,10 +1076,10 @@ if modo == "Painel do Jurado":
                     key=chave_comentario,
                     placeholder="Deixe seu comentário aqui...",
                     max_chars=300,
-                    height=70,
+                    height=50,
                     label_visibility="collapsed",
                 )
-                st.markdown(f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:4px;'>{len(comentario)}/300</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align:right; color:#8d7a52; font-size:8px; margin-top:2px;'>{len(comentario)}/300</div>", unsafe_allow_html=True)
 
             if st.button(
                 "➤ ENVIAR AVALIAÇÃO",
