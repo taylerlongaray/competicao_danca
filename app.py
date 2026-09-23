@@ -1,4 +1,5 @@
 import base64
+import json
 import os
 import pandas as pd
 import streamlit as st
@@ -10,6 +11,26 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+ARQUIVO_VOTOS = "votos.json"
+
+
+def carregar_votos():
+    if os.path.exists(ARQUIVO_VOTOS):
+        try:
+            with open(ARQUIVO_VOTOS, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+
+def salvar_votos(votos):
+    try:
+        with open(ARQUIVO_VOTOS, "w", encoding="utf-8") as f:
+            json.dump(votos, f, ensure_ascii=False, indent=4)
+    except Exception:
+        pass
 
 
 def obter_fundo_css(tipo_tela):
@@ -81,9 +102,6 @@ def img_to_base64(file_path):
         return f"data:image/{mime};base64,{encoded}"
     return ""
 
-
-if "votos" not in st.session_state:
-    st.session_state.votos = []
 
 if "revelado" not in st.session_state:
     st.session_state.revelado = False
@@ -424,9 +442,10 @@ def obter_jurados_da_categoria_papel(cat, papel):
 
 
 def obter_classificados(categoria, papel):
-    if not st.session_state.votos:
+    votos_atuais = carregar_votos()
+    if not votos_atuais:
         return []
-    df = pd.DataFrame(st.session_state.votos)
+    df = pd.DataFrame(votos_atuais)
     if df.empty:
         return []
 
@@ -462,7 +481,9 @@ def registrar_voto(
     nota,
     justificativa,
 ):
-    for voto in st.session_state.votos:
+    votos = carregar_votos()
+    encontrado = False
+    for voto in votos:
         if (
             voto["jurado"] == jurado
             and voto["categoria"] == categoria
@@ -473,22 +494,26 @@ def registrar_voto(
         ):
             voto["nota"] = nota
             voto["justificativa"] = justificativa
-            return
+            encontrado = True
+            break
 
-    st.session_state.votos.append({
-        "jurado": jurado,
-        "categoria": categoria,
-        "fase": fase,
-        "papel": papel,
-        "competidor": competidor,
-        "criterio": criterio,
-        "nota": nota,
-        "justificativa": justificativa,
-    })
+    if not encontrado:
+        votos.append({
+            "jurado": jurado,
+            "categoria": categoria,
+            "fase": fase,
+            "papel": papel,
+            "competidor": competidor,
+            "criterio": criterio,
+            "nota": nota,
+            "justificativa": justificativa,
+        })
+    salvar_votos(votos)
 
 
 def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
-    for voto in st.session_state.votos:
+    votos = carregar_votos()
+    for voto in votos:
         if (
             voto["jurado"] == jurado
             and voto["categoria"] == categoria
@@ -1232,18 +1257,19 @@ elif modo == "Painel da Organização":
     SENHA_MESTRE = "danca123"
 
     if senha_digitada == SENHA_MESTRE:
+        votos_atuais = carregar_votos()
         st.success("🔓 Acesso autorizado!")
-        if not st.session_state.votos:
+        if not votos_atuais:
             st.warning("Ainda não há votos registrados na competição.")
         else:
-            df_votos = pd.DataFrame(st.session_state.votos)
+            df_votos = pd.DataFrame(votos_atuais)
             st.markdown("### Auditoria Completa de Notas e Justificativas")
             st.dataframe(df_votos, use_container_width=True)
     elif senha_digitada != "":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM MÚSICA 1 E MÚSICA 2 LADO A LADO EM DIAMANTE/PLATINA ---
+    # --- TELÃO (PÚBLICO) COM AUTO-REFRESH EM TEMPO REAL PARA ATUALIZAR NOTAS ---
     components.html(
         """
         <script>
@@ -1296,6 +1322,11 @@ else:
             }
         }
         parentDoc.addEventListener('keydown', keyHandler);
+        
+        // Auto-refresh do telão a cada 4 segundos para atualizar notas em tempo real sem intervenção
+        setTimeout(function(){
+            window.location.reload();
+        }, 4000);
         
         window.addEventListener('unload', function() {
             if (btn) btn.remove();
@@ -1482,7 +1513,7 @@ else:
             label_visibility="collapsed"
         )
 
-    df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
+    df_votos = pd.DataFrame(carregar_votos()) if carregar_votos() else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
     if "Ouro" in selecao_telao:
         categoria_nome = "Ouro"
