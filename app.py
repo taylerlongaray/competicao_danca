@@ -103,9 +103,6 @@ def img_to_base64(file_path):
     return ""
 
 
-if "revelado" not in st.session_state:
-    st.session_state.revelado = False
-
 if "jurado_logado" not in st.session_state:
     st.session_state.jurado_logado = None
 
@@ -437,7 +434,7 @@ def obter_jurados_da_categoria_papel(cat, papel):
                     jurados_validos.append(dados["nome"])
                     break
     
-    # ORDEM ALFABÉTICA (Mas empurra o "Alex" sempre para o final da lista)
+    # Ordem alfabética (Alex sempre vai para o fim)
     jurados_ordenados = sorted(list(set(jurados_validos)), key=lambda x: (1 if "Alex" in x else 0, x))
     return jurados_ordenados
 
@@ -1482,25 +1479,33 @@ else:
         unsafe_allow_html=True,
     )
 
+    opcoes_menu_telao = [
+        "Diamante",
+        "Platina",
+        "Ouro - Fase Classificatória",
+        "Ouro - Fase Final",
+        "Prata - Fase Classificatória",
+        "Prata - Fase Final",
+        "Aprendendo a Voar"
+    ]
+
     with st.sidebar:
         st.markdown("---")
-        st.markdown("### Controlo do Telão")
-        revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
-        st.session_state.revelado = revelar_tudo
+        st.markdown("### 🔓 Revelar Nota Secreta (Alex)")
+        
+        if "rev_status" not in st.session_state:
+            st.session_state.rev_status = {op: False for op in opcoes_menu_telao}
+
+        for op in opcoes_menu_telao:
+            st.session_state.rev_status[op] = st.checkbox(
+                f"Revelar: {op}", 
+                value=st.session_state.rev_status[op],
+                key=f"chk_rev_{op}"
+            )
 
         st.markdown("---")
-        st.markdown("### Categorias e Fases")
+        st.markdown("### 📊 Seleção da Tabela no Telão")
         
-        opcoes_menu_telao = [
-            "Diamante",
-            "Platina",
-            "Ouro - Fase Classificatória",
-            "Ouro - Fase Final",
-            "Prata - Fase Classificatória",
-            "Prata - Fase Final",
-            "Aprendendo a Voar"
-        ]
-
         def formatar_icone_menu(c):
             if "Diamante" in c: return f"💎 {c}"
             if "Platina" in c: return f"🥈 {c}"
@@ -1514,6 +1519,8 @@ else:
             format_func=formatar_icone_menu,
             label_visibility="collapsed"
         )
+
+    revelado_atual = st.session_state.rev_status.get(selecao_telao, False)
 
     df_votos = pd.DataFrame(carregar_votos()) if carregar_votos() else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
@@ -1537,7 +1544,7 @@ else:
             return f"{partes[0]}<br>{partes[1]}"
         return nome
 
-    def gerar_tabela_papel_fase(fase_nome, papel_nome):
+    def gerar_tabela_papel_fase(fase_nome, papel_nome, revelado_atual):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
         
@@ -1564,15 +1571,16 @@ else:
                 pivot_df[j_col] = None
 
         exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
+        vis_cols = [j for j in exist_j_cols if "Alex" not in j]
         
-        # LOGICA DA NOTA OCULTA E RANKING
-        if not st.session_state.revelado:
-            vis_cols = [j for j in exist_j_cols if "Alex" not in j]
+        # Lógica de Ranking e Total Parcial vs Completo
+        if not revelado_atual:
             pivot_df["TOTAL_RANKING"] = pivot_df[vis_cols].sum(axis=1, min_count=1)
+            pivot_df["TOTAL"] = pivot_df[vis_cols].sum(axis=1, min_count=1)
         else:
             pivot_df["TOTAL_RANKING"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+            pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
 
-        pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
         pivot_df = pivot_df.sort_values(by="TOTAL_RANKING", ascending=False, na_position="last").reset_index(drop=True)
 
         pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
@@ -1588,20 +1596,17 @@ else:
 
         for j in jurados_formatados:
             if j in tabela_exibicao.columns:
-                if not st.session_state.revelado and "Alex" in j:
+                if not revelado_atual and "Alex" in j:
                     tabela_exibicao[j] = tabela_exibicao[j].apply(lambda x: "🔒" if pd.notnull(x) and str(x) != "nan" else "-")
                 else:
                     tabela_exibicao[j] = tabela_exibicao[j].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
         
         if "TOTAL" in tabela_exibicao.columns:
-            if not st.session_state.revelado:
-                tabela_exibicao["TOTAL"] = "🔒"
-            else:
-                tabela_exibicao["TOTAL"] = tabela_exibicao["TOTAL"].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and str(x) != "nan" else "-")
+            tabela_exibicao["TOTAL"] = tabela_exibicao["TOTAL"].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != 0 and str(x) != "nan" and str(x) != "0.0" else "-")
 
         return tabela_exibicao.to_html(index=False, classes="tabela-dourada", escape=False)
 
-    def gerar_tabela_acumulada_diamante_platina_html(papel_nome):
+    def gerar_tabela_acumulada_diamante_platina_html(papel_nome, revelado_atual):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         comps = categorias[categoria_nome][papel_nome]
         
@@ -1629,8 +1634,9 @@ else:
 
         lista_linhas = []
         for comp in comps:
-            totais_jurados = []
+            totais_geral = []
             totais_visiveis = []
+            
             for j in jurados_aptos:
                 f1 = dados_tabela[comp][j]['f1']
                 f2 = dados_tabela[comp][j]['f2']
@@ -1638,27 +1644,31 @@ else:
                 val_f2 = f2 if f2 is not None else 0
                 soma_j = val_f1 + val_f2
                 
-                totais_jurados.append(soma_j)
+                totais_geral.append(soma_j)
                 if "Alex" not in j:
                     totais_visiveis.append(soma_j)
                     
             tem_nota_geral = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos)
             tem_nota_visivel = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos if "Alex" not in j)
 
-            total_geral = sum(totais_jurados) if tem_nota_geral else -1
-            total_ord = sum(totais_visiveis) if tem_nota_visivel else -1
+            total_completo = sum(totais_geral) if tem_nota_geral else -1
+            total_visivel = sum(totais_visiveis) if tem_nota_visivel else -1
             
+            if revelado_atual:
+                total_exibicao = total_completo
+                total_ord = total_completo
+            else:
+                total_exibicao = total_visivel
+                total_ord = total_visivel
+
             lista_linhas.append({
                 "competidor": comp,
                 "dados": dados_tabela[comp],
-                "total": total_geral,
+                "total": total_exibicao,
                 "total_ord": total_ord
             })
             
-        if st.session_state.revelado:
-            lista_linhas.sort(key=lambda x: x["total"], reverse=True)
-        else:
-            lista_linhas.sort(key=lambda x: x["total_ord"], reverse=True)
+        lista_linhas.sort(key=lambda x: x["total_ord"], reverse=True)
         
         html = '<table class="tabela-dourada-compacta">'
         html += '<thead>'
@@ -1687,34 +1697,35 @@ else:
             html += f'<td>{class_str}</td>'
             html += f'<td class="col-partic" title="{comp_nome}">{comp_nome}</td>'
             
-            soma_competidor = 0
-            tem_nota = False
-            
             for j in jurados_aptos:
                 f1 = linha["dados"][j]['f1']
                 f2 = linha["dados"][j]['f2']
                 
-                if not st.session_state.revelado and "Alex" in j:
+                if not revelado_atual and "Alex" in j:
                     str_f1 = "🔒" if f1 is not None else "-"
                     str_f2 = "🔒" if f2 is not None else "-"
                 else:
                     str_f1 = f"{f1:.1f}" if f1 is not None else "-"
                     str_f2 = f"{f2:.1f}" if f2 is not None else "-"
-                    if f1 is not None:
-                        soma_competidor += f1
-                        tem_nota = True
-                    if f2 is not None:
-                        soma_competidor += f2
-                        tem_nota = True
-                        
+                
                 html += f'<td>{str_f1}</td>'
                 html += f'<td>{str_f2}</td>'
-                    
-            if not st.session_state.revelado:
-                str_total = "🔒" if tem_nota else "-"
-            else:
-                str_total = f"{soma_competidor:.1f}" if tem_nota else "-"
-                
+            
+            soma_real = 0
+            tem_valida = False
+            for j in jurados_aptos:
+                f1 = linha["dados"][j]['f1']
+                f2 = linha["dados"][j]['f2']
+                if not revelado_atual and "Alex" in j:
+                    continue
+                if f1 is not None:
+                    soma_real += f1
+                    tem_valida = True
+                if f2 is not None:
+                    soma_real += f2
+                    tem_valida = True
+
+            str_total = f"{soma_real:.1f}" if tem_valida else "-"
             html += f'<td><b>{str_total}</b></td>'
             html += '</tr>'
             
@@ -1728,12 +1739,12 @@ else:
 
         with col_cond:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
-            tabela_cond_html = gerar_tabela_acumulada_diamante_platina_html("Condutores")
+            tabela_cond_html = gerar_tabela_acumulada_diamante_platina_html("Condutores", revelado_atual)
             st.markdown(tabela_cond_html, unsafe_allow_html=True)
 
         with col_condz:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
-            tabela_condz_html = gerar_tabela_acumulada_diamante_platina_html("Conduzidas")
+            tabela_condz_html = gerar_tabela_acumulada_diamante_platina_html("Conduzidas", revelado_atual)
             st.markdown(tabela_condz_html, unsafe_allow_html=True)
 
     else:
@@ -1742,10 +1753,10 @@ else:
 
             with col_cond:
                 st.markdown(f"<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores — {fase_nome}</h3>", unsafe_allow_html=True)
-                tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
+                tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores", revelado_atual)
                 st.markdown(tabela_cond, unsafe_allow_html=True)
 
             with col_condz:
                 st.markdown(f"<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas — {fase_nome}</h3>", unsafe_allow_html=True)
-                tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
+                tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas", revelado_atual)
                 st.markdown(tabela_condz, unsafe_allow_html=True)
