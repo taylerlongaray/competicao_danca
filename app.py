@@ -419,7 +419,9 @@ def obter_jurados_da_categoria_papel(cat, papel):
                 if p["categoria"] == cat and p["papel"] == papel:
                     jurados_validos.append(dados["nome"])
                     break
-    return sorted(list(set(jurados_validos)))
+    # Ordena colocando o Alex Alves sempre por último
+    jurados_ordenados = sorted(list(set(jurados_validos)), key=lambda x: 1 if "Alex Alves" in x else 0)
+    return jurados_ordenados
 
 
 def obter_classificados(categoria, papel):
