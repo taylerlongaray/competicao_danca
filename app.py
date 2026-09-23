@@ -620,130 +620,146 @@ if modo == "Painel do Jurado":
         jurado_str = f"jurado={st.session_state.jurado_logado}&"
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-        # --- CSS ORIGINAL ESTÁVEL (Sem forçar espaçamentos artificiais) ---
+        # --- CSS OTIMIZADO PARA CABER NO ECRÃ SEM SCROLL E SEM SOBREPOSIÇÕES ---
         st.markdown("""
         <style>
         header[data-testid="stHeader"], footer, label[data-baseweb="label"] { display: none !important; }
 
         .block-container {
-            padding-top: 5.5rem !important;
-            padding-bottom: 2rem !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
+            padding-top: 3.2rem !important;
+            padding-bottom: 0.3rem !important;
+            padding-left: 0.6rem !important;
+            padding-right: 0.6rem !important;
             max-width: 100% !important;
         }
 
+        div[data-testid="stVerticalBlock"] {
+            gap: 0.25rem !important;
+        }
+
         .jj-card, [data-testid="stExpander"] {
-            background: rgba(10, 7, 5, 0.75) !important;
+            background: rgba(10, 7, 5, 0.85) !important;
             border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 8px !important;
-            padding: 12px 14px !important;
-            margin-bottom: 10px !important;
+            border-radius: 6px !important;
+            padding: 5px 10px !important;
+            margin-bottom: 0px !important;
         }
 
         [data-testid="stExpander"] details summary {
-            padding: 4px 8px !important;
+            padding: 2px 6px !important;
         }
         [data-testid="stExpander"] details summary p {
-            font-size: 12px !important;
+            font-size: 11px !important;
             color: #e5c158 !important;
         }
 
         .jj-label, .jj-secao-label {
             color: #9e8a59;
-            font-size: 9px;
+            font-size: 8px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            margin-bottom: 1px;
         }
 
         .jj-banner {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 4px 10px !important;
         }
-        .jj-banner-left { display: flex; align-items: center; gap: 10px; }
-        .jj-banner-img { width: 22px !important; height: 22px !important; object-fit: contain; }
+        .jj-banner-left { display: flex; align-items: center; gap: 8px; }
+        .jj-banner-img { width: 18px !important; height: 18px !important; object-fit: contain; }
         .jj-categoria {
             color: #e5c158;
-            font-family: 'Cinzel', Georgia, serif;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .jj-banner-right {
-            text-align: right;
-            border-left: 1px solid rgba(212, 175, 55, 0.2);
-            padding-left: 10px;
-        }
-        .jj-fase {
-            color: #fff;
             font-family: 'Cinzel', Georgia, serif;
             font-size: 13px;
             font-weight: bold;
         }
-        .jj-musica { color: #9e8a59; font-size: 8px; text-transform: uppercase; }
+        .jj-banner-right {
+            text-align: right;
+            border-left: 1px solid rgba(212, 175, 55, 0.2);
+            padding-left: 8px;
+        }
+        .jj-fase {
+            color: #fff;
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .jj-musica { color: #9e8a59; font-size: 7px; text-transform: uppercase; }
 
-        .jj-avaliando { text-align: center; }
+        .jj-avaliando { text-align: center; padding: 4px 10px !important; }
         .jj-badge {
             border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 20px;
-            padding: 2px 10px;
-            font-size: 9px;
+            border-radius: 15px;
+            padding: 1px 8px;
+            font-size: 8px;
             color: #d4af37;
             text-transform: uppercase;
         }
         .jj-nome {
             color: #fff;
             font-family: 'Cinzel', Georgia, serif;
-            font-size: 15px;
+            font-size: 12px;
             text-transform: uppercase;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         .jj-crit-head { display: flex; justify-content: space-between; align-items: center; }
         .jj-crit-icon {
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #e5c158;
-            font-size: 10px;
-            margin-right: 8px;
+            font-size: 9px;
+            margin-right: 6px;
         }
         .jj-crit-nome {
             color: #fff;
             font-family: 'Cinzel', Georgia, serif;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
             text-transform: uppercase;
         }
         .jj-contador {
             border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 10px;
-            padding: 2px 6px;
-            font-size: 9px;
+            border-radius: 8px;
+            padding: 1px 5px;
+            font-size: 8px;
             color: #9e8a59;
         }
         .jj-divisor {
             border: none;
             border-top: 1px solid rgba(212, 175, 55, 0.2);
-            margin: 8px 0;
+            margin: 3px 0;
         }
-        .jj-crit-desc { color: #aaa; font-size: 10px; line-height: 1.3; }
+        .jj-crit-desc { color: #aaa; font-size: 9px; line-height: 1.2; }
 
-        div[data-baseweb="select"] > div,
+        div[data-baseweb="select"] > div {
+            min-height: 30px !important;
+            height: 30px !important;
+        }
         div[data-baseweb="input"],
         div[data-baseweb="textarea"] {
             background-color: #1a1a20 !important;
-            border-radius: 6px !important;
+            border-radius: 4px !important;
         }
-        div[data-baseweb="input"] input, div[data-baseweb="textarea"] textarea {
+        div[data-baseweb="input"] input {
             color: #fff !important;
-            font-size: 12px !important;
+            font-size: 11px !important;
+            padding: 4px 8px !important;
+            height: 28px !important;
+        }
+        div[data-baseweb="textarea"] textarea {
+            color: #fff !important;
+            font-size: 11px !important;
+            padding: 4px 8px !important;
+            min-height: 32px !important;
+            height: 32px !important;
         }
 
         div[data-testid="stButton"] button[kind="primary"] {
@@ -751,18 +767,18 @@ if modo == "Painel do Jurado":
             color: #000 !important;
             border: none !important;
             font-weight: 700 !important;
-            font-size: 12px !important;
-            padding: 10px !important;
-            border-radius: 6px !important;
+            font-size: 11px !important;
+            padding: 6px 10px !important;
+            border-radius: 4px !important;
             width: 100% !important;
             text-transform: uppercase;
         }
 
         .top-bar-custom {
             position: fixed; 
-            top: 12px; 
-            left: 12px;
-            right: 12px;
+            top: 8px; 
+            left: 10px;
+            right: 10px;
             z-index: 99999;
             display: flex;
             justify-content: space-between;
@@ -774,8 +790,8 @@ if modo == "Painel do Jurado":
             text-decoration: none;
             border: 1px solid rgba(212,175,55,0.4);
             border-radius: 4px;
-            padding: 4px 10px;
-            font-size: 8px;
+            padding: 3px 8px;
+            font-size: 7px;
             text-transform: uppercase;
             pointer-events: auto;
             text-align: center;
