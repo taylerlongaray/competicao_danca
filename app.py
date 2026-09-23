@@ -3,6 +3,7 @@ import json
 import os
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="Jack & Jill - Noite nas Arábias",
@@ -1270,15 +1271,78 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM AUTO-REFRESH NATIVO (A CADA 2 SEGUNDOS) ---
-    # SEM JAVASCRIPT: Comunica diretamente com o servidor WebSocket do Streamlit
+    # --- TELÃO (PÚBLICO) ---
     
+    # Auto-Refresh Automático (novo e mais fiável)
     try:
         from streamlit_autorefresh import st_autorefresh
-        # Atualiza apenas esta aba a cada 2000 milissegundos (2 segundos) de forma invisível
         st_autorefresh(interval=2000, limit=None, key="refresh_telao")
     except ImportError:
-        st.error("⚠️ Para o telão atualizar automaticamente, instale o pacote de refresh parando o terminal e executando: pip install streamlit-autorefresh")
+        st.error("⚠️ Instale o pacote executando: pip install streamlit-autorefresh")
+
+    # Botão de MENU DE VOLTA!
+    components.html(
+        """
+        <script>
+        const parentDoc = window.parent.document;
+        let btn = parentDoc.getElementById('atalho-sidebar-telao');
+        
+        if (!btn) {
+            btn = parentDoc.createElement('button');
+            btn.id = 'atalho-sidebar-telao';
+            btn.innerHTML = '☰ MENU';
+            btn.title = 'Abrir Barra Lateral (Atalho: Alt + M)';
+            
+            Object.assign(btn.style, {
+                position: 'fixed',
+                top: '12px',
+                left: '12px',
+                zIndex: '9999999',
+                padding: '8px 14px',
+                background: 'rgba(15, 11, 7, 0.95)',
+                color: '#d4af37',
+                border: '1px solid #d4af37',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                fontFamily: 'sans-serif',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.6)',
+                transition: 'all 0.3s'
+            });
+            
+            btn.onmouseover = () => { btn.style.background = '#d4af37'; btn.style.color = '#000'; };
+            btn.onmouseout = () => { btn.style.background = 'rgba(15, 11, 7, 0.95)'; btn.style.color = '#d4af37'; };
+            
+            btn.onclick = function() {
+                const sidebarToggle = parentDoc.querySelector('[data-testid="collapsedControl"]');
+                if (sidebarToggle) {
+                    sidebarToggle.click();
+                } else {
+                    const closeBtn = parentDoc.querySelector('section[data-testid="stSidebar"] button');
+                    if (closeBtn) closeBtn.click();
+                }
+            };
+            
+            parentDoc.body.appendChild(btn);
+        }
+        
+        function keyHandler(e) {
+            if (e.altKey && e.key.toLowerCase() === 'm') {
+                if (btn) btn.click();
+            }
+        }
+        parentDoc.addEventListener('keydown', keyHandler);
+        
+        window.addEventListener('unload', function() {
+            if (btn) btn.remove();
+            parentDoc.removeEventListener('keydown', keyHandler);
+        });
+        </script>
+        """,
+        height=0,
+        width=0
+    )
 
     st.markdown(
         """
