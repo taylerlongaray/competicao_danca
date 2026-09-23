@@ -419,7 +419,6 @@ def obter_jurados_da_categoria_papel(cat, papel):
                 if p["categoria"] == cat and p["papel"] == papel:
                     jurados_validos.append(dados["nome"])
                     break
-    # Ordena colocando o Alex Alves sempre por último
     jurados_ordenados = sorted(list(set(jurados_validos)), key=lambda x: 1 if "Alex Alves" in x else 0)
     return jurados_ordenados
 
@@ -1244,7 +1243,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM DUAS NOTAS LADO A LADO EM DIAMANTE/PLATINA E COMPACTO ---
+    # --- TELÃO (PÚBLICO) COM MÚSICA 1 E MÚSICA 2 LADO A LADO EM DIAMANTE/PLATINA ---
     components.html(
         """
         <script>
@@ -1404,7 +1403,7 @@ else:
             background-color: rgba(212, 175, 55, 0.15);
         }
 
-        /* Tabela Compacta para Diamante e Platina (duas notas por jurado) */
+        /* Tabela Compacta para Diamante e Platina (Música 1 e Música 2 por jurado) */
         .tabela-dourada-compacta {
             width: 100%;
             border-collapse: collapse;
@@ -1611,7 +1610,7 @@ else:
         
         html += '<tr>'
         for _ in jurados_aptos:
-            html += '<th>M1</th><th>M2</th>'
+            html += '<th>MÚSICA 1</th><th>MÚSICA 2</th>'
         html += '</tr>'
         html += '</thead>'
         
