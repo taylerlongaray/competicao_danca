@@ -94,7 +94,7 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
     st.session_state.categoria_selecionada = None
 
-# --- Estado da navegação da tela de votação ---
+# --- Estado da navegação do ecrã de votação ---
 if "idx_comp" not in st.session_state:
     st.session_state.idx_comp = 0
 
@@ -139,52 +139,71 @@ except Exception:
 
 categorias = {
     "Diamante": {
-        "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
-        "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
+        "Condutores": ["Alan Demarch", "Henrique Vargas", "Léo Mello", "Luan Ruduit", "Maick Martins", "William Ferreira"],
+        "Conduzidas": ["Caroline Guedes", "Cleo Santanna", "Marluce Dimare", "Sah Graziela", "Sidiane Correa", "Vih Alves"],
     },
     "Platina": {
-        "Condutores": ["Jean", "Deivid", "Catriel", "Douglas Clo"],
-        "Conduzidas": ["Fabi", "Tefynha", "Nanda", "Cassi"],
+        "Condutores": ["Alisson Lopes", "Anderson Oliveira", "Catriel Pereira", "Deivid Nascimento", "Douglas Clo", "Jean Pierre"],
+        "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
     },
     "Ouro": {
-        "Condutores": ["Isma", "Jonatan Santos", "Ciro", "Lukas"],
+        "Condutores": ["Ciro Lima", "E. Duarte", "Edilson", "Fabiano", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Tom", "Wellisson"],
         "Conduzidas": [
-            "Joice",
-            "Fran",
-            "Daia",
-            "Marcia",
-            "Juliana",
-            "Thaizete",
-            "Andreza",
-            "Julia",
-            "Michele",
+            "Andreza Godoi",
+            "Angélica",
+            "Daia Lopes",
+            "Franciely Lopes",
+            "Giovanna Cento",
+            "Joice Alves",
+            "Julia Graciela",
+            "Juliana Ferraz",
+            "Marcia Araujo",
+            "Marya Costa",
+            "Michele Longarai",
+            "Nanda Ramos",
+            "Thayh Martins",
+            "Valesca Bordon",
         ],
     },
     "Prata": {
         "Condutores": [
-            "Marcão",
-            "Léo",
-            "Rogério F",
+            "Alisson Gregori",
+            "Albieri Fagundes",
+            "Antonio Vargas",
             "Cleiton",
+            "Fernando Souza",
+            "Iuri Martins",
+            "John",
+            "Léo",
+            "Marcao Meireles",
             "Michel",
-            "Alisson",
+            "Raí Machado",
+            "Rogério Eich",
+            "Rogério F",
+            "Toni",
+            "Toretto",
         ],
         "Conduzidas": [
-            "Sabrina",
+            "Ana Cris Couto",
+            "Daiane Soares",
+            "Dienifer Steffen",
+            "Franciele",
+            "Ge",
+            "Gili Costa",
+            "Juliana",
+            "Larissa Westphal",
+            "Lidiana",
+            "Lilica",
             "Lolo",
             "Nathalia",
-            "Anachris",
-            "Ge",
-            "Daiane",
-            "Lidiana",
-            "Dienifer",
+            "Paulynha Han",
+            "Sabrina",
             "Shay",
-            "Lilica",
         ],
     },
     "Aprendendo a Voar": {
-        "Condutores": ["Bruno", "Ivan", "Luis"],
-        "Conduzidas": ["Pati", "Sheila", "Michelle", "Carla"],
+        "Condutores": ["Anderson", "Bruno Vanassi", "Edu", "Ezequiel Silveira", "Ivan Dutra", "Gilmar Gemelli", "Luis", "Talysson"],
+        "Conduzidas": ["Carla Sabio", "Elisangela Grund", "Nahuana Rolante", "Pati", "Paula", "Raquel", "Sheila Josiane", "Sylvana"],
     },
 }
 
@@ -279,113 +298,128 @@ configuracao_jurados = {
         "nome": "Adri Santos",
         "senha": "6153",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Conduzidas"},
-            {"categoria": "Aprendendo a Voar", "papel": "Condutores"},
-            {"categoria": "Diamante", "papel": "Condutores"}
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Conexão e entrega na dança"]},
+            {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Conexão e Resposta"]}
         ]
     },
     "alan": {
         "nome": "Alan Demarch",
         "senha": "7391",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Condutores"},
-            {"categoria": "Ouro", "papel": "Condutores"}
+            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]}
         ]
     },
     "alex": {
         "nome": "Alex Alves",
         "senha": "4827",
-        "permissoes": "TODAS"
+        "permissoes": "TODAS_GLOBAL",
+        "criterio_global": "Jurado de Avaliação Global / Referência"
     },
     "bel": {
         "nome": "Bel Amaro",
         "senha": "2648",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Conduzidas"}
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]}
         ]
     },
     "cassiano/luan": {
         "nome": "Cassiano Fontana / Luan Ruduit",
         "senha": "8516",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Condutores"}
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
         ]
     },
     "claudia": {
         "nome": "Claudia Papke",
         "senha": "5274",
         "permissoes": [
-            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas"},
-            {"categoria": "Prata", "papel": "Conduzidas"},
-            {"categoria": "Diamante", "papel": "Conduzidas"}
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Conexão e entrega na dança"]},
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Técnica e Conexão"]},
+            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]}
         ]
     },
     "cleo": {
         "nome": "Cléo Santanna",
         "senha": "6835",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Conduzidas"},
-            {"categoria": "Ouro", "papel": "Conduzidas"}
+            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]}
         ]
     },
     "daiani": {
         "nome": "Daiani Rodrigues",
         "senha": "9146",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Conduzidas"},
-            {"categoria": "Platina", "papel": "Conduzidas"},
-            {"categoria": "Ouro", "papel": "Conduzidas"}
+            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Técnica e finalização"]},
+            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Técnica e finalização"]},
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Conexão e resposta"]}
         ]
     },
     "joel": {
         "nome": "Joel Trevisan",
         "senha": "3572",
         "permissoes": [
-            {"categoria": "Aprendendo a Voar", "papel": "Condutores"},
-            {"categoria": "Ouro", "papel": "Condutores"}
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Fundamentos e qualidade base"]},
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
         ]
     },
     "lika": {
         "nome": "Lika",
         "senha": "7461",
         "permissoes": [
-            {"categoria": "Ouro", "papel": "Conduzidas"},
-            {"categoria": "Prata", "papel": "Condutores"}
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]},
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]}
         ]
     },
     "maick": {
         "nome": "Maick Martins",
         "senha": "2385",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Condutores"}
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Técnica e Conexão"]}
         ]
     },
     "nilson": {
         "nome": "Nilson Leivas",
         "senha": "8614",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Conduzidas"},
-            {"categoria": "Platina", "papel": "Conduzidas"},
-            {"categoria": "Ouro", "papel": "Condutores"}
+            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]},
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Conexão e resposta"]}
         ]
     },
     "wagner": {
         "nome": "Wagner Camargo",
         "senha": "4296",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Condutores"},
-            {"categoria": "Platina", "papel": "Condutores"}
+            {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Técnica e finalização"]}
         ]
     },
     "william": {
         "nome": "William Ferreira",
         "senha": "5738",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Condutores"},
-            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas"}
+            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Conexão e Resposta"]},
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Fundamentos e qualidade base"]}
         ]
     }
 }
+
+
+def obter_jurados_da_categoria_papel(cat, papel):
+    jurados_validos = []
+    for username, dados in configuracao_jurados.items():
+        perm = dados["permissoes"]
+        if perm == "TODAS_GLOBAL":
+            jurados_validos.append(dados["nome"])
+        elif isinstance(perm, list):
+            for p in perm:
+                if p["categoria"] == cat and p["papel"] == papel:
+                    jurados_validos.append(dados["nome"])
+                    break
+    return sorted(list(set(jurados_validos)))
 
 
 def obter_classificados(categoria, papel):
@@ -502,6 +536,7 @@ elif modo == "Telão (Público)":
 else:
     st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
+# --- CSS EXATO DO BACKUP (Layout da Votação Intacto e Perfeito) ---
 st.markdown(
     """
 <style>
@@ -1207,7 +1242,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM O BOTÃO FLUTUANTE DA BARRA LATERAL ---
+    # --- TELÃO (PÚBLICO) COM O LAYOUT AVANÇADO E BOTÃO FLUTUANTE ---
     components.html(
         """
         <script>
@@ -1270,172 +1305,271 @@ else:
         height=0,
         width=0
     )
-
-    st.title("🏆 Telão da Competição — Noite nas Arábias")
+    
+    st.markdown(
+        """
+        <style>
+        .block-container {
+            padding-top: 5.5rem !important;
+            padding-bottom: 4rem !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+        }
+        [data-testid="stHeader"] {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            z-index: 99999 !important;
+        }
+        [data-testid="collapsedControl"] {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: fixed !important;
+            top: 10px !important;
+            left: 10px !important;
+            background-color: rgba(15, 11, 7, 0.9) !important;
+            border: 1px solid rgba(212, 175, 55, 0.8) !important;
+            border-radius: 6px !important;
+            color: #f3e5ab !important;
+            z-index: 999999 !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
+        }
+        [data-testid="collapsedControl"] svg {
+            fill: #f3e5ab !important;
+        }
+        [data-testid="stToolbar"], .stAppDeployButton, [data-testid="stDecoration"] {
+            display: none !important;
+        }
+        .viewerBadge_container, [data-testid="stStatusWidget"], footer {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        h2 {
+            font-size: 20px !important;
+            margin-top: -10px !important;
+            margin-bottom: 15px !important;
+            color: #e5c158 !important;
+            font-family: 'Cinzel', Georgia, serif;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        h3 {
+            font-size: 13px !important;
+            margin-top: 2px !important;
+            margin-bottom: 5px !important;
+            color: #f3e5ab !important;
+            font-family: 'Cinzel', Georgia, serif;
+        }
+        
+        .tabela-dourada {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 12px;
+            font-family: 'Helvetica Neue', sans-serif;
+            color: #f3e5ab;
+            background: linear-gradient(135deg, rgba(10, 7, 5, 0.90) 0%, rgba(20, 15, 10, 0.95) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.6);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+        }
+        .tabela-dourada thead {
+            background-color: rgba(15, 11, 7, 1);
+        }
+        .tabela-dourada th {
+            color: #e5c158;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center !important;
+            padding: 8px 6px;
+            border-bottom: 2px solid #d4af37;
+            line-height: 1.2;
+        }
+        .tabela-dourada td {
+            text-align: center !important;
+            padding: 8px 6px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            white-space: nowrap !important;
+        }
+        .tabela-dourada tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .tabela-dourada tbody tr:hover {
+            background-color: rgba(212, 175, 55, 0.15);
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
     with st.sidebar:
         st.markdown("---")
-        st.markdown("### Controle do Telão")
-        revelar_tudo = st.checkbox(
-            "Revelar Últimas Notas e Resultados", value=st.session_state.revelado
-        )
+        st.markdown("### Controlo do Telão")
+        revelar_tudo = st.checkbox("Revelar Notas e Resultados Finais", value=st.session_state.revelado)
         st.session_state.revelado = revelar_tudo
 
-    if not st.session_state.votos:
-        st.info(
-            "💡 Aguardando o envio dos votos pelos jurados. As categorias aparecerão"
-            " aqui."
+        st.markdown("---")
+        st.markdown("### Categorias e Fases")
+        
+        opcoes_menu_telao = [
+            "Diamante",
+            "Platina",
+            "Ouro - Fase Classificatória",
+            "Ouro - Fase Final",
+            "Prata - Fase Classificatória",
+            "Prata - Fase Final",
+            "Aprendendo a Voar"
+        ]
+
+        def formatar_icone_menu(c):
+            if "Diamante" in c: return f"💎 {c}"
+            if "Platina" in c: return f"🥈 {c}"
+            if "Ouro" in c: return f"🥇 {c}"
+            if "Prata" in c: return f"🥈 {c}"
+            return f"🕊️ {c}"
+
+        selecao_telao = st.radio(
+            "Selecione a Categoria",
+            opcoes_menu_telao,
+            format_func=formatar_icone_menu,
+            label_visibility="collapsed"
         )
 
-    nomes_abas = list(categorias.keys())
-    abas = st.tabs(nomes_abas)
-
-    if st.session_state.votos:
-        df_votos = pd.DataFrame(st.session_state.votos)
+    df_votos = pd.DataFrame(st.session_state.votos) if st.session_state.votos else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
+    
+    if "Ouro" in selecao_telao:
+        categoria_nome = "Ouro"
+        fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
+    elif "Prata" in selecao_telao:
+        categoria_nome = "Prata"
+        fases_da_cat = ["Fase Classificatória"] if "Classificatória" in selecao_telao else ["Fase Final"]
     else:
-        df_votos = pd.DataFrame(
-            columns=[
-                "jurado",
-                "categoria",
-                "fase",
-                "papel",
-                "competidor",
-                "criterio",
-                "nota",
-                "justificativa",
-            ]
-        )
+        categoria_nome = selecao_telao
+        fases_da_cat = fases_por_categoria[categoria_nome]
 
-    for i, categoria_nome in enumerate(nomes_abas):
-        with abas[i]:
-            st.markdown(f"## 📊 Categoria: {categoria_nome}")
-            df_cat = df_votos[df_votos["categoria"] == categoria_nome]
+    df_cat = df_votos[df_votos["categoria"] == categoria_nome] if not df_votos.empty else pd.DataFrame()
 
-            if df_cat.empty:
-                st.info("Nenhum voto registrado ainda para esta categoria.")
-            else:
-                fases_da_cat = fases_por_categoria[categoria_nome]
+    st.markdown(f"<h2 style='text-align: center; color: #e5c158; font-family: Cinzel, Georgia, serif; letter-spacing: 2px;'>{selecao_telao.upper()} — RESULTADOS</h2>", unsafe_allow_html=True)
+    
+    def formatar_nome_jurado(nome):
+        partes = nome.split(" ", 1)
+        if len(partes) > 1:
+            return f"{partes[0]}<br>{partes[1]}"
+        return nome
 
-                if len(fases_da_cat) > 1:
-                    fase_abas = st.tabs(fases_da_cat)
-                    fases_iter = list(zip(fases_da_cat, fase_abas))
-                else:
-                    fases_iter = [(fases_da_cat[0], None)]
+    def gerar_tabela_papel_fase(fase_nome, papel_nome):
+        jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
+        df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
+        
+        if fase_nome == "Fase Final" and categoria_nome in ["Prata", "Ouro"]:
+            comps = obter_classificados(categoria_nome, papel_nome)
+            if not comps:
+                comps = categorias[categoria_nome][papel_nome]
+        else:
+            comps = categorias[categoria_nome][papel_nome]
 
-                for fase_nome, fase_aba in iter(fases_iter):
-                    if fase_aba is not None:
-                        container = fase_aba
-                    else:
-                        container = st.container()
+        df_base = pd.DataFrame({"competidor": comps})
+        df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_fase.empty else pd.DataFrame()
 
-                    with container:
-                        if len(fases_da_cat) > 1:
-                            st.markdown(f"### Etapa: {fase_nome}")
+        if not df_papel.empty:
+            df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
+            df_notas_jurado["jurado_nome"] = df_notas_jurado["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
+            pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado_nome", values="nota").reset_index()
+            pivot_df = pd.merge(df_base, pivot_df, on="competidor", how="left")
+        else:
+            pivot_df = df_base.copy()
 
-                        df_fase = df_cat[df_cat["fase"] == fase_nome]
-                        sub_abas = st.tabs(["Condutores", "Conduzidas"])
-                        papeis = ["Condutores", "Conduzidas"]
+        for j_col in jurados_aptos:
+            if j_col not in pivot_df.columns:
+                pivot_df[j_col] = None
 
-                        for j, papel_nome in enumerate(papeis):
-                            with sub_abas[j]:
-                                st.markdown(f"#### Divisão: {papel_nome}")
-                                df_papel = df_fase[df_fase["papel"] == papel_nome]
+        exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
+        pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+        pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
 
-                                if df_papel.empty:
-                                    st.info(
-                                        f"Sem votos para {papel_nome} nesta etapa/fase ainda."
-                                    )
-                                else:
-                                    if not st.session_state.revelado:
-                                        indices_para_ignorar = []
-                                        for comp in df_papel["competidor"].unique():
-                                            temp_df = df_papel[df_papel["competidor"] == comp]
-                                            if not temp_df.empty:
-                                                indices_para_ignorar.append(temp_df.index[-1])
-                                        df_calculo = df_papel.drop(indices_para_ignorar)
-                                    else:
-                                        df_calculo = df_papel.copy()
+        pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
+        pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
-                                    if not df_calculo.empty:
-                                        ranking = (
-                                            df_calculo.groupby("competidor")["nota"]
-                                            .mean()
-                                            .reset_index()
-                                        )
-                                        ranking.columns = ["Competidor", "Média da Etapa"]
-                                        ranking = ranking.sort_values(
-                                            by="Média da Etapa", ascending=False
-                                        ).reset_index(drop=True)
-                                        ranking.index = ranking.index + 1
+        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
+        pivot_df = pivot_df.rename(columns=renomeador)
 
-                                        st.markdown("##### 🏆 Ranking da Etapa")
-                                        st.dataframe(ranking, use_container_width=True)
-                                    else:
-                                        st.warning("Aguardando mais votos para o ranking parcial.")
+        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
+        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
+        cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
+        tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
-                                    st.markdown("##### 📝 Histórico de Notas da Etapa")
-                                    df_exibicao_papel = df_papel[
-                                        [
-                                            "jurado",
-                                            "categoria",
-                                            "fase",
-                                            "papel",
-                                            "competidor",
-                                            "criterio",
-                                            "nota",
-                                        ]
-                                    ].copy()
+        for col in jurados_formatados + ["TOTAL"]:
+            if col in tabela_exibicao.columns:
+                tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
 
-                                    if not st.session_state.revelado:
-                                        indices_para_mascarar = []
-                                        for comp in df_exibicao_papel["competidor"].unique():
-                                            temp_df = df_exibicao_papel[
-                                                df_exibicao_papel["competidor"] == comp
-                                            ]
-                                            if not temp_df.empty:
-                                                indices_para_mascarar.append(temp_df.index[-1])
+        return tabela_exibicao
 
-                                        df_exibicao_papel["nota"] = df_exibicao_papel["nota"].astype(
-                                            str
-                                        )
-                                        df_exibicao_papel.loc[indices_para_mascarar, "nota"] = (
-                                            "🔒 [Nota Secreta Oculta]"
-                                        )
+    def gerar_tabela_acumulada_diamante_platina(papel_nome):
+        jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
+        comps = categorias[categoria_nome][papel_nome]
+        df_base = pd.DataFrame({"competidor": comps})
 
-                                    st.dataframe(df_exibicao_papel, use_container_width=True)
+        if not df_cat.empty:
+            df_fase_jurado = df_cat[df_cat["papel"] == papel_nome].groupby(["competidor", "fase", "jurado"])["nota"].mean().reset_index()
+            df_total_jurado = df_fase_jurado.groupby(["competidor", "jurado"])["nota"].sum().reset_index()
+            df_total_jurado["jurado_nome"] = df_total_jurado["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
+            
+            pivot_df = df_total_jurado.pivot(index="competidor", columns="jurado_nome", values="nota").reset_index()
+            pivot_df = pd.merge(df_base, pivot_df, on="competidor", how="left")
+        else:
+            pivot_df = df_base.copy()
 
-        if categoria_nome in ["Platina", "Diamante"]:
-            st.divider()
-            st.markdown(
-                "### 🌟 Classificação Geral Acumulada (Fase 1 + Fase 2 Somadas)"
-            )
-            df_cat_geral = df_cat.copy()
-            if not df_cat_geral.empty:
-                sub_abas_geral = st.tabs(
-                    ["Condutores Geral", "Conduzidas Geral"]
-                )
-                for g_idx, g_papel in enumerate(["Condutores", "Conduzidas"]):
-                    with sub_abas_geral[g_idx]:
-                        df_g = df_cat_geral[df_cat_geral["papel"] == g_papel]
-                        if not df_g.empty:
-                            fase_means = (
-                                df_g.groupby(["competidor", "fase"])["nota"]
-                                .mean()
-                                .reset_index()
-                            )
-                            total_score = (
-                                fase_means.groupby("competidor")["nota"]
-                                .sum()
-                                .reset_index()
-                            )
-                            total_score.columns = [
-                                "Competidor",
-                                "Pontuação Total Acumulada",
-                            ]
-                            total_score = total_score.sort_values(
-                                by="Pontuação Total Acumulada", ascending=False
-                            ).reset_index(drop=True)
-                            total_score.index = total_score.index + 1
-                            st.dataframe(total_score, use_container_width=True)
-                        else:
-                            st.info("Aguardando votos em ambas as fases.")
+        for j_col in jurados_aptos:
+            if j_col not in pivot_df.columns:
+                pivot_df[j_col] = None
+
+        exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
+        pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+        pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
+
+        pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
+        pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
+
+        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
+        pivot_df = pivot_df.rename(columns=renomeador)
+
+        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
+        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
+        cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
+        tabela_exibicao = pivot_df[cols_finais_existentes].copy()
+
+        for col in jurados_formatados + ["TOTAL"]:
+            if col in tabela_exibicao.columns:
+                tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
+
+        return tabela_exibicao
+
+    if categoria_nome in ["Diamante", "Platina"]:
+        col_cond, col_condz = st.columns(2)
+
+        with col_cond:
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+            tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
+            st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+
+        with col_condz:
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+            tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
+            st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+
+    else:
+        for fase_nome in fases_da_cat:
+            col_cond, col_condz = st.columns(2)
+
+            with col_cond:
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+                tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
+                st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+
+            with col_condz:
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+                tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
+                st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
