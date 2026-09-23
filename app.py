@@ -94,7 +94,7 @@ if "jurado_logado" not in st.session_state:
 if "categoria_selecionada" not in st.session_state:
     st.session_state.categoria_selecionada = None
 
-# --- Estado da navegação do ecrã de votação ---
+# --- Estado da navegação da tela de votação ---
 if "idx_comp" not in st.session_state:
     st.session_state.idx_comp = 0
 
@@ -139,71 +139,52 @@ except Exception:
 
 categorias = {
     "Diamante": {
-        "Condutores": ["Alan Demarch", "Henrique Vargas", "Léo Mello", "Luan Ruduit", "Maick Martins", "William Ferreira"],
-        "Conduzidas": ["Caroline Guedes", "Cleo Santanna", "Marluce Dimare", "Sah Graziela", "Sidiane Correa", "Vih Alves"],
+        "Condutores": ["Alan", "Léo", "William", "Maick", "Luan", "Henrique"],
+        "Conduzidas": ["Marluce", "Sidiane", "Sah", "Cléo", "Viih", "Carol"],
     },
     "Platina": {
-        "Condutores": ["Alisson Lopes", "Anderson Oliveira", "Catriel Pereira", "Deivid Nascimento", "Douglas Clo", "Jean Pierre"],
-        "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
+        "Condutores": ["Jean", "Deivid", "Catriel", "Douglas Clo"],
+        "Conduzidas": ["Fabi", "Tefynha", "Nanda", "Cassi"],
     },
     "Ouro": {
-        "Condutores": ["Ciro Lima", "E. Duarte", "Edilson", "Fabiano", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Tom", "Wellisson"],
+        "Condutores": ["Isma", "Jonatan Santos", "Ciro", "Lukas"],
         "Conduzidas": [
-            "Andreza Godoi",
-            "Angélica",
-            "Daia Lopes",
-            "Franciely Lopes",
-            "Giovanna Cento",
-            "Joice Alves",
-            "Julia Graciela",
-            "Juliana Ferraz",
-            "Marcia Araujo",
-            "Marya Costa",
-            "Michele Longarai",
-            "Nanda Ramos",
-            "Thayh Martins",
-            "Valesca Bordon",
+            "Joice",
+            "Fran",
+            "Daia",
+            "Marcia",
+            "Juliana",
+            "Thaizete",
+            "Andreza",
+            "Julia",
+            "Michele",
         ],
     },
     "Prata": {
         "Condutores": [
-            "Alisson Gregori",
-            "Albieri Fagundes",
-            "Antonio Vargas",
-            "Cleiton",
-            "Fernando Souza",
-            "Iuri Martins",
-            "John",
+            "Marcão",
             "Léo",
-            "Marcao Meireles",
-            "Michel",
-            "Raí Machado",
-            "Rogério Eich",
             "Rogério F",
-            "Toni",
-            "Toretto",
+            "Cleiton",
+            "Michel",
+            "Alisson",
         ],
         "Conduzidas": [
-            "Ana Cris Couto",
-            "Daiane Soares",
-            "Dienifer Steffen",
-            "Franciele",
-            "Ge",
-            "Gili Costa",
-            "Juliana",
-            "Larissa Westphal",
-            "Lidiana",
-            "Lilica",
+            "Sabrina",
             "Lolo",
             "Nathalia",
-            "Paulynha Han",
-            "Sabrina",
+            "Anachris",
+            "Ge",
+            "Daiane",
+            "Lidiana",
+            "Dienifer",
             "Shay",
+            "Lilica",
         ],
     },
     "Aprendendo a Voar": {
-        "Condutores": ["Anderson", "Bruno Vanassi", "Edu", "Ezequiel Silveira", "Ivan Dutra", "Gilmar Gemelli", "Luis", "Talysson"],
-        "Conduzidas": ["Carla Sabio", "Elisangela Grund", "Nahuana Rolante", "Pati", "Paula", "Raquel", "Sheila Josiane", "Sylvana"],
+        "Condutores": ["Bruno", "Ivan", "Luis"],
+        "Conduzidas": ["Pati", "Sheila", "Michelle", "Carla"],
     },
 }
 
@@ -298,128 +279,113 @@ configuracao_jurados = {
         "nome": "Adri Santos",
         "senha": "6153",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Conexão e entrega na dança"]},
-            {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Conexão e Resposta"]}
+            {"categoria": "Prata", "papel": "Conduzidas"},
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores"},
+            {"categoria": "Diamante", "papel": "Condutores"}
         ]
     },
     "alan": {
         "nome": "Alan Demarch",
         "senha": "7391",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]}
+            {"categoria": "Platina", "papel": "Condutores"},
+            {"categoria": "Ouro", "papel": "Condutores"}
         ]
     },
     "alex": {
         "nome": "Alex Alves",
         "senha": "4827",
-        "permissoes": "TODAS_GLOBAL",
-        "criterio_global": "Jurado de Avaliação Global / Referência"
+        "permissoes": "TODAS"
     },
     "bel": {
         "nome": "Bel Amaro",
         "senha": "2648",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]}
+            {"categoria": "Prata", "papel": "Conduzidas"}
         ]
     },
     "cassiano/luan": {
         "nome": "Cassiano Fontana / Luan Ruduit",
         "senha": "8516",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
+            {"categoria": "Prata", "papel": "Condutores"}
         ]
     },
     "claudia": {
         "nome": "Claudia Papke",
         "senha": "5274",
         "permissoes": [
-            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Conexão e entrega na dança"]},
-            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Técnica e Conexão"]},
-            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]}
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas"},
+            {"categoria": "Prata", "papel": "Conduzidas"},
+            {"categoria": "Diamante", "papel": "Conduzidas"}
         ]
     },
     "cleo": {
         "nome": "Cléo Santanna",
         "senha": "6835",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]}
+            {"categoria": "Platina", "papel": "Conduzidas"},
+            {"categoria": "Ouro", "papel": "Conduzidas"}
         ]
     },
     "daiani": {
         "nome": "Daiani Rodrigues",
         "senha": "9146",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Técnica e finalização"]},
-            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Técnica e finalização"]},
-            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Conexão e resposta"]}
+            {"categoria": "Diamante", "papel": "Conduzidas"},
+            {"categoria": "Platina", "papel": "Conduzidas"},
+            {"categoria": "Ouro", "papel": "Conduzidas"}
         ]
     },
     "joel": {
         "nome": "Joel Trevisan",
         "senha": "3572",
         "permissoes": [
-            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Fundamentos e qualidade base"]},
-            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores"},
+            {"categoria": "Ouro", "papel": "Condutores"}
         ]
     },
     "lika": {
         "nome": "Lika",
         "senha": "7461",
         "permissoes": [
-            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]},
-            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]}
+            {"categoria": "Ouro", "papel": "Conduzidas"},
+            {"categoria": "Prata", "papel": "Condutores"}
         ]
     },
     "maick": {
         "nome": "Maick Martins",
         "senha": "2385",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Técnica e Conexão"]}
+            {"categoria": "Prata", "papel": "Condutores"}
         ]
     },
     "nilson": {
         "nome": "Nilson Leivas",
         "senha": "8614",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]},
-            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Conexão e resposta"]}
+            {"categoria": "Diamante", "papel": "Conduzidas"},
+            {"categoria": "Platina", "papel": "Conduzidas"},
+            {"categoria": "Ouro", "papel": "Condutores"}
         ]
     },
     "wagner": {
         "nome": "Wagner Camargo",
         "senha": "4296",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Técnica e finalização"]}
+            {"categoria": "Diamante", "papel": "Condutores"},
+            {"categoria": "Platina", "papel": "Condutores"}
         ]
     },
     "william": {
         "nome": "William Ferreira",
         "senha": "5738",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Conexão e Resposta"]},
-            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Fundamentos e qualidade base"]}
+            {"categoria": "Platina", "papel": "Condutores"},
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas"}
         ]
     }
 }
-
-
-def obter_jurados_da_categoria_papel(cat, papel):
-    jurados_validos = []
-    for username, dados in configuracao_jurados.items():
-        perm = dados["permissoes"]
-        if perm == "TODAS_GLOBAL":
-            jurados_validos.append(dados["nome"])
-        elif isinstance(perm, list):
-            for p in perm:
-                if p["categoria"] == cat and p["papel"] == papel:
-                    jurados_validos.append(dados["nome"])
-                    break
-    return sorted(list(set(jurados_validos)))
 
 
 def obter_classificados(categoria, papel):
@@ -536,7 +502,6 @@ elif modo == "Telão (Público)":
 else:
     st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
-# --- CSS EXATO DO BACKUP (Visual perfeito e proportions originais) ---
 st.markdown(
     """
 <style>
@@ -1242,6 +1207,70 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
+    # --- TELÃO (PÚBLICO) COM O BOTÃO FLUTUANTE DA BARRA LATERAL ---
+    components.html(
+        """
+        <script>
+        const parentDoc = window.parent.document;
+        let btn = parentDoc.getElementById('atalho-sidebar-telao');
+        
+        if (!btn) {
+            btn = parentDoc.createElement('button');
+            btn.id = 'atalho-sidebar-telao';
+            btn.innerHTML = '☰ MENU';
+            btn.title = 'Abrir Barra Lateral (Atalho: Alt + M)';
+            
+            Object.assign(btn.style, {
+                position: 'fixed',
+                top: '12px',
+                left: '12px',
+                zIndex: '9999999',
+                padding: '8px 14px',
+                background: 'rgba(15, 11, 7, 0.95)',
+                color: '#d4af37',
+                border: '1px solid #d4af37',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                fontFamily: 'sans-serif',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.6)',
+                transition: 'all 0.3s'
+            });
+            
+            btn.onmouseover = () => { btn.style.background = '#d4af37'; btn.style.color = '#000'; };
+            btn.onmouseout = () => { btn.style.background = 'rgba(15, 11, 7, 0.95)'; btn.style.color = '#d4af37'; };
+            
+            btn.onclick = function() {
+                const sidebarToggle = parentDoc.querySelector('[data-testid="collapsedControl"]');
+                if (sidebarToggle) {
+                    sidebarToggle.click();
+                } else {
+                    const closeBtn = parentDoc.querySelector('section[data-testid="stSidebar"] button');
+                    if (closeBtn) closeBtn.click();
+                }
+            };
+            
+            parentDoc.body.appendChild(btn);
+        }
+        
+        function keyHandler(e) {
+            if (e.altKey && e.key.toLowerCase() === 'm') {
+                if (btn) btn.click();
+            }
+        }
+        parentDoc.addEventListener('keydown', keyHandler);
+        
+        window.addEventListener('unload', function() {
+            if (btn) btn.remove();
+            parentDoc.removeEventListener('keydown', keyHandler);
+        });
+        </script>
+        """,
+        height=0,
+        width=0
+    )
+
     st.title("🏆 Telão da Competição — Noite nas Arábias")
 
     with st.sidebar:
