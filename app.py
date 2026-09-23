@@ -620,147 +620,135 @@ if modo == "Painel do Jurado":
         jurado_str = f"jurado={st.session_state.jurado_logado}&"
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-        # ---------------------------------------------------------
-        # CSS ULTRA-COMPACTO: Margens mínimas e sem gaps gigantes
-        # ---------------------------------------------------------
+        # -------------------------------------------------------------------
+        # CSS REFINADO: Réplica exata do layout da imagem (Tamanho, Cores, Margens)
+        # -------------------------------------------------------------------
         st.markdown("""
         <style>
-        /* Oculta os labels padrões do Streamlit */
-        label[data-baseweb="label"] { display: none !important; }
-        
-        /* Reduz o topo, a base e o espaço geral de todo o ecrã */
+        /* Oculta tudo que não precisa */
+        header[data-testid="stHeader"], footer, label[data-baseweb="label"] { display: none !important; }
+
+        /* Espaçamento Global - Respeitando o espaço do logótipo no fundo */
         .block-container {
-            padding-top: 3.2rem !important;
+            padding-top: 6.5rem !important; /* IMPORTANTE: Espaço adequado no topo para o logótipo */
             padding-bottom: 1rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
-        }
-        
-        /* Remove o gap (espaçamento vertical gigante) entre cada elemento do Streamlit */
-        div[data-testid="stVerticalBlock"] {
-            gap: 0.2rem !important; 
+            max-width: 100% !important;
         }
 
-        /* Menu ajustável super fino */
-        [data-testid="stExpander"] details summary {
-            min-height: 2rem !important;
-            padding: 0.4rem 1rem !important;
-            font-size: 12px !important;
+        /* Espaçamento exato entre os cartões */
+        div[data-testid="stVerticalBlock"] {
+            gap: 0.5rem !important; 
         }
-        [data-testid="stExpander"] details {
-            margin-bottom: 2px !important;
+
+        /* Estilo Base dos Cartões (Apenas a sombra sutil e a cor escurecida certa) */
+        .jj-card, .st-key-nota_card, .st-key-coment_card, [data-testid="stExpander"] {
+            background: rgba(10, 7, 5, 0.6) !important;
+            border: 1px solid rgba(212, 175, 55, 0.2) !important;
+            border-radius: 8px !important;
+        }
+
+        .jj-card {
+            padding: 12px 14px !important;
+            margin-bottom: 0px !important;
+        }
+
+        /* Padding específico para os containers do Streamlit que viraram cartões */
+        .st-key-nota_card, .st-key-coment_card {
+            padding: 12px 14px !important;
         }
         
-        /* Base comum dos cartões, agora muito mais compactos */
-        .jj-card {
-            background: rgba(14, 10, 7, 0.9) !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 6px !important;
-            padding: 8px 12px !important; 
-            margin-bottom: 0px !important; /* Zero margem extra para não somar com o Streamlit */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6) !important;
+        /* Ajuste do Expander superior */
+        [data-testid="stExpander"] details summary {
+            padding: 8px 14px !important;
         }
-        .jj-label {
+        [data-testid="stExpander"] details summary p {
+            font-size: 11px !important;
+            color: #e5c158 !important;
+        }
+
+        /* Labels e Textos Superiores */
+        .jj-label, .jj-secao-label {
             color: #9e8a59;
-            font-size: 8px;
+            font-size: 9px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 2px;
         }
-        
-        /* Banner */
+        .jj-secao-label {
+            margin-bottom: 8px; /* Protege de encostar na caixa abaixo */
+            display: block;
+        }
+
+        /* Banner Categoria Diamante */
         .jj-banner {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 14px !important; 
         }
-        .jj-banner-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .jj-banner-img {
-            width: 22px !important;
-            height: 22px !important;
-            object-fit: contain;
-        }
+        .jj-banner-left { display: flex; align-items: center; gap: 10px; }
+        .jj-banner-img { width: 20px !important; height: 20px !important; object-fit: contain; }
         .jj-categoria {
             color: #e5c158;
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 18px; /* Reduzido para caber melhor */
+            font-size: 18px;
             font-weight: bold;
             letter-spacing: 1px;
             line-height: 1.1;
         }
         .jj-banner-right {
             text-align: right;
-            border-left: 1px solid rgba(212, 175, 55, 0.3);
-            padding-left: 10px;
+            border-left: 1px solid rgba(212, 175, 55, 0.2);
+            padding-left: 12px;
         }
         .jj-fase {
-            color: #e5c158;
+            color: #fff; /* FASE 1 é branco na imagem */
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
             letter-spacing: 1px;
         }
-        .jj-musica {
-            color: #9e8a59;
-            font-size: 8.5px;
-            text-transform: uppercase;
-        }
+        .jj-musica { color: #9e8a59; font-size: 9px; text-transform: uppercase; } /* MÚSICA 1 em dourado suave */
 
-        /* Avaliando e Badge */
-        .jj-avaliando {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 6px 12px !important; /* Altura super fina */
-        }
+        /* Cartões Avaliando e Competidor */
+        .jj-avaliando { text-align: center; }
         .jj-badge {
-            border: 1px solid rgba(212, 175, 55, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 20px;
             padding: 2px 12px;
-            font-size: 8.5px;
+            font-size: 9px;
             color: #d4af37;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 2px;
             display: inline-block;
+            margin-top: 4px;
         }
         .jj-nome {
-            color: #ffffff;
+            color: #ffffff; /* Letras brancas */
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 15px; 
+            font-size: 16px;
             font-weight: normal;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 2px;
         }
 
-        /* Critério */
-        .jj-crit-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* Cartão Critério */
+        .jj-crit-head { display: flex; justify-content: space-between; align-items: center; }
         .jj-crit-icon {
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #e5c158;
             font-size: 11px;
-            margin-right: 8px;
+            margin-right: 10px;
         }
         .jj-crit-nome {
-            color: #e5c158;
+            color: #fff; /* Nome do critério é branco na imagem */
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
             font-size: 12px;
             font-weight: bold;
@@ -770,93 +758,92 @@ if modo == "Painel do Jurado":
         .jj-contador {
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 12px;
-            padding: 1px 6px;
-            font-size: 8px;
+            padding: 2px 8px;
+            font-size: 9px;
             color: #9e8a59;
         }
         .jj-divisor {
             border: none;
             border-top: 1px solid rgba(212, 175, 55, 0.2);
-            margin: 6px 0; /* Linha com quase nenhum espaçamento */
+            margin: 10px 0;
         }
-        .jj-crit-desc {
-            color: #cccccc;
-            font-size: 9.5px;
-            line-height: 1.3;
-        }
-        
-        /* Input Containers (Sua Nota / Comentários) */
-        .st-key-nota_card, .st-key-coment_card {
-            background: rgba(14, 10, 7, 0.9) !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        .jj-crit-desc { color: #aaa; font-size: 10px; line-height: 1.4; }
+
+        /* Inputs Nativos (Select, Text, Area) - A Cor de Fundo Escura Azulada Exata */
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="input"],
+        div[data-baseweb="textarea"] {
+            background-color: #1a1a20 !important; /* Tom idêntico ao da imagem */
             border-radius: 6px !important;
-            padding: 6px 12px 10px 12px !important; /* Espaçamento interno mínimo */
-            margin-bottom: 2px !important;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6) !important;
+            border: 1px solid rgba(255,255,255,0.05) !important;
         }
-        .jj-secao-label {
-            color: #9e8a59;
-            font-size: 8.5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-        
-        /* Select e Inputs Nativos Streamlit (Finos) */
         div[data-baseweb="select"] > div {
-            padding-top: 4px !important;
-            padding-bottom: 4px !important;
-        }
-        
-        div[data-baseweb="input"] {
-            background-color: #1f1b19 !important;
-            border-radius: 6px !important;
-            border: 1px solid transparent !important;
-        }
-        div[data-baseweb="input"]:focus-within {
-            border: 1px solid #d4af37 !important;
+            min-height: 40px !important; /* Altura do dropdown confortável */
         }
         div[data-baseweb="input"] input {
             color: #fff !important;
-            padding: 6px 12px !important;
+            padding: 10px 12px !important;
             font-size: 13px !important;
-        }
-        
-        div[data-baseweb="textarea"] {
-            background-color: #1f1b19 !important;
-            border-radius: 6px !important;
-            border: 1px solid transparent !important;
-        }
-        div[data-baseweb="textarea"]:focus-within {
-            border: 1px solid #d4af37 !important;
         }
         div[data-baseweb="textarea"] textarea {
             color: #fff !important;
-            padding: 6px 12px !important;
+            padding: 10px 12px !important;
             font-size: 12px !important;
-            min-height: 45px !important; /* Caixa de comentários mais baixa */
+            min-height: 60px !important; /* Espaço para duas/três linhas limpas */
         }
 
-        /* Botao Enviar Dourado */
+        /* Botão Enviar Dourado Metálico */
         div[data-testid="stButton"] button[kind="primary"] {
-            background: linear-gradient(90deg, #e5c158 0%, #b38728 100%) !important;
+            background: linear-gradient(90deg, #d4af37 0%, #aa8222 100%) !important;
             color: #000 !important;
             border: none !important;
-            font-weight: bold !important;
+            font-weight: 700 !important;
             font-size: 13px !important;
-            padding: 6px 12px !important; /* Altura do botão mais fina */
+            padding: 10px 14px !important; /* Altura original restaurada */
             border-radius: 6px !important;
             width: 100% !important;
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
-            margin-top: 2px !important;
+        }
+
+        /* Botões Superiores Transparentes Sair / Trocar */
+        .top-bar-custom {
+            position: fixed; 
+            top: 15px; 
+            left: 15px;
+            right: 15px;
+            z-index: 99999;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .top-btn {
+            background: transparent;
+            color: #9e8a59;
+            text-decoration: none;
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 8px;
+            font-family: sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            pointer-events: auto;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         </style>
         """, unsafe_allow_html=True)
 
+        # Injeta os botões de navegação superiores
         st.markdown(
-            f"""<div style="position: fixed; top: 12px; left: 12px; right: 12px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; pointer-events: none;"><a href="{logout_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; pointer-events: auto;">← Sair</a><a href="{trocar_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 8.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.15; pointer-events: auto;">Trocar<br>Categoria</a></div>""",
+            f"""<div class="top-bar-custom">
+                <a href="{logout_url}" class="top-btn">← SAIR</a>
+                <a href="{trocar_url}" class="top-btn">TROCAR<br>CATEGORIA</a>
+            </div>""",
             unsafe_allow_html=True,
         )
 
@@ -883,7 +870,7 @@ if modo == "Painel do Jurado":
                 if len(papeis_permitidos_categoria) == 1:
                     papel_unico = papeis_permitidos_categoria[0]
                     nova_grupo = "Condutor" if papel_unico == "Condutores" else "Conduzida"
-                    st.markdown(f"<div style='font-size:11px; color:#e5c158; padding-top:15px;'>Grupo: <b>{nova_grupo}</b></div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='font-size:11px; color:#e5c158; padding-top:10px;'>Grupo: <b>{nova_grupo}</b></div>", unsafe_allow_html=True)
                 else:
                     nova_grupo = st.radio(
                         "Grupo",
@@ -925,7 +912,7 @@ if modo == "Painel do Jurado":
                 <div class="jj-banner-left">
                     {icone_html}
                     <div>
-                        <div class="jj-label">Categoria</div>
+                        <div class="jj-label" style="margin-bottom:0;">CATEGORIA</div>
                         <div class="jj-categoria">{categoria_escolhida.upper()}</div>
                     </div>
                 </div>
@@ -965,9 +952,10 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_comp = 0
             competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
+            # Cartão "Selecionar Competidor" com badge Condutor (Layout idêntico)
             st.markdown(
                 f"""<div class="jj-card jj-avaliando">
-                    <div class="jj-label">Selecionar Competidor</div>
+                    <div class="jj-label" style="margin-bottom:2px;">SELECIONAR COMPETIDOR</div>
                     <span class="jj-badge">{tipo_selecionado.upper()}</span>
                 </div>""",
                 unsafe_allow_html=True,
@@ -987,10 +975,11 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_crit = 0
                 st.rerun()
 
+            # Cartão Estado Atual (Letras brancas na parte inferior)
             st.markdown(
                 f"""<div class="jj-card jj-avaliando">
-                    <div class="jj-label">Estado Atual</div>
-                    <div class="jj-nome">Avaliando {competidor_escolhido.upper()}</div>
+                    <div class="jj-label" style="margin-bottom:2px;">ESTADO ATUAL</div>
+                    <div class="jj-nome">AVALIANDO {competidor_escolhido.upper()}</div>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -1018,13 +1007,14 @@ if modo == "Painel do Jurado":
 
             criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
+            # Cartão Critério (Texto do Critério Branco)
             st.markdown(
                 f"""<div class="jj-card">
                     <div class="jj-crit-head">
                         <div style="display: flex; align-items: center;">
                             <div class="jj-crit-icon">♪</div>
                             <div>
-                                <div class="jj-label">Critério</div>
+                                <div class="jj-label" style="margin-bottom:0;">CRITÉRIO</div>
                                 <div class="jj-crit-nome">{criterio_nome.upper()}</div>
                             </div>
                         </div>
@@ -1057,7 +1047,7 @@ if modo == "Painel do Jurado":
                 )
 
             with st.container(key="nota_card"):
-                st.markdown('<div class="jj-secao-label">Sua Nota</div>', unsafe_allow_html=True)
+                st.markdown('<div class="jj-secao-label">SUA NOTA</div>', unsafe_allow_html=True)
                 nota_digitada_str = st.text_input(
                     "SUA NOTA",
                     value=st.session_state[chave_nota_input],
@@ -1070,16 +1060,16 @@ if modo == "Painel do Jurado":
             chave_comentario = f"coment_{chave_base}"
             
             with st.container(key="coment_card"):
-                st.markdown('<div class="jj-secao-label">Comentários:</div>', unsafe_allow_html=True)
+                st.markdown('<div class="jj-secao-label">COMENTÁRIOS:</div>', unsafe_allow_html=True)
                 comentario = st.text_area(
                     "COMENTÁRIOS",
                     key=chave_comentario,
                     placeholder="Deixe seu comentário aqui...",
                     max_chars=300,
-                    height=50,
+                    height=60,
                     label_visibility="collapsed",
                 )
-                st.markdown(f"<div style='text-align:right; color:#8d7a52; font-size:8px; margin-top:2px;'>{len(comentario)}/300</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align:right; color:#8d7a52; font-size:8px; margin-top:4px;'>{len(comentario)}/300</div>", unsafe_allow_html=True)
 
             if st.button(
                 "➤ ENVIAR AVALIAÇÃO",
