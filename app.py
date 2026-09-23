@@ -679,14 +679,14 @@ if modo == "Painel do Jurado":
             os.path.join(os.path.dirname(__file__), arquivo_icone)
         )
         if icone_b64:
-            icone_html = f'<img src="{icone_b64}" style="width: 24px; height: 24px; object-fit: contain;"/>'
+            icone_html = f'<img src="{icone_b64}" class="jj-banner-img"/>'
         else:
             icone_html = emoji_icone
 
         fase_titulo, fase_sub = formatar_fase(fase_escolhida)
 
         st.markdown(
-            f"""<div class="jj-card jj-banner" style="margin-bottom: 6px; padding: 6px 10px;"><div class="jj-banner-left" style="gap: 8px;"><div class="jj-banner-icon">{icone_html}</div><div><div class="jj-label">Categoria</div><div class="jj-categoria">{categoria_escolhida.upper()}</div></div></div><div class="jj-banner-right" style="padding-left: 8px;"><div class="jj-fase">{fase_titulo}</div><div class="jj-musica">{fase_sub}</div></div></div>""",
+            f"""<div class="jj-card jj-banner"><div class="jj-banner-left"><div class="jj-banner-icon">{icone_html}</div><div><div class="jj-label">Categoria</div><div class="jj-categoria">{categoria_escolhida.upper()}</div></div></div><div class="jj-banner-right"><div class="jj-fase">{fase_titulo}</div><div class="jj-musica">{fase_sub}</div></div></div>""",
             unsafe_allow_html=True,
         )
 
@@ -719,9 +719,9 @@ if modo == "Painel do Jurado":
             competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
             st.markdown(
-                f"""<div class="jj-card jj-avaliando" style="margin-bottom: 4px; padding: 6px 10px;">
+                f"""<div class="jj-card jj-avaliando">
                     <div class="jj-label">Selecionar Competidor</div>
-                    <span class="jj-badge" style="padding: 2px 10px; font-size: 8px; margin-top: 2px;">{tipo_selecionado.upper()}</span>
+                    <span class="jj-badge">{tipo_selecionado.upper()}</span>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -741,9 +741,9 @@ if modo == "Painel do Jurado":
                 st.rerun()
 
             st.markdown(
-                f"""<div class="jj-card jj-avaliando" style="margin-bottom: 6px; padding: 8px 10px; background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(40, 30, 18, 0.98) 100%);">
-                    <div class="jj-label" style="color: #e5c158;">Estado Atual</div>
-                    <div class="jj-nome" style="font-size: 19px; margin: 2px 0;">Avaliando {competidor_escolhido}</div>
+                f"""<div class="jj-card jj-avaliando">
+                    <div class="jj-label">Estado Atual</div>
+                    <div class="jj-nome">Avaliando {competidor_escolhido}</div>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -772,7 +772,7 @@ if modo == "Painel do Jurado":
             criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
             st.markdown(
-                f"""<div class="jj-card" style="margin-bottom: 6px; padding: 8px 10px;"><div class="jj-crit-head"><div class="jj-crit-icon" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">♪</div><div style="flex: 1; padding: 0 6px;"><div class="jj-label">Critério</div><div class="jj-crit-nome" style="font-size: 14px;">{criterio_nome}</div></div><div class="jj-contador" style="padding: 1px 6px; font-size: 9px;">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor" style="margin: 4px 0 4px 0;"/><div class="jj-crit-desc" style="font-size: 10px;"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
+                f"""<div class="jj-card"><div class="jj-crit-head"><div class="jj-crit-icon">♪</div><div><div class="jj-label">Critério</div><div class="jj-crit-nome">{criterio_nome}</div></div><div class="jj-contador">{st.session_state.idx_crit + 1} / {total_crit}</div></div><hr class="jj-divisor"/><div class="jj-crit-desc"><b>O que avaliar:</b> {criterio_desc}</div></div>""",
                 unsafe_allow_html=True,
             )
 
@@ -796,11 +796,6 @@ if modo == "Painel do Jurado":
                     str(nota_salva).replace(".", ",") if nota_salva is not None else ""
                 )
 
-            st.markdown(
-                """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card div[data-baseweb="input"]:focus-within { border-color: rgba(212, 175, 55, 1) !important; box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; } .st-key-nota_card input::placeholder { color: rgba(243, 229, 171, 0.4) !important; }</style>""",
-                unsafe_allow_html=True,
-            )
-
             with st.container(key="nota_card"):
                 st.markdown(
                     '<div class="jj-secao-label">Sua Nota</div>',
@@ -815,53 +810,23 @@ if modo == "Painel do Jurado":
                     label_visibility="collapsed",
                 )
 
-            st.markdown(
-                """<style>
-                .st-key-coment_card { 
-                    background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); 
-                    border: 1px solid rgba(212, 175, 55, 0.45); 
-                    border-radius: 10px; 
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
-                    padding: 8px 10px 10px 10px; 
-                    margin-bottom: 6px; 
-                } 
-                .st-key-coment_card textarea { 
-                    background-color: rgba(10, 7, 5, 0.92) !important; 
-                    border: 1px solid rgba(212, 175, 55, 0.35) !important; 
-                    border-radius: 6px !important; 
-                    color: #f3e5ab !important; 
-                    font-size: 12px !important; 
-                    height: 45px !important; 
-                    margin-bottom: 0px !important;
-                } 
-                .st-key-coment_card textarea::placeholder { 
-                    color: rgba(243, 229, 171, 0.35) !important; 
-                }
-                .st-key-coment_card p {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                }
-                </style>""",
-                unsafe_allow_html=True,
-            )
-
             chave_comentario = f"coment_{chave_base}"
             
             with st.container(key="coment_card"):
                 st.markdown(
-                    '<div class="jj-secao-label" style="margin-bottom: 4px;">Comentários:</div>',
+                    '<div class="jj-secao-label">Comentários (Opcional)</div>',
                     unsafe_allow_html=True,
                 )
                 comentario = st.text_area(
                     "COMENTÁRIOS",
                     key=chave_comentario,
-                    placeholder="Deixe seu comentário aqui...",
+                    placeholder="Deixe um comentário sobre a apresentação...",
                     max_chars=300,
-                    height=45,
+                    height=70,
                     label_visibility="collapsed",
                 )
                 st.markdown(
-                    f"<div style='text-align:right; color:#8d7a52; font-size:9px; margin-top:-8px;'>{len(comentario)}/300</div>",
+                    f"<div style='text-align:right; color:#8d7a52; font-size:10px;'>{len(comentario)}/300</div>",
                     unsafe_allow_html=True,
                 )
 
@@ -933,7 +898,6 @@ else:
     # --- TELÃO (PÚBLICO) ---
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
     
-    # Botão Menu inquebrável
     components.html(
         """
         <script>
@@ -1055,9 +1019,6 @@ else:
             font-family: 'Cinzel', Georgia, serif;
         }
         
-        /* -----------------------------------------------------
-           ESTILOS MÁGICOS DA TABELA PRETA E DOURADA (TEMA ARÁBIAS)
-           ----------------------------------------------------- */
         .tabela-dourada {
             width: 100%;
             border-collapse: collapse;
