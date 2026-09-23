@@ -679,7 +679,7 @@ if modo == "Painel do Jurado":
             os.path.join(os.path.dirname(__file__), arquivo_icone)
         )
         if icone_b64:
-            icone_html = f'<img src="{icone_b64}" class="jj-banner-img"/>'
+            icone_html = f'<img src="{icone_b64}" style="width: 22px; height: 22px; object-fit: contain; vertical-align: middle;"/>'
         else:
             icone_html = emoji_icone
 
