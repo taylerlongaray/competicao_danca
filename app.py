@@ -621,25 +621,25 @@ if modo == "Painel do Jurado":
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
         # -------------------------------------------------------------------
-        # CSS REFINADO: Réplica exata do layout da imagem (Tamanho, Cores, Margens)
+        # CSS REFINADO: Buraco negro removido. Tudo no seu lugar!
         # -------------------------------------------------------------------
         st.markdown("""
         <style>
         /* Oculta tudo que não precisa */
         header[data-testid="stHeader"], footer, label[data-baseweb="label"] { display: none !important; }
 
-        /* Espaçamento Global - Respeitando o espaço do logótipo no fundo */
+        /* Espaçamento Global - Removido o buraco gigante do topo */
         .block-container {
-            padding-top: 6.5rem !important; /* IMPORTANTE: Espaço adequado no topo para o logótipo */
+            padding-top: 4.2rem !important; /* Limpa o logo, mas sobe tudo perfeitamente */
             padding-bottom: 1rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             max-width: 100% !important;
         }
 
-        /* Espaçamento exato entre os cartões */
+        /* Espaçamento exato entre os cartões para não ficarem esmagados */
         div[data-testid="stVerticalBlock"] {
-            gap: 0.5rem !important; 
+            gap: 0.6rem !important; 
         }
 
         /* Estilo Base dos Cartões (Apenas a sombra sutil e a cor escurecida certa) */
