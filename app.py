@@ -1060,7 +1060,7 @@ if modo == "Painel do Jurado":
                 )
 
                 if permissoes_jurado == "TODAS_GLOBAL":
-                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
+                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança du participante."}
                 else:
                     criterios_permitidos_nomes = []
                     for p in permissoes_jurado:
@@ -1242,7 +1242,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM O LAYOUT AVANÇADO E BOTÃO FLUTUANTE ---
+    # --- TELÃO (PÚBLICO) COM DUAS NOTAS LADO A LADO EM DIAMANTE/PLATINA E COMPACTO ---
     components.html(
         """
         <script>
@@ -1312,8 +1312,8 @@ else:
         .block-container {
             padding-top: 5.5rem !important;
             padding-bottom: 4rem !important;
-            padding-left: 2.5rem !important;
-            padding-right: 2.5rem !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
             max-width: 100% !important;
             margin: 0 auto !important;
         }
@@ -1364,11 +1364,12 @@ else:
             font-family: 'Cinzel', Georgia, serif;
         }
         
+        /* Tabela padrão (Ouro, Prata, etc.) */
         .tabela-dourada {
             width: 100%;
             border-collapse: collapse;
             margin: 10px 0;
-            font-size: 12px;
+            font-size: 11px;
             font-family: 'Helvetica Neue', sans-serif;
             color: #f3e5ab;
             background: linear-gradient(135deg, rgba(10, 7, 5, 0.90) 0%, rgba(20, 15, 10, 0.95) 100%);
@@ -1384,13 +1385,13 @@ else:
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-align: center !important;
-            padding: 8px 6px;
+            padding: 6px 4px;
             border-bottom: 2px solid #d4af37;
             line-height: 1.2;
         }
         .tabela-dourada td {
             text-align: center !important;
-            padding: 8px 6px;
+            padding: 6px 4px;
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
             white-space: nowrap !important;
         }
@@ -1398,6 +1399,48 @@ else:
             border-bottom: none;
         }
         .tabela-dourada tbody tr:hover {
+            background-color: rgba(212, 175, 55, 0.15);
+        }
+
+        /* Tabela Compacta para Diamante e Platina (duas notas por jurado) */
+        .tabela-dourada-compacta {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 10px;
+            font-family: 'Helvetica Neue', sans-serif;
+            color: #f3e5ab;
+            background: linear-gradient(135deg, rgba(10, 7, 5, 0.90) 0%, rgba(20, 15, 10, 0.95) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.6);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+        }
+        .tabela-dourada-compacta thead {
+            background-color: rgba(15, 11, 7, 1);
+        }
+        .tabela-dourada-compacta th {
+            color: #e5c158;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            text-align: center !important;
+            padding: 5px 2px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            line-height: 1.1;
+        }
+        .tabela-dourada-compacta td {
+            text-align: center !important;
+            padding: 5px 2px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            white-space: nowrap !important;
+        }
+        .tabela-dourada-compacta .col-partic {
+            max-width: 95px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left !important;
+            padding-left: 6px !important;
+        }
+        .tabela-dourada-compacta tbody tr:hover {
             background-color: rgba(212, 175, 55, 0.15);
         }
         </style>
@@ -1505,71 +1548,130 @@ else:
             if col in tabela_exibicao.columns:
                 tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
 
-        return tabela_exibicao
+        return tabela_exibicao.to_html(index=False, classes="tabela-dourada", escape=False)
 
-    def gerar_tabela_acumulada_diamante_platina(papel_nome):
+    def gerar_tabela_acumulada_diamante_platina_html(papel_nome):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         comps = categorias[categoria_nome][papel_nome]
-        df_base = pd.DataFrame({"competidor": comps})
-
+        
+        fase1_nome = "Fase 1 (Música 1)"
+        fase2_nome = "Fase 2 (Música 2)"
+        
+        dados_tabela = {c: {j: {'f1': None, 'f2': None} for j in jurados_aptos} for c in comps}
+        
         if not df_cat.empty:
-            df_fase_jurado = df_cat[df_cat["papel"] == papel_nome].groupby(["competidor", "fase", "jurado"])["nota"].mean().reset_index()
-            df_total_jurado = df_fase_jurado.groupby(["competidor", "jurado"])["nota"].sum().reset_index()
-            df_total_jurado["jurado_nome"] = df_total_jurado["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
+            df_papel = df_cat[df_cat["papel"] == papel_nome]
+            if not df_papel.empty:
+                grouped = df_papel.groupby(["competidor", "fase", "jurado"])["nota"].mean().reset_index()
+                for _, row in grouped.iterrows():
+                    comp = row["competidor"]
+                    fase = row["fase"]
+                    jurado_username = row["jurado"]
+                    jurado_nome_real = configuracao_jurados.get(jurado_username, {}).get("nome", jurado_username)
+                    
+                    if jurado_nome_real in jurados_aptos:
+                        if comp in dados_tabela:
+                            if fase1_nome in fase:
+                                dados_tabela[comp][jurado_nome_real]['f1'] = row["nota"]
+                            elif fase2_nome in fase:
+                                dados_tabela[comp][jurado_nome_real]['f2'] = row["nota"]
+
+        lista_linhas = []
+        for comp in comps:
+            totais_jurados = []
+            for j in jurados_aptos:
+                f1 = dados_tabela[comp][j]['f1']
+                f2 = dados_tabela[comp][j]['f2']
+                val_f1 = f1 if f1 is not None else 0
+                val_f2 = f2 if f2 is not None else 0
+                totais_jurados.append(val_f1 + val_f2)
+            total_geral = sum(totais_jurados) if any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos) else -1
+            lista_linhas.append({
+                "competidor": comp,
+                "dados": dados_tabela[comp],
+                "total": total_geral
+            })
             
-            pivot_df = df_total_jurado.pivot(index="competidor", columns="jurado_nome", values="nota").reset_index()
-            pivot_df = pd.merge(df_base, pivot_df, on="competidor", how="left")
-        else:
-            pivot_df = df_base.copy()
-
-        for j_col in jurados_aptos:
-            if j_col not in pivot_df.columns:
-                pivot_df[j_col] = None
-
-        exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
-        pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
-        pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
-
-        pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
-        pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
-
-        renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
-        pivot_df = pivot_df.rename(columns=renomeador)
-
-        jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
-        cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
-        cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
-        tabela_exibicao = pivot_df[cols_finais_existentes].copy()
-
-        for col in jurados_formatados + ["TOTAL"]:
-            if col in tabela_exibicao.columns:
-                tabela_exibicao[col] = tabela_exibicao[col].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
-
-        return tabela_exibicao
+        lista_linhas.sort(key=lambda x: x["total"], reverse=True)
+        
+        html = '<table class="tabela-dourada-compacta">'
+        html += '<thead>'
+        html += '<tr>'
+        html += '<th rowspan="2">CLASS.</th>'
+        html += '<th rowspan="2">PARTICIPANTE</th>'
+        
+        for j in jurados_aptos:
+            nome_fmt = formatar_nome_jurado(j).replace("<br>", " ")
+            html += f'<th colspan="2">{nome_fmt}</th>'
+            
+        html += '<th rowspan="2">TOTAL</th>'
+        html += '</tr>'
+        
+        html += '<tr>'
+        for _ in jurados_aptos:
+            html += '<th>M1</th><th>M2</th>'
+        html += '</tr>'
+        html += '</thead>'
+        
+        html += '<tbody>'
+        for idx, linha in enumerate(lista_linhas):
+            class_str = f"{idx+1}º"
+            comp_nome = linha["competidor"]
+            html += '<tr>'
+            html += f'<td>{class_str}</td>'
+            html += f'<td class="col-partic" title="{comp_nome}">{comp_nome}</td>'
+            
+            soma_competidor = 0
+            tem_nota = False
+            for j in jurados_aptos:
+                f1 = linha["dados"][j]['f1']
+                f2 = linha["dados"][j]['f2']
+                
+                str_f1 = f"{f1:.1f}" if f1 is not None else "-"
+                str_f2 = f"{f2:.1f}" if f2 is not None else "-"
+                
+                html += f'<td>{str_f1}</td>'
+                html += f'<td>{str_f2}</td>'
+                
+                if f1 is not None:
+                    soma_competidor += f1
+                    tem_nota = True
+                if f2 is not None:
+                    soma_competidor += f2
+                    tem_nota = True
+                    
+            str_total = f"{soma_competidor:.1f}" if tem_nota else "-"
+            html += f'<td><b>{str_total}</b></td>'
+            html += '</tr>'
+            
+        html += '</tbody>'
+        html += '</table>'
+        
+        return html
 
     if categoria_nome in ["Diamante", "Platina"]:
         col_cond, col_condz = st.columns(2)
 
         with col_cond:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
-            tabela_cond = gerar_tabela_acumulada_diamante_platina("Condutores")
-            st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+            tabela_cond_html = gerar_tabela_acumulada_diamante_platina_html("Condutores")
+            st.markdown(tabela_cond_html, unsafe_allow_html=True)
 
         with col_condz:
             st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
-            tabela_condz = gerar_tabela_acumulada_diamante_platina("Conduzidas")
-            st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+            tabela_condz_html = gerar_tabela_acumulada_diamante_platina_html("Conduzidas")
+            st.markdown(tabela_condz_html, unsafe_allow_html=True)
 
     else:
         for fase_nome in fases_da_cat:
             col_cond, col_condz = st.columns(2)
 
             with col_cond:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores — {fase_nome}</h3>", unsafe_allow_html=True)
                 tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores")
-                st.markdown(tabela_cond.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+                st.markdown(tabela_cond, unsafe_allow_html=True)
 
             with col_condz:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas — {fase_nome}</h3>", unsafe_allow_html=True)
                 tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas")
-                st.markdown(tabela_condz.to_html(index=False, classes="tabela-dourada", escape=False), unsafe_allow_html=True)
+                st.markdown(tabela_condz, unsafe_allow_html=True)
