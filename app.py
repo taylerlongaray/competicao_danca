@@ -621,114 +621,101 @@ if modo == "Painel do Jurado":
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
         # -------------------------------------------------------------------
-        # CSS PERFEITO - SEM BURACOS, SEM ACAVALAR, IDÊNTICO À IMAGEM 1000221562.jpg
+        # CSS REFINADO: Buraco negro removido. Tudo no seu lugar!
         # -------------------------------------------------------------------
         st.markdown("""
         <style>
-        /* Oculta topo e base padrão */
+        /* Oculta tudo que não precisa */
         header[data-testid="stHeader"], footer, label[data-baseweb="label"] { display: none !important; }
 
-        /* Ajuste fino do container principal para caber tudo sem scroll */
+        /* Espaçamento Global - Removido o buraco gigante do topo */
         .block-container {
-            padding-top: 4.5rem !important; /* Espaço exato para o logo e botões superiores */
+            padding-top: 4.2rem !important; /* Limpa o logo, mas sobe tudo perfeitamente */
             padding-bottom: 1rem !important;
-            padding-left: 1.2rem !important;
-            padding-right: 1.2rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
             max-width: 100% !important;
         }
 
-        /* Reduz o espaçamento entre elementos sem quebrar o layout do Streamlit */
+        /* Espaçamento exato entre os cartões para não ficarem esmagados */
         div[data-testid="stVerticalBlock"] {
             gap: 0.6rem !important; 
         }
 
-        /* Botões Superiores Sair / Trocar */
-        .top-bar-custom {
-            position: absolute; 
-            top: 15px; 
-            left: 15px;
-            right: 15px;
-            z-index: 99999;
-            display: flex;
-            justify-content: space-between;
-        }
-        .top-btn {
-            background: rgba(15, 11, 7, 0.6);
-            color: #9e8a59;
-            text-decoration: none;
-            border: 1px solid rgba(212,175,55,0.4);
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 9px;
-            font-family: sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Expander - Ajustar fase */
-        [data-testid="stExpander"] {
-            background: rgba(14, 10, 7, 0.8) !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        /* Estilo Base dos Cartões (Apenas a sombra sutil e a cor escurecida certa) */
+        .jj-card, .st-key-nota_card, .st-key-coment_card, [data-testid="stExpander"] {
+            background: rgba(10, 7, 5, 0.6) !important;
+            border: 1px solid rgba(212, 175, 55, 0.2) !important;
             border-radius: 8px !important;
         }
+
+        .jj-card {
+            padding: 12px 14px !important;
+            margin-bottom: 0px !important;
+        }
+
+        /* Padding específico para os containers do Streamlit que viraram cartões */
+        .st-key-nota_card, .st-key-coment_card {
+            padding: 12px 14px !important;
+        }
+        
+        /* Ajuste do Expander superior */
         [data-testid="stExpander"] details summary {
             padding: 8px 14px !important;
         }
         [data-testid="stExpander"] details summary p {
-            font-size: 13px !important;
+            font-size: 11px !important;
             color: #e5c158 !important;
         }
 
-        /* Cartões Customizados (Cards) */
-        .jj-card {
-            background: rgba(14, 10, 7, 0.8) !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 8px !important;
-            padding: 12px 16px !important;
-        }
-
-        /* Elementos Internos dos Cartões */
-        .jj-label {
+        /* Labels e Textos Superiores */
+        .jj-label, .jj-secao-label {
             color: #9e8a59;
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 2px;
         }
-        
+        .jj-secao-label {
+            margin-bottom: 8px; /* Protege de encostar na caixa abaixo */
+            display: block;
+        }
+
+        /* Banner Categoria Diamante */
         .jj-banner {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .jj-banner-left { display: flex; align-items: center; gap: 8px; }
-        .jj-banner-img { width: 24px !important; height: 24px !important; object-fit: contain; }
+        .jj-banner-left { display: flex; align-items: center; gap: 10px; }
+        .jj-banner-img { width: 20px !important; height: 20px !important; object-fit: contain; }
         .jj-categoria {
-            color: #fff;
+            color: #e5c158;
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
             font-size: 18px;
             font-weight: bold;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            line-height: 1.1;
+        }
+        .jj-banner-right {
+            text-align: right;
+            border-left: 1px solid rgba(212, 175, 55, 0.2);
+            padding-left: 12px;
         }
         .jj-fase {
-            color: #fff;
+            color: #fff; /* FASE 1 é branco na imagem */
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
             font-size: 14px;
             font-weight: bold;
             letter-spacing: 1px;
-            text-align: right;
         }
-        .jj-musica { color: #9e8a59; font-size: 9px; text-transform: uppercase; text-align: right; }
+        .jj-musica { color: #9e8a59; font-size: 9px; text-transform: uppercase; } /* MÚSICA 1 em dourado suave */
 
+        /* Cartões Avaliando e Competidor */
         .jj-avaliando { text-align: center; }
         .jj-badge {
-            border: 1px solid rgba(212, 175, 55, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 20px;
-            padding: 2px 14px;
+            padding: 2px 12px;
             font-size: 9px;
             color: #d4af37;
             text-transform: uppercase;
@@ -737,18 +724,19 @@ if modo == "Painel do Jurado":
             margin-top: 4px;
         }
         .jj-nome {
-            color: #ffffff;
+            color: #ffffff; /* Letras brancas */
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
             font-size: 16px;
             font-weight: normal;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
+        /* Cartão Critério */
         .jj-crit-head { display: flex; justify-content: space-between; align-items: center; }
         .jj-crit-icon {
-            border: 1px solid rgba(212, 175, 55, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 50%;
             width: 24px;
             height: 24px;
@@ -760,7 +748,7 @@ if modo == "Painel do Jurado":
             margin-right: 10px;
         }
         .jj-crit-nome {
-            color: #e5c158;
+            color: #fff; /* Nome do critério é branco na imagem */
             font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
             font-size: 12px;
             font-weight: bold;
@@ -771,7 +759,7 @@ if modo == "Painel do Jurado":
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 12px;
             padding: 2px 8px;
-            font-size: 10px;
+            font-size: 9px;
             color: #9e8a59;
         }
         .jj-divisor {
@@ -779,62 +767,73 @@ if modo == "Painel do Jurado":
             border-top: 1px solid rgba(212, 175, 55, 0.2);
             margin: 10px 0;
         }
-        .jj-crit-desc { color: #cccccc; font-size: 11px; line-height: 1.4; }
+        .jj-crit-desc { color: #aaa; font-size: 10px; line-height: 1.4; }
 
-        /* Streamlit Containers transformados em Cartões Seguros */
-        .st-key-nota_card, .st-key-coment_card {
-            background: rgba(14, 10, 7, 0.8) !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 8px !important;
-            padding: 12px 16px !important;
-        }
-
-        /* Labels internas para os cartões das Notas/Comentários */
-        .jj-secao-label {
-            color: #9e8a59;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        /* Inputs Nativos (A Cor Azulada/Acinzentada da Imagem) */
+        /* Inputs Nativos (Select, Text, Area) - A Cor de Fundo Escura Azulada Exata */
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"],
         div[data-baseweb="textarea"] {
-            background-color: #1a1a20 !important;
+            background-color: #1a1a20 !important; /* Tom idêntico ao da imagem */
             border-radius: 6px !important;
-            border: 1px solid transparent !important;
+            border: 1px solid rgba(255,255,255,0.05) !important;
         }
-        div[data-baseweb="input"]:focus-within, div[data-baseweb="textarea"]:focus-within, div[data-baseweb="select"] > div:focus-within {
-            border: 1px solid #d4af37 !important;
+        div[data-baseweb="select"] > div {
+            min-height: 40px !important; /* Altura do dropdown confortável */
         }
-        
         div[data-baseweb="input"] input {
             color: #fff !important;
-            padding: 10px 14px !important;
-            font-size: 14px !important;
+            padding: 10px 12px !important;
+            font-size: 13px !important;
         }
         div[data-baseweb="textarea"] textarea {
             color: #fff !important;
-            padding: 10px 14px !important;
-            font-size: 14px !important;
-            height: 60px !important; 
+            padding: 10px 12px !important;
+            font-size: 12px !important;
+            min-height: 60px !important; /* Espaço para duas/três linhas limpas */
         }
 
-        /* Botão Enviar Dourado */
+        /* Botão Enviar Dourado Metálico */
         div[data-testid="stButton"] button[kind="primary"] {
             background: linear-gradient(90deg, #d4af37 0%, #aa8222 100%) !important;
             color: #000 !important;
             border: none !important;
             font-weight: 700 !important;
-            font-size: 14px !important;
-            padding: 12px 14px !important;
+            font-size: 13px !important;
+            padding: 10px 14px !important; /* Altura original restaurada */
             border-radius: 6px !important;
             width: 100% !important;
             text-transform: uppercase;
             letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+        }
+
+        /* Botões Superiores Transparentes Sair / Trocar */
+        .top-bar-custom {
+            position: fixed; 
+            top: 15px; 
+            left: 15px;
+            right: 15px;
+            z-index: 99999;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .top-btn {
+            background: transparent;
+            color: #9e8a59;
+            text-decoration: none;
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 8px;
+            font-family: sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            pointer-events: auto;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -953,8 +952,9 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_comp = 0
             competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
+            # Cartão "Selecionar Competidor" com badge Condutor (Layout idêntico)
             st.markdown(
-                f"""<div class="jj-card jj-avaliando" style="padding-bottom: 6px;">
+                f"""<div class="jj-card jj-avaliando">
                     <div class="jj-label" style="margin-bottom:2px;">SELECIONAR COMPETIDOR</div>
                     <span class="jj-badge">{tipo_selecionado.upper()}</span>
                 </div>""",
@@ -975,6 +975,7 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_crit = 0
                 st.rerun()
 
+            # Cartão Estado Atual (Letras brancas na parte inferior)
             st.markdown(
                 f"""<div class="jj-card jj-avaliando">
                     <div class="jj-label" style="margin-bottom:2px;">ESTADO ATUAL</div>
@@ -1006,6 +1007,7 @@ if modo == "Painel do Jurado":
 
             criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
+            # Cartão Critério (Texto do Critério Branco)
             st.markdown(
                 f"""<div class="jj-card">
                     <div class="jj-crit-head">
