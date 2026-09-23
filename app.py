@@ -448,7 +448,7 @@ def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
 if link_jurado_exclusivo:
     modo = "Painel do Jurado"
     st.markdown(
-        '<style>[data-testid="stSidebar"] { display: none !important; }</style>',
+        '<style>[data-testid="stSidebar"] { display: none !important; } [data-testid="stHeader"] { display: none !important; }</style>',
         unsafe_allow_html=True,
     )
 else:
@@ -481,13 +481,9 @@ elif modo == "Telão (Público)":
 else:
     st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
-# CSS global para remover a barra preta superior do Streamlit em todas as telas
 st.markdown(
     """
     <style>
-    [data-testid="stHeader"] {
-        display: none !important;
-    }
     footer {visibility: hidden;}
     </style>
     """,
