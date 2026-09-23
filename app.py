@@ -1269,7 +1269,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM AUTO-REFRESH EM TEMPO REAL PARA ATUALIZAR NOTAS ---
+    # --- TELÃO (PÚBLICO) COM AUTO-REFRESH CONTÍNUO (A CADA 3 SEGUNDOS) ---
     components.html(
         """
         <script>
@@ -1323,14 +1323,17 @@ else:
         }
         parentDoc.addEventListener('keydown', keyHandler);
         
-        // Auto-refresh do telão a cada 4 segundos para atualizar notas em tempo real sem intervenção
-        setTimeout(function(){
-            window.location.reload();
-        }, 4000);
+        // Auto-refresh contínuo a cada 3 segundos usando setInterval para atualizar o telão automaticamente
+        if (!window.telaoIntervalo) {
+            window.telaoIntervalo = setInterval(function(){
+                window.location.reload();
+            }, 3000);
+        }
         
         window.addEventListener('unload', function() {
             if (btn) btn.remove();
             parentDoc.removeEventListener('keydown', keyHandler);
+            if (window.telaoIntervalo) clearInterval(window.telaoIntervalo);
         });
         </script>
         """,
