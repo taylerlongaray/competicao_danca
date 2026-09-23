@@ -621,219 +621,421 @@ if modo == "Painel do Jurado":
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
         # -------------------------------------------------------------------
-        # CSS REFINADO: Buraco negro removido. Tudo no seu lugar!
+        # TELA DE VOTAÇÃO — layout mobile ajustado para reproduzir o modelo
+        # de referência. A lógica de votação abaixo permanece a mesma.
         # -------------------------------------------------------------------
         st.markdown("""
         <style>
-        /* Oculta tudo que não precisa */
-        header[data-testid="stHeader"], footer, label[data-baseweb="label"] { display: none !important; }
+        /* ================================================================
+           BASE DA TELA DE VOTAÇÃO
+           ================================================================ */
+        header[data-testid="stHeader"],
+        footer,
+        [data-testid="stToolbar"],
+        [data-testid="stDecoration"],
+        label[data-baseweb="label"] {
+            display: none !important;
+        }
 
-        /* Espaçamento Global - Removido o buraco gigante do topo */
         .block-container {
-            padding-top: 4.2rem !important; /* Limpa o logo, mas sobe tudo perfeitamente */
-            padding-bottom: 1rem !important;
+            padding-top: 4.2rem !important;
+            padding-bottom: 0.55rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             max-width: 100% !important;
         }
 
-        /* Espaçamento exato entre os cartões para não ficarem esmagados */
-        div[data-testid="stVerticalBlock"] {
-            gap: 0.6rem !important; 
+        /* O Streamlit cria espaçamento automático entre os blocos.
+           Zeramos esse espaçamento e controlamos as distâncias nos próprios
+           elementos para o layout não ganhar altura extra no celular. */
+        .block-container div[data-testid="stVerticalBlock"] {
+            gap: 0 !important;
         }
 
-        /* Estilo Base dos Cartões (Apenas a sombra sutil e a cor escurecida certa) */
-        .jj-card, .st-key-nota_card, .st-key-coment_card, [data-testid="stExpander"] {
-            background: rgba(10, 7, 5, 0.6) !important;
-            border: 1px solid rgba(212, 175, 55, 0.2) !important;
-            border-radius: 8px !important;
+        /* ================================================================
+           CARTÕES
+           ================================================================ */
+        .jj-card,
+        .st-key-nota_card,
+        .st-key-coment_card,
+        [data-testid="stExpander"] {
+            box-sizing: border-box !important;
+            background: rgba(10, 7, 5, 0.60) !important;
+            border: 1px solid rgba(212, 175, 55, 0.28) !important;
+            border-radius: 9px !important;
+            box-shadow: none !important;
         }
 
         .jj-card {
-            padding: 12px 14px !important;
-            margin-bottom: 0px !important;
+            padding: 11px 14px !important;
+            margin: 0 0 9px 0 !important;
         }
 
-        /* Padding específico para os containers do Streamlit que viraram cartões */
-        .st-key-nota_card, .st-key-coment_card {
-            padding: 12px 14px !important;
+        .st-key-nota_card,
+        .st-key-coment_card {
+            padding: 11px 14px !important;
+            margin: 0 0 9px 0 !important;
         }
-        
-        /* Ajuste do Expander superior */
+
+        /* ================================================================
+           EXPANDER "AJUSTAR FASE E GRUPO"
+           ================================================================ */
+        [data-testid="stExpander"] {
+            margin: 0 0 25px 0 !important;
+            overflow: hidden !important;
+        }
+
         [data-testid="stExpander"] details summary {
-            padding: 8px 14px !important;
+            min-height: 47px !important;
+            box-sizing: border-box !important;
+            padding: 0 14px !important;
         }
+
         [data-testid="stExpander"] details summary p {
+            margin: 0 !important;
             font-size: 11px !important;
+            line-height: 1 !important;
             color: #e5c158 !important;
         }
 
-        /* Labels e Textos Superiores */
-        .jj-label, .jj-secao-label {
-            color: #9e8a59;
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        [data-testid="stExpander"] details > div {
+            padding: 8px 14px 12px 14px !important;
         }
+
+        /* ================================================================
+           TEXTOS
+           ================================================================ */
+        .jj-label,
         .jj-secao-label {
-            margin-bottom: 8px; /* Protege de encostar na caixa abaixo */
-            display: block;
+            color: #9e8a59 !important;
+            font-size: 9px !important;
+            line-height: 1.15 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.6px !important;
         }
 
-        /* Banner Categoria Diamante */
+        .jj-secao-label {
+            display: block !important;
+            margin: 0 0 8px 0 !important;
+        }
+
+        /* ================================================================
+           BANNER DA CATEGORIA
+           ================================================================ */
         .jj-banner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            min-height: 79px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
         }
-        .jj-banner-left { display: flex; align-items: center; gap: 10px; }
-        .jj-banner-img { width: 20px !important; height: 20px !important; object-fit: contain; }
+
+        .jj-banner-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+        }
+
+        .jj-banner-img {
+            width: 27px !important;
+            height: 27px !important;
+            object-fit: contain !important;
+        }
+
         .jj-categoria {
-            color: #e5c158;
-            font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            line-height: 1.1;
+            color: #e5c158 !important;
+            font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
+            font-size: 24px !important;
+            font-weight: bold !important;
+            letter-spacing: 1px !important;
+            line-height: 1.0 !important;
         }
+
         .jj-banner-right {
-            text-align: right;
-            border-left: 1px solid rgba(212, 175, 55, 0.2);
-            padding-left: 12px;
+            text-align: right !important;
+            border-left: 1px solid rgba(212, 175, 55, 0.35) !important;
+            padding-left: 13px !important;
+            min-width: 88px !important;
         }
+
         .jj-fase {
-            color: #fff; /* FASE 1 é branco na imagem */
-            font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .jj-musica { color: #9e8a59; font-size: 9px; text-transform: uppercase; } /* MÚSICA 1 em dourado suave */
-
-        /* Cartões Avaliando e Competidor */
-        .jj-avaliando { text-align: center; }
-        .jj-badge {
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 20px;
-            padding: 2px 12px;
-            font-size: 9px;
-            color: #d4af37;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block;
-            margin-top: 4px;
-        }
-        .jj-nome {
-            color: #ffffff; /* Letras brancas */
-            font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 16px;
-            font-weight: normal;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 2px;
-        }
-
-        /* Cartão Critério */
-        .jj-crit-head { display: flex; justify-content: space-between; align-items: center; }
-        .jj-crit-icon {
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #e5c158;
-            font-size: 11px;
-            margin-right: 10px;
-        }
-        .jj-crit-nome {
-            color: #fff; /* Nome do critério é branco na imagem */
-            font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .jj-contador {
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 12px;
-            padding: 2px 8px;
-            font-size: 9px;
-            color: #9e8a59;
-        }
-        .jj-divisor {
-            border: none;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            margin: 10px 0;
-        }
-        .jj-crit-desc { color: #aaa; font-size: 10px; line-height: 1.4; }
-
-        /* Inputs Nativos (Select, Text, Area) - A Cor de Fundo Escura Azulada Exata */
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="input"],
-        div[data-baseweb="textarea"] {
-            background-color: #1a1a20 !important; /* Tom idêntico ao da imagem */
-            border-radius: 6px !important;
-            border: 1px solid rgba(255,255,255,0.05) !important;
-        }
-        div[data-baseweb="select"] > div {
-            min-height: 40px !important; /* Altura do dropdown confortável */
-        }
-        div[data-baseweb="input"] input {
             color: #fff !important;
-            padding: 10px 12px !important;
-            font-size: 13px !important;
+            font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
+            font-size: 15px !important;
+            font-weight: bold !important;
+            letter-spacing: 1px !important;
+            line-height: 1.05 !important;
         }
+
+        .jj-musica {
+            color: #9e8a59 !important;
+            font-size: 9px !important;
+            line-height: 1.25 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+        }
+
+        /* ================================================================
+           SELEÇÃO / ESTADO ATUAL
+           ================================================================ */
+        .jj-avaliando {
+            text-align: center !important;
+        }
+
+        .jj-badge {
+            border: 1px solid rgba(212, 175, 55, 0.55) !important;
+            border-radius: 20px !important;
+            padding: 4px 13px !important;
+            font-size: 9px !important;
+            line-height: 1 !important;
+            color: #d4af37 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            display: inline-block !important;
+            margin-top: 5px !important;
+        }
+
+        .jj-nome {
+            color: #fff !important;
+            font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
+            font-size: 18px !important;
+            font-weight: normal !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            line-height: 1.05 !important;
+            margin-top: 4px !important;
+        }
+
+        /* O select fica visualmente separado do cartão "Selecionar
+           Competidor", exatamente como na referência. */
+        [data-testid="stSelectbox"] {
+            margin: -1px 0 15px 0 !important;
+        }
+
+        [data-testid="stSelectbox"] > div {
+            width: 100% !important;
+        }
+
+        div[data-baseweb="select"] > div {
+            min-height: 60px !important;
+            height: 60px !important;
+            box-sizing: border-box !important;
+            background: #25262d !important;
+            border: none !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+        }
+
+        div[data-baseweb="select"] [data-baseweb="select"] {
+            min-height: 60px !important;
+        }
+
+        div[data-baseweb="select"] input {
+            color: #fff !important;
+        }
+
+        div[data-baseweb="select"] [role="option"],
+        div[data-baseweb="select"] [aria-selected="true"] {
+            font-size: 15px !important;
+        }
+
+        /* ================================================================
+           CARTÃO DO CRITÉRIO
+           ================================================================ */
+        .jj-crit-head {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+
+        .jj-crit-icon {
+            flex: 0 0 40px !important;
+            width: 40px !important;
+            height: 40px !important;
+            border: 1px solid rgba(212, 175, 55, 0.50) !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #e5c158 !important;
+            font-size: 18px !important;
+            margin-right: 10px !important;
+            box-sizing: border-box !important;
+        }
+
+        .jj-crit-nome {
+            color: #fff !important;
+            font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
+            font-size: 14px !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.6px !important;
+            line-height: 1.05 !important;
+        }
+
+        .jj-contador {
+            flex: 0 0 auto !important;
+            border: 1px solid rgba(212, 175, 55, 0.55) !important;
+            border-radius: 14px !important;
+            padding: 4px 9px !important;
+            font-size: 9px !important;
+            line-height: 1 !important;
+            color: #9e8a59 !important;
+        }
+
+        .jj-divisor {
+            border: none !important;
+            border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
+            margin: 10px 0 !important;
+        }
+
+        .jj-crit-desc {
+            color: #aaa !important;
+            font-size: 10px !important;
+            line-height: 1.4 !important;
+        }
+
+        /* ================================================================
+           NOTA E COMENTÁRIOS
+           ================================================================ */
+        div[data-baseweb="input"] {
+            min-height: 60px !important;
+            height: 60px !important;
+            box-sizing: border-box !important;
+            background: #25262d !important;
+            border: none !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+        }
+
+        div[data-baseweb="input"] input {
+            height: 60px !important;
+            box-sizing: border-box !important;
+            color: #fff !important;
+            padding: 0 14px !important;
+            font-size: 16px !important;
+        }
+
+        div[data-baseweb="input"] input::placeholder {
+            color: #85858b !important;
+            opacity: 1 !important;
+        }
+
+        div[data-baseweb="textarea"] {
+            background: transparent !important;
+            border: 1px solid rgba(212, 175, 55, 0.35) !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+        }
+
         div[data-baseweb="textarea"] textarea {
             color: #fff !important;
+            background: transparent !important;
             padding: 10px 12px !important;
             font-size: 12px !important;
-            min-height: 60px !important; /* Espaço para duas/três linhas limpas */
+            line-height: 1.4 !important;
+            min-height: 101px !important;
+            height: 101px !important;
+            box-sizing: border-box !important;
+            resize: none !important;
         }
 
-        /* Botão Enviar Dourado Metálico */
+        div[data-baseweb="textarea"] textarea::placeholder {
+            color: #777 !important;
+            opacity: 1 !important;
+        }
+
+        /* ================================================================
+           BOTÃO ENVIAR
+           ================================================================ */
+        div[data-testid="stButton"] {
+            margin-top: 22px !important;
+        }
+
         div[data-testid="stButton"] button[kind="primary"] {
-            background: linear-gradient(90deg, #d4af37 0%, #aa8222 100%) !important;
-            color: #000 !important;
+            min-height: 61px !important;
+            height: 61px !important;
+            box-sizing: border-box !important;
+            background: linear-gradient(90deg, #e5c158 0%, #d4af37 50%, #c49b2e 100%) !important;
+            color: #17120b !important;
             border: none !important;
+            border-radius: 7px !important;
             font-weight: 700 !important;
-            font-size: 13px !important;
-            padding: 10px 14px !important; /* Altura original restaurada */
-            border-radius: 6px !important;
+            font-size: 14px !important;
+            padding: 0 14px !important;
             width: 100% !important;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.2px !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.45) !important;
         }
 
-        /* Botões Superiores Transparentes Sair / Trocar */
+        /* ================================================================
+           BOTÕES SUPERIORES
+           ================================================================ */
         .top-bar-custom {
-            position: fixed; 
-            top: 15px; 
-            left: 15px;
-            right: 15px;
-            z-index: 99999;
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none;
+            position: fixed !important;
+            top: 17px !important;
+            left: 19px !important;
+            right: 19px !important;
+            z-index: 99999 !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            pointer-events: none !important;
         }
+
         .top-btn {
-            background: transparent;
-            color: #9e8a59;
-            text-decoration: none;
-            border: 1px solid rgba(212,175,55,0.3);
-            border-radius: 4px;
-            padding: 4px 12px;
-            font-size: 8px;
-            font-family: sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            pointer-events: auto;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 114px !important;
+            min-height: 39px !important;
+            box-sizing: border-box !important;
+            background: rgba(18, 13, 8, 0.45) !important;
+            color: #c4aa6b !important;
+            text-decoration: none !important;
+            border: 1px solid rgba(212,175,55,0.55) !important;
+            border-radius: 5px !important;
+            padding: 4px 10px !important;
+            font-size: 8px !important;
+            line-height: 1.25 !important;
+            font-family: sans-serif !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.6px !important;
+            pointer-events: auto !important;
+            text-align: center !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* ================================================================
+           AJUSTES ESPECÍFICOS PARA CELULAR
+           ================================================================ */
+        @media (max-width: 700px) {
+            .block-container {
+                padding-top: 4.2rem !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            .jj-card {
+                padding: 10px 14px !important;
+                margin-bottom: 9px !important;
+            }
+
+            .jj-banner {
+                min-height: 79px !important;
+            }
+
+            .jj-categoria {
+                font-size: 24px !important;
+            }
+
+            .jj-crit-desc {
+                font-size: 10px !important;
+            }
+
+            /* Mantém a área inteira visível em celulares altos como o da
+               referência, sem criar scroll horizontal. */
+            .stApp {
+                overflow-x: hidden !important;
+            }
         }
         </style>
         """, unsafe_allow_html=True)
@@ -952,7 +1154,7 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_comp = 0
             competidor_escolhido = competidores_ordenados[st.session_state.idx_comp]
 
-            # Cartão "Selecionar Competidor" com badge Condutor (Layout idêntico)
+            # Cartão "Selecionar Competidor"
             st.markdown(
                 f"""<div class="jj-card jj-avaliando">
                     <div class="jj-label" style="margin-bottom:2px;">SELECIONAR COMPETIDOR</div>
@@ -975,7 +1177,7 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_crit = 0
                 st.rerun()
 
-            # Cartão Estado Atual (Letras brancas na parte inferior)
+            # Cartão Estado Atual
             st.markdown(
                 f"""<div class="jj-card jj-avaliando">
                     <div class="jj-label" style="margin-bottom:2px;">ESTADO ATUAL</div>
@@ -991,7 +1193,7 @@ if modo == "Painel do Jurado":
                 for p in permissoes_jurado:
                     if p["categoria"] == categoria_escolhida and p["papel"] == papel_escolhido:
                         criterios_permitidos_nomes.extend(p["criterios"])
-                
+
                 todos_crit_cat = criterios_por_categoria[categoria_escolhida]
                 criterios = {k: v for k, v in todos_crit_cat.items() if k in criterios_permitidos_nomes}
 
@@ -1007,7 +1209,7 @@ if modo == "Painel do Jurado":
 
             criterio_nome, criterio_desc = lista_criterios[st.session_state.idx_crit]
 
-            # Cartão Critério (Texto do Critério Branco)
+            # Cartão Critério
             st.markdown(
                 f"""<div class="jj-card">
                     <div class="jj-crit-head">
@@ -1058,7 +1260,7 @@ if modo == "Painel do Jurado":
                 )
 
             chave_comentario = f"coment_{chave_base}"
-            
+
             with st.container(key="coment_card"):
                 st.markdown('<div class="jj-secao-label">COMENTÁRIOS:</div>', unsafe_allow_html=True)
                 comentario = st.text_area(
@@ -1066,7 +1268,7 @@ if modo == "Painel do Jurado":
                     key=chave_comentario,
                     placeholder="Deixe seu comentário aqui...",
                     max_chars=300,
-                    height=60,
+                    height=101,
                     label_visibility="collapsed",
                 )
                 st.markdown(f"<div style='text-align:right; color:#8d7a52; font-size:8px; margin-top:4px;'>{len(comentario)}/300</div>", unsafe_allow_html=True)
