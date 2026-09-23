@@ -620,29 +620,30 @@ if modo == "Painel do Jurado":
         jurado_str = f"jurado={st.session_state.jurado_logado}&"
         trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
-        # --- CSS OTIMIZADO PARA CABER NO ECRÃ SEM SCROLL E SEM SOBREPOSIÇÕES ---
+        # --- CSS EQUILIBRADO: Compacto, botões menores, sem sobreposições ("acavalados") ---
         st.markdown("""
         <style>
         header[data-testid="stHeader"], footer, label[data-baseweb="label"] { display: none !important; }
 
         .block-container {
-            padding-top: 3.2rem !important;
-            padding-bottom: 0.3rem !important;
-            padding-left: 0.6rem !important;
-            padding-right: 0.6rem !important;
+            padding-top: 4.2rem !important;
+            padding-bottom: 1.5rem !important;
+            padding-left: 0.8rem !important;
+            padding-right: 0.8rem !important;
             max-width: 100% !important;
         }
 
+        /* Espaçamento vertical limpo e sem sobreposição */
         div[data-testid="stVerticalBlock"] {
-            gap: 0.25rem !important;
+            gap: 0.45rem !important;
         }
 
         .jj-card, [data-testid="stExpander"] {
             background: rgba(10, 7, 5, 0.85) !important;
             border: 1px solid rgba(212, 175, 55, 0.3) !important;
             border-radius: 6px !important;
-            padding: 5px 10px !important;
-            margin-bottom: 0px !important;
+            padding: 8px 12px !important;
+            margin-bottom: 4px !important;
         }
 
         [data-testid="stExpander"] details summary {
@@ -655,24 +656,24 @@ if modo == "Painel do Jurado":
 
         .jj-label, .jj-secao-label {
             color: #9e8a59;
-            font-size: 8px;
+            font-size: 8.5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 1px;
+            margin-bottom: 2px;
         }
 
         .jj-banner {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 10px !important;
+            padding: 6px 12px !important;
         }
         .jj-banner-left { display: flex; align-items: center; gap: 8px; }
-        .jj-banner-img { width: 18px !important; height: 18px !important; object-fit: contain; }
+        .jj-banner-img { width: 20px !important; height: 20px !important; object-fit: contain; }
         .jj-categoria {
             color: #e5c158;
             font-family: 'Cinzel', Georgia, serif;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
         }
         .jj-banner-right {
@@ -686,21 +687,21 @@ if modo == "Painel do Jurado":
             font-size: 11px;
             font-weight: bold;
         }
-        .jj-musica { color: #9e8a59; font-size: 7px; text-transform: uppercase; }
+        .jj-musica { color: #9e8a59; font-size: 7.5px; text-transform: uppercase; }
 
-        .jj-avaliando { text-align: center; padding: 4px 10px !important; }
+        .jj-avaliando { text-align: center; padding: 6px 10px !important; }
         .jj-badge {
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 15px;
             padding: 1px 8px;
-            font-size: 8px;
+            font-size: 8.5px;
             color: #d4af37;
             text-transform: uppercase;
         }
         .jj-nome {
             color: #fff;
             font-family: 'Cinzel', Georgia, serif;
-            font-size: 12px;
+            font-size: 12.5px;
             text-transform: uppercase;
             margin-top: 1px;
         }
@@ -709,74 +710,75 @@ if modo == "Painel do Jurado":
         .jj-crit-icon {
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #e5c158;
-            font-size: 9px;
+            font-size: 9.5px;
             margin-right: 6px;
         }
         .jj-crit-nome {
             color: #fff;
             font-family: 'Cinzel', Georgia, serif;
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: bold;
             text-transform: uppercase;
         }
         .jj-contador {
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 8px;
-            padding: 1px 5px;
-            font-size: 8px;
+            padding: 1px 6px;
+            font-size: 8.5px;
             color: #9e8a59;
         }
         .jj-divisor {
             border: none;
             border-top: 1px solid rgba(212, 175, 55, 0.2);
-            margin: 3px 0;
+            margin: 4px 0;
         }
-        .jj-crit-desc { color: #aaa; font-size: 9px; line-height: 1.2; }
+        .jj-crit-desc { color: #aaa; font-size: 9.5px; line-height: 1.25; }
 
         div[data-baseweb="select"] > div {
-            min-height: 30px !important;
-            height: 30px !important;
+            min-height: 32px !important;
+            height: 32px !important;
         }
         div[data-baseweb="input"],
         div[data-baseweb="textarea"] {
             background-color: #1a1a20 !important;
-            border-radius: 4px !important;
+            border-radius: 5px !important;
         }
         div[data-baseweb="input"] input {
             color: #fff !important;
-            font-size: 11px !important;
+            font-size: 11.5px !important;
             padding: 4px 8px !important;
-            height: 28px !important;
+            height: 30px !important;
         }
         div[data-baseweb="textarea"] textarea {
             color: #fff !important;
-            font-size: 11px !important;
-            padding: 4px 8px !important;
-            min-height: 32px !important;
-            height: 32px !important;
+            font-size: 11.5px !important;
+            padding: 6px 8px !important;
+            min-height: 40px !important;
+            height: 40px !important;
         }
 
+        /* Botão mais compacto, elegante e proporcional */
         div[data-testid="stButton"] button[kind="primary"] {
             background: linear-gradient(90deg, #d4af37 0%, #aa8222 100%) !important;
             color: #000 !important;
             border: none !important;
             font-weight: 700 !important;
-            font-size: 11px !important;
-            padding: 6px 10px !important;
-            border-radius: 4px !important;
+            font-size: 11.5px !important;
+            padding: 8px 12px !important;
+            border-radius: 5px !important;
             width: 100% !important;
             text-transform: uppercase;
         }
 
         .top-bar-custom {
             position: fixed; 
-            top: 8px; 
+            top: 10px; 
             left: 10px;
             right: 10px;
             z-index: 99999;
@@ -790,8 +792,8 @@ if modo == "Painel do Jurado":
             text-decoration: none;
             border: 1px solid rgba(212,175,55,0.4);
             border-radius: 4px;
-            padding: 3px 8px;
-            font-size: 7px;
+            padding: 4px 10px;
+            font-size: 8px;
             text-transform: uppercase;
             pointer-events: auto;
             text-align: center;
