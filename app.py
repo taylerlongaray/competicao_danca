@@ -12,6 +12,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# FORÇAR FUNDO ESCURO GLOBAL NO CSS PARA QUALQUER TEMA DE NAVEGADOR
+st.markdown("""
+<style>
+    body, .stApp {
+        background-color: #090706 !important;
+        color: #f3e5ab !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 ARQUIVO_VOTOS = "votos.json"
 
 
@@ -335,22 +345,22 @@ configuracao_jurados = {
         "nome": "Bel Amaro",
         "senha": "2648",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]}
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Movimentos Característicos e Sambado"]}
         ]
     },
     "cassiano": {
         "nome": "Cassiano Fontana",
         "senha": "8516",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Movimentos Característicos e Sambado"]}
         ]
     },
     "claudia": {
         "nome": "Claudia Papke",
         "senha": "5274",
         "permissoes": [
-            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Conexão e entrega na dança"]},
-            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Técnica e Conexão"]},
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Conexão e Entrega na Dança"]},
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]},
             {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]}
         ]
     },
@@ -366,32 +376,32 @@ configuracao_jurados = {
         "nome": "Daiani Rodrigues",
         "senha": "9146",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Técnica e finalização"]},
-            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Técnica e finalização"]},
-            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Conexão e resposta"]}
+            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Técnica e Finalização"]},
+            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Técnica e Finalização"]},
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]}
         ]
     },
     "joel": {
         "nome": "Joel Trevisan",
         "senha": "3572",
         "permissoes": [
-            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Fundamentos e qualidade base"]},
-            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Movimentos característicos e sambado"]}
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Fundamentos e Qualidade da Base"]},
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Movimentos Característicos e Sambado"]}
         ]
     },
     "lika": {
         "nome": "Lika",
         "senha": "7461",
         "permissoes": [
-            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Movimentos característicos e sambado"]},
-            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]}
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Movimentos Característicos e Sambado"]},
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Criatividade e Musicalidade"]}
         ]
     },
     "maick": {
         "nome": "Maick Martins",
         "senha": "2385",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Técnica e Conexão"]}
+            {"categoria": "Prata", "papel": "Condutores", "criterios": ["Conexão e Resposta"]}
         ]
     },
     "nilson": {
@@ -400,7 +410,7 @@ configuracao_jurados = {
         "permissoes": [
             {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
             {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]},
-            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Conexão e resposta"]}
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Conexão e Resposta"]}
         ]
     },
     "wagner": {
@@ -408,7 +418,7 @@ configuracao_jurados = {
         "senha": "4296",
         "permissoes": [
             {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Técnica e finalização"]}
+            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Técnica e Finalização"]}
         ]
     },
     "william": {
@@ -416,7 +426,7 @@ configuracao_jurados = {
         "senha": "5738",
         "permissoes": [
             {"categoria": "Platina", "papel": "Condutores", "criterios": ["Conexão e Resposta"]},
-            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Fundamentos e qualidade base"]}
+            {"categoria": "Aprendendo a Voar", "papel": "Conduzidas", "criterios": ["Fundamentos e Qualidade da Base"]}
         ]
     }
 }
@@ -608,7 +618,6 @@ div[data-testid="column"]:has(input[type="password"]) {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
 }
 
-/* FORÇAR CORES VISÍVEIS EM QUALQUER TEMA (CLARO OU ESCURO) NOS INPUTS */
 .stTextInput div[data-baseweb="input"], .stTextArea textarea {
     background-color: rgba(12, 9, 7, 0.95) !important;
     border: 1px solid rgba(212, 175, 55, 0.5) !important;
@@ -1505,6 +1514,23 @@ else:
         .tabela-dourada-compacta tbody tr:hover {
             background-color: rgba(212, 175, 55, 0.15);
         }
+
+        /* ESTILOS DE DESTAQUE PARA O PÓDIO (1º, 2º e 3º LUGAR) */
+        .podio-1 {
+            color: #ffd700 !important;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+        }
+        .podio-2 {
+            color: #e0e0e0 !important;
+            font-weight: bold;
+            text-shadow: 0 0 6px rgba(224, 224, 224, 0.5);
+        }
+        .podio-3 {
+            color: #cd7f32 !important;
+            font-weight: bold;
+            text-shadow: 0 0 6px rgba(205, 127, 50, 0.5);
+        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -1575,6 +1601,16 @@ else:
             return f"{partes[0]}<br>{partes[1]}"
         return nome
 
+    def formatar_classificacao_podio(idx):
+        pos = idx + 1
+        if pos == 1:
+            return '<span class="podio-1">1º 🥇</span>'
+        elif pos == 2:
+            return '<span class="podio-2">2º 🥈</span>'
+        elif pos == 3:
+            return '<span class="podio-3">3º 🥉</span>'
+        return f"{pos}º"
+
     def gerar_tabela_papel_fase(fase_nome, papel_nome, revelado_atual):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
@@ -1613,7 +1649,7 @@ else:
 
         pivot_df = pivot_df.sort_values(by="TOTAL_RANKING", ascending=False, na_position="last").reset_index(drop=True)
 
-        pivot_df["CLASS."] = [f"{idx+1}º" for idx in pivot_df.index]
+        pivot_df["CLASS."] = [formatar_classificacao_podio(idx) for idx in pivot_df.index]
         pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
 
         renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
@@ -1721,7 +1757,7 @@ else:
         
         html += '<tbody>'
         for idx, linha in enumerate(lista_linhas):
-            class_str = f"{idx+1}º"
+            class_str = formatar_classificacao_podio(idx)
             comp_nome = linha["competidor"]
             html += '<tr>'
             html += f'<td>{class_str}</td>'
