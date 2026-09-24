@@ -1063,7 +1063,7 @@ if modo == "Painel do Jurado":
                 )
 
                 if permissoes_jurado == "TODAS_GLOBAL":
-                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança du participante."}
+                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
                 else:
                     criterios_permitidos_nomes = []
                     for p in permissoes_jurado:
@@ -1457,24 +1457,23 @@ else:
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-align: center !important;
-            padding: 8px 6px;
+            padding: 5px 3px;
             border-bottom: 2px solid #d4af37;
-            line-height: 1.2;
+            line-height: 1.1;
         }
         .tabela-dourada td {
             text-align: center !important;
-            padding: 9px 6px;
+            padding: 4px 3px;
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
             white-space: nowrap !important;
         }
-        /* DESTAQUE E AUMENTO DE FONTE NA COLUNA DE PARTICIPANTES */
-        .tabela-dourada td:nth-child(2), .tabela-dourada-compacta td.col-partic {
-            font-size: 15px !important;
+        /* APROVEITAR O ESPAÇO HORIZONTAL DOS NOMES COM ALTURA COMPACTA */
+        .tabela-dourada td:nth-child(2) {
+            font-size: 12px !important;
             font-weight: bold !important;
             text-align: left !important;
-            padding-left: 14px !important;
+            padding-left: 8px !important;
             color: #ffffff !important;
-            letter-spacing: 0.5px;
         }
         .tabela-dourada tbody tr:last-child td {
             border-bottom: none;
@@ -1503,24 +1502,24 @@ else:
             text-transform: uppercase;
             letter-spacing: 0.3px;
             text-align: center !important;
-            padding: 7px 4px;
+            padding: 4px 2px;
             border: 1px solid rgba(212, 175, 55, 0.4);
-            line-height: 1.1;
+            line-height: 1.0;
         }
         .tabela-dourada-compacta td {
             text-align: center !important;
-            padding: 8px 4px;
+            padding: 4px 2px;
             border: 1px solid rgba(212, 175, 55, 0.2);
             white-space: nowrap !important;
         }
         .tabela-dourada-compacta .col-partic {
-            max-width: 140px;
+            max-width: 110px;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 14px !important;
+            font-size: 11px !important;
             font-weight: bold !important;
             text-align: left !important;
-            padding-left: 10px !important;
+            padding-left: 6px !important;
             color: #ffffff !important;
         }
         .tabela-dourada-compacta tbody tr:hover {
@@ -1531,20 +1530,17 @@ else:
         .podio-1 {
             color: #ffd700 !important;
             font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-            font-size: 13px;
+            text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
         }
         .podio-2 {
             color: #e0e0e0 !important;
             font-weight: bold;
-            text-shadow: 0 0 6px rgba(224, 224, 224, 0.5);
-            font-size: 13px;
+            text-shadow: 0 0 4px rgba(224, 224, 224, 0.5);
         }
         .podio-3 {
             color: #cd7f32 !important;
             font-weight: bold;
-            text-shadow: 0 0 6px rgba(205, 127, 50, 0.5);
-            font-size: 13px;
+            text-shadow: 0 0 4px rgba(205, 127, 50, 0.5);
         }
         </style>
         """,
