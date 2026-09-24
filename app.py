@@ -1467,13 +1467,15 @@ else:
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
             white-space: nowrap !important;
         }
-        /* APROVEITAR O ESPAÇO HORIZONTAL DOS NOMES COM ALTURA COMPACTA */
+        /* NOMES MAIORES, EM MAIÚSCULAS E ULTRA LEGÍVEIS SEM OCUPAR ESPAÇO VERTICAL */
         .tabela-dourada td:nth-child(2) {
-            font-size: 12px !important;
+            font-size: 13.5px !important;
             font-weight: bold !important;
+            text-transform: uppercase !important;
             text-align: left !important;
             padding-left: 8px !important;
             color: #ffffff !important;
+            letter-spacing: 0.5px;
         }
         .tabela-dourada tbody tr:last-child td {
             border-bottom: none;
@@ -1513,14 +1515,16 @@ else:
             white-space: nowrap !important;
         }
         .tabela-dourada-compacta .col-partic {
-            max-width: 110px;
+            max-width: 125px;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 11px !important;
+            font-size: 12.5px !important;
             font-weight: bold !important;
+            text-transform: uppercase !important;
             text-align: left !important;
             padding-left: 6px !important;
             color: #ffffff !important;
+            letter-spacing: 0.3px;
         }
         .tabela-dourada-compacta tbody tr:hover {
             background-color: rgba(212, 175, 55, 0.15);
@@ -1622,6 +1626,13 @@ else:
             return '<span class="podio-3">3º 🥉</span>'
         return f"{pos}º"
 
+    def encurtar_nome_se_necessario(nome):
+        # Se o nome for muito longo (ex: Prata/Ouro), reduz para "Nome S." para caber perfeitamente sem ocupar altura
+        partes = nome.split()
+        if len(partes) > 1 and len(nome) > 14:
+            return f"{partes[0]} {partes[1][0]}."
+        return nome
+
     def gerar_tabela_papel_fase(fase_nome, papel_nome, revelado_atual):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
@@ -1661,7 +1672,12 @@ else:
         pivot_df = pivot_df.sort_values(by="TOTAL_RANKING", ascending=False, na_position="last").reset_index(drop=True)
 
         pivot_df["CLASS."] = [formatar_classificacao_podio(idx) for idx in pivot_df.index]
-        pivot_df = pivot_df.rename(columns={"competidor": "PARTICIPANTE"})
+        
+        # Aplicar formatação inteligente de abreviação apenas nas categorias com muitos participantes (Ouro e Prata)
+        if categoria_nome in ["Ouro", "Prata"]:
+            pivot_df["PARTICIPANTE"] = pivot_df["competidor"].apply(encurtar_nome_se_necessario)
+        else:
+            pivot_df["PARTICIPANTE"] = pivot_df["competidor"]
 
         renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
         pivot_df = pivot_df.rename(columns=renomeador)
@@ -1770,9 +1786,11 @@ else:
         for idx, linha in enumerate(lista_linhas):
             class_str = formatar_classificacao_podio(idx)
             comp_nome = linha["competidor"]
+            comp_exibicao = encurtar_nome_se_necessario(comp_nome) if categoria_nome in ["Ouro", "Prata"] else comp_nome
+            
             html += '<tr>'
             html += f'<td>{class_str}</td>'
-            html += f'<td class="col-partic" title="{comp_nome}">{comp_nome}</td>'
+            html += f'<td class="col-partic" title="{comp_nome}">{comp_exibicao}</td>'
             
             for j in jurados_aptos:
                 f1 = linha["dados"][j]['f1']
