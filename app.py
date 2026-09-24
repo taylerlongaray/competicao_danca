@@ -312,8 +312,8 @@ configuracao_jurados = {
         "nome": "Adri Santos",
         "senha": "6153",
         "permissoes": [
-            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Conexão e entrega na dança"]},
+            {"categoria": "Prata", "papel": "Conduzidas", "criterios": ["Criatividade e Musicalidade"]},
+            {"categoria": "Aprendendo a Voar", "papel": "Condutores", "criterios": ["Conexão e Entrega na Dança"]},
             {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Conexão e Resposta"]}
         ]
     },
