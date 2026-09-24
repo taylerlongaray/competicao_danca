@@ -541,7 +541,6 @@ else:
     )
     st.sidebar.markdown("---")
 
-    # Se o jurado estiver logado no link padrão, bloqueamos o acesso aos painéis de organização/telão no menu lateral
     if st.session_state.jurado_logado is not None:
         modo = "Painel do Jurado"
     else:
@@ -609,26 +608,23 @@ div[data-testid="column"]:has(input[type="password"]) {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
 }
 
-.stTextInput div[data-baseweb="input"] {
+/* FORÇAR CORES VISÍVEIS EM QUALQUER TEMA (CLARO OU ESCURO) NOS INPUTS */
+.stTextInput div[data-baseweb="input"], .stTextArea textarea {
     background-color: rgba(12, 9, 7, 0.95) !important;
-    border: 1px solid rgba(212, 175, 55, 0.45) !important;
+    border: 1px solid rgba(212, 175, 55, 0.5) !important;
     border-radius: 6px !important;
+    color: #f3e5ab !important;
 }
 
-.stTextInput div[data-baseweb="input"]:focus-within {
-    border: 1px solid rgba(212, 175, 55, 1.0) !important;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
-}
-
-.stTextInput input {
+.stTextInput input, .stTextArea textarea {
     color: #f3e5ab !important;
     background-color: transparent !important;
-    padding: 6px 10px !important;
-    font-size: 13px !important;
+    -webkit-text-fill-color: #f3e5ab !important;
 }
 
-.stTextInput input::placeholder {
-    color: rgba(243, 229, 171, 0.4) !important;
+.stTextInput input::placeholder, .stTextArea textarea::placeholder {
+    color: rgba(243, 229, 171, 0.5) !important;
+    -webkit-text-fill-color: rgba(243, 229, 171, 0.5) !important;
 }
 
 .stButton > button {
@@ -803,36 +799,6 @@ div[data-testid="stAlert"] p {
     text-transform: uppercase;
     margin-bottom: 2px;
 }
-
-.jj-footer {
-    text-align: center;
-    margin-top: 6px;
-    padding-top: 4px;
-    border-top: 1px solid rgba(212, 175, 55, 0.2);
-}
-.jj-footer-marca {
-    color: #e5c158;
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-.jj-footer-sub {
-    color: #8d7a52;
-    font-size: 7px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 2px;
-}
-
-.stTextArea textarea {
-    background-color: rgba(10, 7, 5, 0.9) !important;
-    border: 1px solid rgba(212, 175, 55, 0.35) !important;
-    border-radius: 6px !important;
-    color: #f3e5ab !important;
-    font-size: 12px !important;
-    height: 45px !important;
-}
-.stTextArea textarea::placeholder { color: rgba(243, 229, 171, 0.35) !important; }
 
 div[data-testid="stExpander"] {
     border: 1px solid rgba(212, 175, 55, 0.3) !important;
@@ -1262,7 +1228,6 @@ elif modo == "Painel da Organização":
         votos_atuais = carregar_votos()
         st.success("🔓 Acesso autorizado!")
         
-        # --- BOTÃO DE RESET / LIMPEZA DE TESTES ---
         st.markdown("### ⚠️ Gestão de Dados e Testes")
         st.warning("Usa este botão apenas para apagar os votos de teste antes do evento oficial começar. Esta ação não pode ser desfeita.")
         
