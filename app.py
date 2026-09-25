@@ -42,8 +42,9 @@ def carregar_votos():
         return []
 
 def registrar_voto(jurado, categoria, fase, papel, competidor, criterio, nota, justificativa):
+    """Insere o voto e valida se o Supabase aceitou ou rejeitou os dados."""
     try:
-        supabase.table("votos").insert({
+        response = supabase.table("votos").insert({
             "jurado": jurado,
             "categoria": categoria,
             "fase": fase,
@@ -53,10 +54,14 @@ def registrar_voto(jurado, categoria, fase, papel, competidor, criterio, nota, j
             "nota": nota,
             "justificativa": justificativa
         }).execute()
-        st.success("Voto enviado com sucesso para o Supabase!")
+        
+        # Verifica se o Supabase retornou algum erro na resposta
+        if hasattr(response, 'error') and response.error:
+            st.error(f"❌ Erro retornado pelo Supabase: {response.error}")
+        else:
+            st.success("✅ Voto guardado com sucesso na nuvem!")
     except Exception as e:
-        st.error(f"ERRO DETALHADO DO SUPABASE: {e}")
-
+        st.error(f"❌ Erro crítico no envio: {e}")
 def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
     """Busca uma nota específica do jurado na nuvem."""
     try:
