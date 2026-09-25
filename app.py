@@ -243,7 +243,7 @@ fases_por_categoria = {
 criterios_por_categoria = {
     "Aprendendo a Voar": {
         "Conexão e Entrega na Dança": (
-            "Atenção ao parceiro, interação, sintonia, presença,"
+            "Atenção ao parceiro, interação, sintonia, presence,"
             " envolvimento e entrega."
         ),
         "Fundamentos e Qualidade da Base": (
@@ -569,7 +569,18 @@ else:
             label_visibility="collapsed",
         )
 
+# LAYOUT DINÂMICO: ESTREITO (600px) PARA O JURADO, LARGURA TOTAL PARA ORGANIZAÇÃO E TELÃO
 if modo == "Painel do Jurado":
+    st.markdown("""
+    <style>
+    .block-container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
     if st.session_state.jurado_logado is None:
         st.markdown(obter_fundo_css("login"), unsafe_allow_html=True)
     elif st.session_state.categoria_selecionada is None:
@@ -579,6 +590,16 @@ if modo == "Painel do Jurado":
 elif modo == "Telão (Público)":
     st.markdown(obter_fundo_css("telao"), unsafe_allow_html=True)
 else:
+    st.markdown("""
+    <style>
+    .block-container {
+        max-width: 100% !important;
+        padding-left: 3rem !important;
+        padding-right: 3rem !important;
+        padding-top: 2rem !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
     st.markdown(obter_fundo_css("painel"), unsafe_allow_html=True)
 
 
@@ -590,13 +611,6 @@ st.markdown(
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
-
-.block-container {
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-    max-width: 600px !important;
-    margin: 0 auto !important;
-}
 
 h1, h2, h3 {
     color: #e5c158 !important;
@@ -1124,7 +1138,7 @@ if modo == "Painel do Jurado":
                     unsafe_allow_html=True,
                 )
 
-                with st.container(key="nota_card"):  
+                with st.container(key="nota_card"): 
                     st.markdown(
                         '<div class="jj-secao-label">Sua Nota</div>',
                         unsafe_allow_html=True,
@@ -1216,10 +1230,6 @@ if modo == "Painel do Jurado":
                                 )
                                 st.session_state[chave_nota_input] = nota_limpa.replace(".", ",")
 
-                                # -------------------------------------------------------------
-                                # SOLUÇÃO INFALÍVEL: PINTA A TELA, PAUSA O CÓDIGO POR 1.2S,
-                                # E SÓ ENTÃO RECARREGA PARA O PRÓXIMO COMPETIDOR.
-                                # -------------------------------------------------------------
                                 aviso_placeholder = st.empty()
                                 aviso_placeholder.markdown(
                                     f"""
@@ -1250,7 +1260,6 @@ if modo == "Painel do Jurado":
                                     unsafe_allow_html=True
                                 )
 
-                                # Força o Streamlit a esperar exatamente 1.2 segundos para que o usuário leia a mensagem.
                                 time.sleep(1.2) 
 
                                 if st.session_state.idx_crit + 1 < total_crit:
@@ -1266,7 +1275,7 @@ if modo == "Painel do Jurado":
                             st.error("❌ Digite um valor numérico válido para a nota.")
 
 elif modo == "Painel da Organização":
-    st.title("📋 Painel da Organização")
+    st.title("📋 Painel da Organização — Acompanhamento Geral")
     with st.container(border=True):
         senha_digitada = st.text_input(
             "Digite a senha de acesso da organização", type="password"
@@ -1274,50 +1283,58 @@ elif modo == "Painel da Organização":
     SENHA_MESTRE = "danca123"
 
     if senha_digitada == SENHA_MESTRE:
-        votos_atuais = carregar_votos()
         st.success("🔓 Acesso autorizado!")
         
-        st.markdown("### ⚠️ Gestão de Dados e Testes")
-        st.warning("Usa este botão apenas para apagar os votos de teste antes do evento oficial começar. Esta ação não pode ser desfeita.")
-        
-        if st.button("🗑️ APAGAR TODOS OS VOTOS E REINICIAR", type="secondary"):
-            salvar_votos([])
-            st.success("✨ Sistema limpo com sucesso! Pronto para o evento.")
-            st.rerun()
+        # BOTÕES DE AÇÃO RÁPIDA (ATUALIZAR E LIMPAR)
+        col_btn_ref, col_btn_lim = st.columns([2, 1])
+        with col_btn_ref:
+            if st.button("🔄 ATUALIZAR DADOS DA TELA (BUSCAR NOVOS VOTOS)", type="primary", use_container_width=True):
+                st.rerun()
+        with col_btn_lim:
+            if st.button("🗑️ APAGAR TUDO", type="secondary", use_container_width=True):
+                salvar_votos([])
+                st.success("Sistema limpo!")
+                st.rerun()
+
+        votos_atuais = carregar_votos()
+        df_rel = pd.DataFrame(votos_atuais) if votos_atuais else pd.DataFrame(columns=["categoria", "fase", "competidor", "jurado", "criterio", "papel", "nota", "justificativa"])
 
         st.markdown("---")
-        st.markdown("### 📄 Relatórios Individuais por Categoria")
-        st.markdown("Clique nos botões abaixo para descarregar o relatório em formato HTML/PDF de cada categoria isoladamente:")
-        
-        df_rel = pd.DataFrame(votos_atuais) if votos_atuais else pd.DataFrame(columns=["categoria", "fase", "competidor", "jurado", "criterio", "papel", "nota", "justificativa"])
+        st.markdown("### 📊 Auditoria Detalhada por Categoria (Tabelas Largas para o Notebook)")
         
         categorias_lista = ["Diamante", "Platina", "Ouro", "Prata", "Aprendendo a Voar"]
         
-        # Botões de categoria lado a lado ou organizados
-        cols_cat_btns = st.columns(len(categorias_lista))
-        for idx, cat_nome in enumerate(categorias_lista):
-            with cols_cat_btns[idx]:
+        for cat_nome in categorias_lista:
+            with st.expander(f"📁 Categoria: {cat_nome.upper()} (Ver Votos Detalhados)", expanded=True):
                 df_cat_filtrado = df_rel[df_rel["categoria"] == cat_nome] if not df_rel.empty else pd.DataFrame()
                 
-                # Cria HTML específico da categoria
-                html_cat_rel = f"""
-                <html>
-                <head>
-                <meta charset="utf-8">
-                <style>
-                    body {{ font-family: Helvetica, Arial, sans-serif; color: #333; margin: 20px; }}
-                    h1 {{ text-align: center; color: #b8860b; border-bottom: 2px solid #b8860b; padding-bottom: 10px; }}
-                    h2 {{ color: #555; border-bottom: 1px solid #ccc; margin-top: 30px; padding-bottom: 5px; }}
-                    h3 {{ color: #444; margin-top: 20px; }}
-                    .voto-card {{ background: #fdfcf7; border: 1px solid #e3d3a1; padding: 10px 15px; margin-bottom: 10px; border-radius: 6px; }}
-                    .meta {{ font-size: 12px; color: #666; margin-bottom: 4px; }}
-                    .comentario {{ font-style: italic; color: #444; background: #fff; padding: 6px; border-left: 3px solid #b8860b; margin-top: 6px; }}
-                </style>
-                </head>
-                <body>
-                <h1>Relatório de Avaliações — Categoria: {cat_nome}</h1>
-                """
                 if not df_cat_filtrado.empty:
+                    df_exibicao = df_cat_filtrado.copy()
+                    df_exibicao["jurado"] = df_exibicao["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
+                    
+                    st.dataframe(
+                        df_exibicao[["fase", "papel", "competidor", "jurado", "criterio", "nota", "justificativa"]],
+                        use_container_width=True,
+                        hide_index=True
+                    )
+                    
+                    html_cat_rel = f"""
+                    <html>
+                    <head>
+                    <meta charset="utf-8">
+                    <style>
+                        body {{ font-family: Helvetica, Arial, sans-serif; color: #333; margin: 20px; }}
+                        h1 {{ text-align: center; color: #b8860b; border-bottom: 2px solid #b8860b; padding-bottom: 10px; }}
+                        h2 {{ color: #555; border-bottom: 1px solid #ccc; margin-top: 30px; padding-bottom: 5px; }}
+                        h3 {{ color: #444; margin-top: 20px; }}
+                        .voto-card {{ background: #fdfcf7; border: 1px solid #e3d3a1; padding: 10px 15px; margin-bottom: 10px; border-radius: 6px; }}
+                        .meta {{ font-size: 12px; color: #666; margin-bottom: 4px; }}
+                        .comentario {{ font-style: italic; color: #444; background: #fff; padding: 6px; border-left: 3px solid #b8860b; margin-top: 6px; }}
+                    </style>
+                    </head>
+                    <body>
+                    <h1>Relatório de Avaliações — Categoria: {cat_nome}</h1>
+                    """
                     for fase in sorted(df_cat_filtrado["fase"].unique()):
                         html_cat_rel += f"<h2>Fase: {fase}</h2>"
                         df_fase = df_cat_filtrado[df_cat_filtrado["fase"] == fase]
@@ -1333,15 +1350,17 @@ elif modo == "Painel da Organização":
                                     <div class="comentario"><b>Comentário:</b> "{just}"</div>
                                 </div>
                                 """
-                html_cat_rel += "</body></html>"
-                
-                st.download_button(
-                    label=f"📥 {cat_nome}",
-                    data=html_cat_rel,
-                    file_name=f"Relatorio_{cat_nome.replace(' ', '_')}.html",
-                    mime="text/html",
-                    use_container_width=True
-                )
+                    html_cat_rel += "</body></html>"
+                    
+                    st.download_button(
+                        label=f"📥 Baixar Relatório em HTML/PDF da Categoria {cat_nome}",
+                        data=html_cat_rel,
+                        file_name=f"Relatorio_{cat_nome.replace(' ', '_')}.html",
+                        mime="text/html",
+                        key=f"btn_dl_{cat_nome}"
+                    )
+                else:
+                    st.info(f"Nenhum voto registado ainda na categoria {cat_nome}.")
 
         st.markdown("---")
         st.markdown("### 📄 Relatório Geral Consolidado")
@@ -1394,12 +1413,6 @@ elif modo == "Painel da Organização":
             )
         else:
             st.info("Ainda não existem votos ou comentários registados para gerar o relatório.")
-
-        st.markdown("---")
-        st.markdown("### Auditoria Completa de Notas")
-        if votos_atuais:
-            df_votos = pd.DataFrame(votos_atuais)
-            st.dataframe(df_votos, use_container_width=True)
             
     elif senha_digitada != "":
         st.error("❌ Senha incorreta!")
