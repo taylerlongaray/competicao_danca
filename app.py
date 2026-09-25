@@ -19,28 +19,6 @@ st.markdown("""
         background-color: #090706 !important;
         color: #f3e5ab !important;
     }
-    /* Estilizar o st.toast para aparecer grande e no centro da tela */
-    div[data-testid="stToast"] {
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(40, 30, 18, 0.99) 100%) !important;
-        border: 2px solid #d4af37 !important;
-        border-radius: 14px !important;
-        padding: 20px 30px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.9) !important;
-        color: #f3e5ab !important;
-        font-family: 'Cinzel', Georgia, serif !important;
-        font-size: 16px !important;
-        text-align: center !important;
-        max-width: 90vw !important;
-        width: 340px !important;
-    }
-    div[data-testid="stToast"] p {
-        color: #f3e5ab !important;
-        font-size: 14px !important;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -152,6 +130,9 @@ if "fase_atual" not in st.session_state:
 
 if "grupo_atual" not in st.session_state:
     st.session_state.grupo_atual = "Condutor"
+
+if "sucesso_feedback" not in st.session_state:
+    st.session_state.sucesso_feedback = None
 
 try:
     qp = st.query_params
@@ -278,7 +259,7 @@ criterios_por_categoria = {
             " sintonia."
         ),
         "Movimentos Característicos e Sambado": (
-            "Execução, variedade, segurança, fluidez, qualidade técnica e"
+            "Execução, variedade, segurança, fluidez, quality técnica e"
             " integração com a dança."
         ),
         "Criatividade e Musicalidade": (
@@ -910,6 +891,32 @@ if modo == "Painel do Jurado":
         nome_jurado = dados_jurado["nome"]
         permissoes_jurado = dados_jurado["permissoes"]
 
+        # MODAL CUSTOMIZADO QUE APARECE CENTRALIZADO E FECHA SOZINHO APÓS 1 SEGUNDO
+        if st.session_state.sucesso_feedback:
+            msg_sucesso = st.session_state.sucesso_feedback
+            st.markdown(
+                f"""
+                <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 4, 3, 0.85); z-index: 9999999; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(40, 30, 18, 0.99) 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 25px 22px; text-align: center; max-width: 90vw; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+                        <div style="font-size: 42px; margin-bottom: 8px; color: #d4af37;">✅</div>
+                        <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 17px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
+                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4;">{msg_sucesso}</div>
+                    </div>
+                </div>
+                <script>
+                    setTimeout(function() {{
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('fechar_toast');
+                        window.location.href = url.toString();
+                    }}, 1000);
+                </script>
+                """,
+                unsafe_allow_html=True
+            )
+            # Limpa o estado e força rerun após 1 segundo via query params ou rerun imediato se controlado
+            st.session_state.sucesso_feedback = None
+            st.rerun()
+
         if st.session_state.categoria_selecionada is None:
             logout_param = (
                 "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
@@ -1245,8 +1252,7 @@ if modo == "Painel do Jurado":
                                         st.session_state.idx_comp + 1
                                     ) % total_comp
 
-                                # USAR TOAST CENTRALIZADO QUE SOME SOZINHO (1.5 segundos)
-                                st.toast(f"✅ AVALIAÇÃO ENVIADA!<br><span style='color: #ded2b4; font-size: 12px;'>Avaliação de <b>{competidor_escolhido}</b> registada com sucesso!</span>", icon=None)
+                                st.session_state.sucesso_feedback = f"Avaliação de <b>{competidor_escolhido}</b> concluída com sucesso!"
                                 st.rerun()
                         except ValueError:
                             st.error("❌ Digite um valor numérico válido para a nota.")
