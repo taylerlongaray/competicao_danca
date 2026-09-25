@@ -12,6 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# FORÇAR FUNDO ESCURO GLOBAL NO CSS PARA QUALQUER TEMA DE NAVEGADOR
 st.markdown("""
 <style>
     body, .stApp {
@@ -890,28 +891,56 @@ if modo == "Painel do Jurado":
         nome_jurado = dados_jurado["nome"]
         permissoes_jurado = dados_jurado["permissoes"]
 
-        # POP-UP CENTRALIZADO DE SUCESSO (FECHA SOZINHO EM 1 SEGUNDO)
+        # POP-UP CENTRALIZADO DE SUCESSO 100% CSS (SEM JAVASCRIPT, NÃO FALHA)
         if st.session_state.mostrar_aviso_sucesso:
             comp_nome_aviso = st.session_state.mostrar_aviso_sucesso
             st.session_state.mostrar_aviso_sucesso = None
-            components.html(
-                f"""
-                <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 4, 3, 0.85); z-index: 99999999; display: flex; align-items: center; justify-content: center;">
-                    <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(45, 33, 19, 0.99) 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 25px 22px; text-align: center; max-width: 90vw; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
-                        <div style="font-size: 42px; margin-bottom: 8px; color: #d4af37;">✅</div>
-                        <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 16px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
-                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4;">Avaliação de <b>{comp_nome_aviso}</b> concluída com sucesso!</div>
-                    </div>
-                </div>
-                <script>
-                    setTimeout(function() {{
-                        window.location.reload();
-                    }}, 1000);
-                </script>
-                """,
-                height=0,
-                width=0
-            )
+            
+            st.markdown(f"""
+            <style>
+            @keyframes fadeOutPopup {{
+                0% {{ opacity: 1; visibility: visible; }}
+                80% {{ opacity: 1; visibility: visible; }}
+                100% {{ opacity: 0; visibility: hidden; display: none; }}
+            }}
+            @keyframes scaleUp {{
+                0% {{ transform: translate(-50%, -50%) scale(0.8); }}
+                15% {{ transform: translate(-50%, -50%) scale(1.05); }}
+                30% {{ transform: translate(-50%, -50%) scale(1); }}
+                100% {{ transform: translate(-50%, -50%) scale(1); }}
+            }}
+            .jj-overlay-success {{
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(5, 4, 3, 0.85);
+                z-index: 99999998;
+                animation: fadeOutPopup 1.5s forwards;
+                pointer-events: none;
+            }}
+            .jj-popup-success {{
+                position: fixed;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(45, 33, 19, 0.99) 100%);
+                border: 2px solid #d4af37;
+                border-radius: 14px;
+                padding: 25px 22px;
+                text-align: center;
+                width: 340px;
+                max-width: 90vw;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+                z-index: 99999999;
+                animation: fadeOutPopup 1.5s forwards, scaleUp 1.5s forwards;
+                pointer-events: none;
+            }}
+            </style>
+            <div class="jj-overlay-success"></div>
+            <div class="jj-popup-success">
+                <div style="font-size: 42px; margin-bottom: 8px; color: #d4af37;">✅</div>
+                <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 16px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
+                <div style="color: #ded2b4; font-size: 12px; line-height: 1.4;">Avaliação de <b>{comp_nome_aviso}</b><br>concluída com sucesso!</div>
+            </div>
+            """, unsafe_allow_html=True)
 
         if st.session_state.categoria_selecionada is None:
             logout_param = (
