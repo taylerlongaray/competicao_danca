@@ -1,10 +1,10 @@
 import base64
-import json
 import os
-import time  # <-- Biblioteca importada para forçar o tempo exato do aviso
+import time
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
+from supabase import create_client, Client
 
 st.set_page_config(
     page_title="Jack & Jill - Noite nas Arábias",
@@ -13,7 +13,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# FORÇAR FUNDO ESCURO GLOBAL NO CSS PARA QUALQUER TEMA DE NAVEGADOR
 st.markdown("""
 <style>
     body, .stApp {
@@ -23,25 +22,67 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-ARQUIVO_VOTOS = "votos.json"
+# ---------------------------------------------------------
+# CONEXÃO COM O SUPABASE (BANCO DE DADOS NA NUVEM)
+# ---------------------------------------------------------
+@st.cache_resource
+def init_supabase() -> Client:
+    url = st.secrets["SUPABASE_URL"]
+    key = st.secrets["SUPABASE_KEY"]
+    return create_client(url, key)
 
+supabase = init_supabase()
 
 def carregar_votos():
-    if os.path.exists(ARQUIVO_VOTOS):
-        try:
-            with open(ARQUIVO_VOTOS, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return []
-    return []
-
-
-def salvar_votos(votos):
+    """Busca todos os votos guardados na nuvem do Supabase."""
     try:
-        with open(ARQUIVO_VOTOS, "w", encoding="utf-8") as f:
-            json.dump(votos, f, ensure_ascii=False, indent=4)
+        response = supabase.table("votos").select("*").execute()
+        return response.data if response.data else []
+    except Exception as e:
+        return []
+
+def registrar_voto(jurado, categoria, fase, papel, competidor, criterio, nota, justificativa):
+    """Insere ou atualiza o voto na nuvem de forma segura e concorrente."""
+    try:
+        response = supabase.table("votos").upsert({
+            "jurado": jurado,
+            "categoria": categoria,
+            "fase": fase,
+            "papel": papel,
+            "competidor": competidor,
+            "criterio": criterio,
+            "nota": nota,
+            "justificativa": justificativa
+        }, on_conflict="jurado,categoria,fase,papel,competidor,criterio").execute()
+        st.success("Voto enviado com sucesso para o Supabase!")
+    except Exception as e:
+        st.error(f"ERRO DETALHADO DO SUPABASE: {e}")
+
+def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
+    """Busca uma nota específica do jurado na nuvem."""
+    try:
+        response = supabase.table("votos").select("nota").match({
+            "jurado": jurado,
+            "categoria": categoria,
+            "fase": fase,
+            "papel": papel,
+            "competidor": competidor,
+            "criterio": criterio
+        }).execute()
+        
+        if response.data and len(response.data) > 0:
+            return response.data[0]["nota"]
     except Exception:
         pass
+    return None
+
+def apagar_todos_os_votos():
+    """Limpa todos os dados da tabela no Supabase (Usado pela organização)."""
+    try:
+        supabase.table("votos").delete().neq("jurado", "___impossivel___").execute()
+    except Exception as e:
+        st.error(f"Erro ao limpar banco: {e}")
+# ---------------------------------------------------------
 
 
 def obter_fundo_css(tipo_tela):
@@ -485,61 +526,6 @@ def formatar_fase(fase):
         principal, secundaria = fase.split("(", 1)
         return principal.strip().upper(), secundaria.replace(")", "").strip().upper()
     return fase.upper(), "ETAPA ÚNICA"
-
-
-def registrar_voto(
-    jurado,
-    categoria,
-    fase,
-    papel,
-    competidor,
-    criterio,
-    nota,
-    justificativa,
-):
-    votos = carregar_votos()
-    encontrado = False
-    for voto in votos:
-        if (
-            voto["jurado"] == jurado
-            and voto["categoria"] == categoria
-            and voto["fase"] == fase
-            and voto["papel"] == papel
-            and voto["competidor"] == competidor
-            and voto["criterio"] == criterio
-        ):
-            voto["nota"] = nota
-            voto["justificativa"] = justificativa
-            encontrado = True
-            break
-
-    if not encontrado:
-        votos.append({
-            "jurado": jurado,
-            "categoria": categoria,
-            "fase": fase,
-            "papel": papel,
-            "competidor": competidor,
-            "criterio": criterio,
-            "nota": nota,
-            "justificativa": justificativa,
-        })
-    salvar_votos(votos)
-
-
-def buscar_nota_salva(jurado, categoria, fase, papel, competidor, criterio):
-    votos = carregar_votos()
-    for voto in votos:
-        if (
-            voto["jurado"] == jurado
-            and voto["categoria"] == categoria
-            and voto["fase"] == fase
-            and voto["papel"] == papel
-            and voto["competidor"] == competidor
-            and voto["criterio"] == criterio
-        ):
-            return voto["nota"]
-    return None
 
 
 if link_jurado_exclusivo:
@@ -1216,10 +1202,6 @@ if modo == "Painel do Jurado":
                                 )
                                 st.session_state[chave_nota_input] = nota_limpa.replace(".", ",")
 
-                                # -------------------------------------------------------------
-                                # SOLUÇÃO INFALÍVEL: PINTA A TELA, PAUSA O CÓDIGO POR 1.2S,
-                                # E SÓ ENTÃO RECARREGA PARA O PRÓXIMO COMPETIDOR.
-                                # -------------------------------------------------------------
                                 aviso_placeholder = st.empty()
                                 aviso_placeholder.markdown(
                                     f"""
@@ -1249,8 +1231,7 @@ if modo == "Painel do Jurado":
                                     """,
                                     unsafe_allow_html=True
                                 )
-
-                                # Força o Streamlit a esperar exatamente 1.2 segundos para que o usuário leia a mensagem.
+                                
                                 time.sleep(1.2) 
 
                                 if st.session_state.idx_crit + 1 < total_crit:
@@ -1281,8 +1262,8 @@ elif modo == "Painel da Organização":
         st.warning("Usa este botão apenas para apagar os votos de teste antes do evento oficial começar. Esta ação não pode ser desfeita.")
         
         if st.button("🗑️ APAGAR TODOS OS VOTOS E REINICIAR", type="secondary"):
-            salvar_votos([])
-            st.success("✨ Sistema limpo com sucesso! Pronto para o evento.")
+            apagar_todos_os_votos()
+            st.success("✨ Banco de dados na nuvem limpo com sucesso! Pronto para o evento.")
             st.rerun()
 
         st.markdown("---")
