@@ -891,27 +891,19 @@ if modo == "Painel do Jurado":
         nome_jurado = dados_jurado["nome"]
         permissoes_jurado = dados_jurado["permissoes"]
 
-        # EXIBIR O AVISO DE SUCESSO ELEGANTE EM POP-UP CENTRALIZADO SE ESTIVER ATIVO
-        if st.session_state.get("mostrar_sucesso_modal"):
-            st.session_state.mostrar_sucesso_modal = False
-            components.html(
-                """
-                <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 4, 3, 0.85); z-index: 9999999; display: flex; align-items: center; justify-content: center;">
-                    <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(40, 30, 18, 0.99) 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 25px 22px; text-align: center; max-width: 90vw; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
-                        <div style="font-size: 42px; margin-bottom: 8px; color: #d4af37;">✅</div>
-                        <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 17px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
-                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4;">Avaliação registada com sucesso!</div>
-                    </div>
+        # EXIBIR AVISO DE SUCESSO NATIVO ESTILIZADO EM DESTAQUE NO TOPO
+        if st.session_state.get("sucesso_mensagem"):
+            msg_txt = st.session_state.sucesso_mensagem
+            st.session_state.sucesso_mensagem = None
+            st.markdown(
+                f"""
+                <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(45, 33, 19, 0.98) 100%); border: 2px solid #d4af37; border-radius: 10px; padding: 12px 15px; text-align: center; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(212,175,55,0.3);">
+                    <div style="font-size: 24px; color: #d4af37; margin-bottom: 2px;">✅</div>
+                    <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 14px; font-weight: bold; letter-spacing: 1px;">AVALIAÇÃO ENVIADA COM SUCESSO!</div>
+                    <div style="color: #ded2b4; font-size: 11px; margin-top: 2px;">{msg_txt}</div>
                 </div>
-                <script>
-                    setTimeout(function() {
-                        const modal = document.currentScript.previousElementSibling;
-                        if (modal) modal.remove();
-                    }, 1200);
-                </script>
                 """,
-                height=0,
-                width=0
+                unsafe_allow_html=True
             )
 
         if st.session_state.categoria_selecionada is None:
@@ -1249,7 +1241,7 @@ if modo == "Painel do Jurado":
                                         st.session_state.idx_comp + 1
                                     ) % total_comp
 
-                                st.session_state.mostrar_sucesso_modal = True
+                                st.session_state.sucesso_mensagem = f"Avaliação de <b>{competidor_escolhido}</b> registada!"
                                 st.rerun()
                         except ValueError:
                             st.error("❌ Digite um valor numérico válido para a nota.")
