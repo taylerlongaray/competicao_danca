@@ -131,7 +131,6 @@ if "fase_atual" not in st.session_state:
 if "grupo_atual" not in st.session_state:
     st.session_state.grupo_atual = "Condutor"
 
-# Estado para controlar o modal central de sucesso
 if "sucesso_feedback" not in st.session_state:
     st.session_state.sucesso_feedback = None
 
@@ -892,26 +891,25 @@ if modo == "Painel do Jurado":
         nome_jurado = dados_jurado["nome"]
         permissoes_jurado = dados_jurado["permissoes"]
 
-        # MODAL CENTRAL DE SUCESSO (EXIBIDO BEM NO MEIO DA TELA APÓS ENVIAR)
+        # MODAL CENTRAL DE SUCESSO COM BOTÃO NATIVO DE CONTINUAR
         if st.session_state.sucesso_feedback:
             msg_sucesso = st.session_state.sucesso_feedback
             st.markdown(
                 f"""
-                <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 4, 3, 0.85); z-index: 9999999; display: flex; align-items: center; justify-content: center;">
-                    <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(40, 30, 18, 0.98) 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 25px 30px; text-align: center; max-width: 90vw; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+                <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 4, 3, 0.88); z-index: 9999999; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                    <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(40, 30, 18, 0.99) 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 25px 30px; text-align: center; max-width: 90vw; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); pointer-events: auto;">
                         <div style="font-size: 45px; margin-bottom: 10px; color: #d4af37;">✅</div>
                         <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 18px; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
-                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4; margin-bottom: 20px;">{msg_sucesso}</div>
-                    </div>
-                </div>
+                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4; margin-bottom: 18px;">{msg_sucesso}</div>
                 """,
                 unsafe_allow_html=True
             )
-            col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
-            with col_b2:
-                if st.button("CONTINUAR AVALIAÇÃO", type="primary", use_container_width=True):
-                    st.session_state.sucesso_feedback = None
-                    st.rerun()
+            
+            if st.button("Continuar Votação", type="primary", use_container_width=True):
+                st.session_state.sucesso_feedback = None
+                st.rerun()
+                
+            st.markdown('</div></div>', unsafe_allow_html=True)
             st.stop()
 
         if st.session_state.categoria_selecionada is None:
@@ -1252,7 +1250,7 @@ if modo == "Painel do Jurado":
                                     st.session_state.sucesso_feedback = f"Avaliação de <b>{competidor_escolhido}</b> concluída com sucesso!"
                                 st.rerun()
                         except ValueError:
-                            st.error("❌ Digite um valor numérico válido para a nota.")
+                            st.error("❌ Digite um valor numérico válido para la nota.")
 
 elif modo == "Painel da Organização":
     st.title("📋 Painel da Organização")
