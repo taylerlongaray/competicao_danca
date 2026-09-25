@@ -318,6 +318,12 @@ icones_categoria = {
 }
 
 configuracao_jurados = {
+    "demo": {
+        "nome": "Jurado",
+        "senha": "1234",
+        "permissoes": "TODAS_GLOBAL",
+        "criterio_global": "Avaliação Global e de Referência"
+    },
     "adri": {
         "nome": "Adri Santos",
         "senha": "6153",
@@ -435,6 +441,8 @@ configuracao_jurados = {
 def obter_jurados_da_categoria_papel(cat, papel):
     jurados_validos = []
     for username, dados in configuracao_jurados.items():
+        if username == "demo":
+            continue
         perm = dados["permissoes"]
         if perm == "TODAS_GLOBAL":
             jurados_validos.append(dados["nome"])
