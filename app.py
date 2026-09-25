@@ -891,25 +891,45 @@ if modo == "Painel do Jurado":
         nome_jurado = dados_jurado["nome"]
         permissoes_jurado = dados_jurado["permissoes"]
 
-        # MODAL CENTRAL DE SUCESSO COM BOTÃO NATIVO DE CONTINUAR
+        # MODAL CENTRAL DE SUCESSO COM BOTÃO DOURADO EMBUTIDO EXATAMENTE NO LUGAR CERTO
         if st.session_state.sucesso_feedback:
             msg_sucesso = st.session_state.sucesso_feedback
+            
+            # Botão oculto do Streamlit para escutar o clique gerado pelo HTML
+            if st.button("Fechar Feedback Oculto", key="btn_oculto_continuar", help="Continuar"):
+                st.session_state.sucesso_feedback = None
+                st.rerun()
+
             st.markdown(
                 f"""
-                <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 4, 3, 0.88); z-index: 9999999; display: flex; align-items: center; justify-content: center; pointer-events: none;">
-                    <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(40, 30, 18, 0.99) 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 25px 30px; text-align: center; max-width: 90vw; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); pointer-events: auto;">
-                        <div style="font-size: 45px; margin-bottom: 10px; color: #d4af37;">✅</div>
-                        <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 18px; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
-                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4; margin-bottom: 18px;">{msg_sucesso}</div>
+                <style>
+                /* Ocultar o botão feio do Streamlit que usamos apenas para gatilho lógico */
+                button[kind="secondary"]:has(div:contains("Fechar Feedback Oculto")),
+                div:has(> button:contains("Fechar Feedback Oculto")) {{
+                    display: none !important;
+                }}
+                </style>
+                <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 4, 3, 0.90); z-index: 9999999; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(40, 30, 18, 0.99) 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 25px 22px; text-align: center; max-width: 90vw; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+                        <div style="font-size: 42px; margin-bottom: 8px; color: #d4af37;">✅</div>
+                        <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 17px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
+                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4; margin-bottom: 20px;">{msg_sucesso}</div>
+                        <button onclick="
+                            const btns = window.parent.document.querySelectorAll('button');
+                            for (let b of btns) {{
+                                if (b.innerText.includes('Fechar Feedback Oculto')) {{
+                                    b.click();
+                                    break;
+                                }}
+                            }}
+                        " style="width: 100%; background: linear-gradient(180deg, #f2dda0 0%, #c9a24a 100%) !important; border: 1px solid #e5c158 !important; border-radius: 6px !important; color: #1a1208 !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 1px !important; padding: 12px 10px !important; font-size: 13px !important; cursor: pointer; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);">
+                            Continuar Votação
+                        </button>
+                    </div>
+                </div>
                 """,
                 unsafe_allow_html=True
             )
-            
-            if st.button("Continuar Votação", type="primary", use_container_width=True):
-                st.session_state.sucesso_feedback = None
-                st.rerun()
-                
-            st.markdown('</div></div>', unsafe_allow_html=True)
             st.stop()
 
         if st.session_state.categoria_selecionada is None:
@@ -1095,7 +1115,7 @@ if modo == "Painel do Jurado":
                 )
 
                 if permissoes_jurado == "TODAS_GLOBAL":
-                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança do participante."}
+                    criterios = {dados_jurado["criterio_global"]: "Avaliação global e de referência da dança du participante."}
                 else:
                     criterios_permitidos_nomes = []
                     for p in permissoes_jurado:
@@ -1250,7 +1270,7 @@ if modo == "Painel do Jurado":
                                     st.session_state.sucesso_feedback = f"Avaliação de <b>{competidor_escolhido}</b> concluída com sucesso!"
                                 st.rerun()
                         except ValueError:
-                            st.error("❌ Digite um valor numérico válido para la nota.")
+                            st.error("❌ Digite um valor numérico válido para a nota.")
 
 elif modo == "Painel da Organização":
     st.title("📋 Painel da Organização")
