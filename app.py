@@ -870,7 +870,7 @@ if modo == "Painel do Jurado":
                 label_visibility="collapsed",
             )
             st.markdown('<div style="margin-top: 8px;"></div>', unsafe_allow_html=True)
-            if st.button("✧  LOGIN  ✧", type="primary", use_container_width=True):
+            if st.button("✧    LOGIN    ✧", type="primary", use_container_width=True):
                 usuario_limpo = login_digitado.strip().lower()
                 if usuario_limpo in configuracao_jurados:
                     if senha_digitada == configuracao_jurados[usuario_limpo]["senha"]:
@@ -895,7 +895,7 @@ if modo == "Painel do Jurado":
             )
 
             st.markdown(
-                f'<div style="position: fixed; top: 40px; right: 12px; z-index: 99999;"><a href="?{logout_param}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center;">← Sair</a></div>',
+                f'<div style="position: fixed; top: 40px; right: 12px; z-index: 9999;"><a href="?{logout_param}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center;">← Sair</a></div>',
                 unsafe_allow_html=True,
             )
 
@@ -930,7 +930,7 @@ if modo == "Painel do Jurado":
                 cards_html += f'<a href="{target_url}" class="category-card"><div class="card-left">{icon_html}<span class="card-title">{cat_nome.upper()}</span></div><span class="card-arrow">›</span></a>'
 
             st.markdown(
-                f"""<div style="position: fixed; top: 60%; left: 50%; transform: translate(-50%, -50%); width: 360px; max-width: 90vw; z-index: 99999;"><div style="text-align: center; margin-bottom: 12px;"><div class="saudacao-jurado">Olá, {nome_jurado}!</div><p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p></div>{cards_html}</div><style>.category-card {{ display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(15, 11, 7, 0.92) 0%, rgba(30, 21, 12, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 10px !important; padding: 9px 16px !important; margin-bottom: 8px !important; text-decoration: none !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7); transition: all 0.3s ease; }} .category-card:hover {{ border-color: rgba(212, 175, 55, 1.0); background: linear-gradient(135deg, rgba(25, 18, 12, 0.98) 0%, rgba(45, 33, 19, 1) 100%); }} .card-left {{ display: flex; align-items: center; gap: 15px; }} .card-icon {{ width: 26px !important; height: 26px !important; object-fit: contain; }} .card-title {{ color: #f3e5ab; font-family: 'Georgia', serif; font-size: 12px !important; font-weight: 600; letter-spacing: 2px; }} .card-arrow {{ color: #d4af37; font-size: 16px !important; }}</style>""",
+                f"""<div style="position: fixed; top: 60%; left: 50%; transform: translate(-50%, -50%); width: 360px; max-width: 90vw; z-index: 9999;"><div style="text-align: center; margin-bottom: 12px;"><div class="saudacao-jurado">Olá, {nome_jurado}!</div><p style="color: #f3e5ab; font-family: 'Helvetica Neue', sans-serif; font-size: 11px; opacity: 0.9; margin-bottom: 12px;">Selecione a categoria que você irá avaliar:</p></div>{cards_html}</div><style>.category-card {{ display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(15, 11, 7, 0.92) 0%, rgba(30, 21, 12, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 10px !important; padding: 9px 16px !important; margin-bottom: 8px !important; text-decoration: none !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7); transition: all 0.3s ease; }} .category-card:hover {{ border-color: rgba(212, 175, 55, 1.0); background: linear-gradient(135deg, rgba(25, 18, 12, 0.98) 0%, rgba(45, 33, 19, 1) 100%); }} .card-left {{ display: flex; align-items: center; gap: 15px; }} .card-icon {{ width: 26px !important; height: 26px !important; object-fit: contain; }} .card-title {{ color: #f3e5ab; font-family: 'Georgia', serif; font-size: 12px !important; font-weight: 600; letter-spacing: 2px; }} .card-arrow {{ color: #d4af37; font-size: 16px !important; }}</style>""",
                 unsafe_allow_html=True,
             )
         else:
@@ -944,7 +944,7 @@ if modo == "Painel do Jurado":
             trocar_url = f"?{view_str}{jurado_str}trocar_cat=true"
 
             st.markdown(
-                f"""<div style="position: fixed; top: 12px; left: 12px; right: 12px; z-index: 99999; display: flex; justify-content: space-between; align-items: center; pointer-events: none;"><a href="{logout_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; pointer-events: auto;">← Sair</a><a href="{trocar_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 8.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.15; pointer-events: auto;">Trocar<br>Categoria</a></div>""",
+                f"""<div style="position: fixed; top: 12px; left: 12px; right: 12px; z-index: 9999; display: flex; justify-content: space-between; align-items: center; pointer-events: none;"><a href="{logout_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; pointer-events: auto;">← Sair</a><a href="{trocar_url}" style="background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(60,45,25,0.95) 100%); color: #f3e5ab; text-decoration: none; width: 95px; height: 38px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.6); font-size: 8.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.15; pointer-events: auto;">Trocar<br>Categoria</a></div>""",
                 unsafe_allow_html=True,
             )
 
@@ -1286,8 +1286,65 @@ elif modo == "Painel da Organização":
             st.rerun()
 
         st.markdown("---")
-        st.markdown("### 📄 Relatório Geral de Avaliações e Comentários")
-        st.markdown("Descarregue o documento consolidado com todas as notas, critérios e comentários de todos os jurados.")
+        st.markdown("### 📄 Relatórios Individuais por Categoria")
+        st.markdown("Clique nos botões abaixo para descarregar o relatório em formato HTML/PDF de cada categoria isoladamente:")
+        
+        df_rel = pd.DataFrame(votos_atuais) if votos_atuais else pd.DataFrame(columns=["categoria", "fase", "competidor", "jurado", "criterio", "papel", "nota", "justificativa"])
+        
+        categorias_lista = ["Diamante", "Platina", "Ouro", "Prata", "Aprendendo a Voar"]
+        
+        # Botões de categoria lado a lado ou organizados
+        cols_cat_btns = st.columns(len(categorias_lista))
+        for idx, cat_nome in enumerate(categorias_lista):
+            with cols_cat_btns[idx]:
+                df_cat_filtrado = df_rel[df_rel["categoria"] == cat_nome] if not df_rel.empty else pd.DataFrame()
+                
+                # Cria HTML específico da categoria
+                html_cat_rel = f"""
+                <html>
+                <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Helvetica, Arial, sans-serif; color: #333; margin: 20px; }}
+                    h1 {{ text-align: center; color: #b8860b; border-bottom: 2px solid #b8860b; padding-bottom: 10px; }}
+                    h2 {{ color: #555; border-bottom: 1px solid #ccc; margin-top: 30px; padding-bottom: 5px; }}
+                    h3 {{ color: #444; margin-top: 20px; }}
+                    .voto-card {{ background: #fdfcf7; border: 1px solid #e3d3a1; padding: 10px 15px; margin-bottom: 10px; border-radius: 6px; }}
+                    .meta {{ font-size: 12px; color: #666; margin-bottom: 4px; }}
+                    .comentario {{ font-style: italic; color: #444; background: #fff; padding: 6px; border-left: 3px solid #b8860b; margin-top: 6px; }}
+                </style>
+                </head>
+                <body>
+                <h1>Relatório de Avaliações — Categoria: {cat_nome}</h1>
+                """
+                if not df_cat_filtrado.empty:
+                    for fase in sorted(df_cat_filtrado["fase"].unique()):
+                        html_cat_rel += f"<h2>Fase: {fase}</h2>"
+                        df_fase = df_cat_filtrado[df_cat_filtrado["fase"] == fase]
+                        for comp in sorted(df_fase["competidor"].unique()):
+                            html_cat_rel += f"<h3>Participante: {comp}</h3>"
+                            df_comp = df_fase[df_fase["competidor"] == comp]
+                            for _, row in df_comp.iterrows():
+                                jurado_nome = configuracao_jurados.get(row['jurado'], {}).get('nome', row['jurado'])
+                                just = row['justificativa'] if row['justificativa'] else "Sem comentários registados."
+                                html_cat_rel += f"""
+                                <div class="voto-card">
+                                    <div class="meta"><b>Jurado:</b> {jurado_nome} | <b>Critério:</b> {row['criterio']} | <b>Papel:</b> {row['papel']} | <b>Nota:</b> <b>{row['nota']}</b></div>
+                                    <div class="comentario"><b>Comentário:</b> "{just}"</div>
+                                </div>
+                                """
+                html_cat_rel += "</body></html>"
+                
+                st.download_button(
+                    label=f"📥 {cat_nome}",
+                    data=html_cat_rel,
+                    file_name=f"Relatorio_{cat_nome.replace(' ', '_')}.html",
+                    mime="text/html",
+                    use_container_width=True
+                )
+
+        st.markdown("---")
+        st.markdown("### 📄 Relatório Geral Consolidado")
         
         if votos_atuais:
             html_relatorio = """
@@ -1307,10 +1364,10 @@ elif modo == "Painel da Organização":
             <h1>Relatório de Avaliações — Jack & Jill: Noite nas Arábias</h1>
             """
             
-            df_rel = pd.DataFrame(votos_atuais)
-            for cat in sorted(df_rel["categoria"].unique()):
+            df_rel_all = pd.DataFrame(votos_atuais)
+            for cat in sorted(df_rel_all["categoria"].unique()):
                 html_relatorio += f"<h2>Categoria: {cat}</h2>"
-                df_cat = df_rel[df_rel["categoria"] == cat]
+                df_cat = df_rel_all[df_rel_all["categoria"] == cat]
                 for fase in sorted(df_cat["fase"].unique()):
                     html_relatorio += f"<h3>Fase: {fase}</h3>"
                     df_fase = df_cat[df_cat["fase"] == fase]
@@ -1329,9 +1386,9 @@ elif modo == "Painel da Organização":
             html_relatorio += "</body></html>"
             
             st.download_button(
-                label="📥 Descarregar Relatório Completo (HTML/PDF)",
+                label="📥 Descarregar Relatório Completo Consolidado (HTML/PDF)",
                 data=html_relatorio,
-                file_name="Relatorio_Avaliacoes_JackAndJill.html",
+                file_name="Relatorio_Geral_JackAndJill.html",
                 mime="text/html",
                 type="primary"
             )
