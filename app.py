@@ -42,9 +42,9 @@ def carregar_votos():
         return []
 
 def registrar_voto(jurado, categoria, fase, papel, competidor, criterio, nota, justificativa):
-    """Insere ou atualiza o voto na nuvem de forma segura e concorrente."""
+    """Insere o voto diretamente na nuvem do Supabase."""
     try:
-        response = supabase.table("votos").upsert({
+        response = supabase.table("votos").insert({
             "jurado": jurado,
             "categoria": categoria,
             "fase": fase,
@@ -53,7 +53,7 @@ def registrar_voto(jurado, categoria, fase, papel, competidor, criterio, nota, j
             "criterio": criterio,
             "nota": nota,
             "justificativa": justificativa
-        }, on_conflict="jurado,categoria,fase,papel,competidor,criterio").execute()
+        }).execute()
         st.success("Voto enviado com sucesso para o Supabase!")
     except Exception as e:
         st.error(f"ERRO DETALHADO DO SUPABASE: {e}")
