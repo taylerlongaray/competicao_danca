@@ -164,7 +164,7 @@ except Exception:
 
 categorias = {
     "Diamante": {
-        "Condutores": ["Alan Demarch", "Henrique Vargas", "Léo Mello", "Luan Ruduit", "Maick Martins", "William Ferreira"],
+        "Condutores": ["Alan Demarch", "Léo Mello", "Henrique Vargas", "Luan Ruduit", "Maick Martins", "William Ferreira"],
         "Conduzidas": ["Caroline Guedes", "Cleo Santanna", "Marluce Dimare", "Sah Graziela", "Sidiane Correa", "Vih Alves"],
     },
     "Platina": {
@@ -172,13 +172,13 @@ categorias = {
         "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
     },
     "Ouro": {
-        "Condutores": ["Ciro Lima", "E. Duarte", "Edilson", "Fabiano", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Tom", "Wellisson"],
+        "Condutores": ["Ciro Lima", "E. Duarte", "Edilson", "Fabiano", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Everton Fernandes", "Jozemar", "Maicom"],
         "Conduzidas": [
             "Andreza Godoi",
             "Angélica",
             "Daia Lopes",
             "Franciely Lopes",
-            "Giovanna Cento",
+            "Giovanna Centeno",
             "Joice Alves",
             "Julia Graciela",
             "Juliana Ferraz",
@@ -198,13 +198,13 @@ categorias = {
             "Cleiton",
             "Fernando Souza",
             "Iuri Martins",
-            "John",
+            "Douglas",
             "Léo",
-            "Marcao Meireles",
+            "Marcão Meireles",
             "Michel",
-            "Raí Machado",
+            "Pablo",
             "Rogério Eich",
-            "Rogério F",
+            "Rogério Ferreira",
             "Toni",
             "Toretto",
         ],
@@ -219,7 +219,7 @@ categorias = {
             "Larissa Westphal",
             "Lidiana",
             "Lilica",
-            "Lolo",
+            "Lolo Ferreira",
             "Nathalia",
             "Paulynha Han",
             "Sabrina",
@@ -227,8 +227,8 @@ categorias = {
         ],
     },
     "Aprendendo a Voar": {
-        "Condutores": ["Anderson", "Bruno Vanassi", "Edu", "Ezequiel Silveira", "Ivan Dutra", "Gilmar Gemelli", "Luis", "Talysson"],
-        "Conduzidas": ["Carla Sabio", "Elisangela Grund", "Nahuana Rolante", "Pati", "Paula", "Raquel", "Sheila Josiane", "Sylvana"],
+        "Condutores": ["Anderson Prass", "Bruno Vanassi", "Eduardo Miranda", "Ezequiel Silveira", "Ivan Dutra", "Gilmar Gemelli", "Luis Carlos", "Talisson Silva"],
+        "Conduzidas": ["Carla Sabio", "Elisangela Grund", "Nahuana Rolante", "Patrícia Pereira", "Paula Monteiro", "Raquel Oliveira", "Sheila Josiane", "Sylvana de Souza"],
     },
 }
 
