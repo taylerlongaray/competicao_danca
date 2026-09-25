@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import time  # <-- Biblioteca importada para forçar o tempo exato do aviso
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
@@ -130,9 +131,6 @@ if "fase_atual" not in st.session_state:
 
 if "grupo_atual" not in st.session_state:
     st.session_state.grupo_atual = "Condutor"
-
-if "mostrar_aviso_sucesso" not in st.session_state:
-    st.session_state.mostrar_aviso_sucesso = None
 
 try:
     qp = st.query_params
@@ -891,57 +889,6 @@ if modo == "Painel do Jurado":
         nome_jurado = dados_jurado["nome"]
         permissoes_jurado = dados_jurado["permissoes"]
 
-        # POP-UP CENTRALIZADO DE SUCESSO 100% CSS (SEM JAVASCRIPT, NÃO FALHA)
-        if st.session_state.mostrar_aviso_sucesso:
-            comp_nome_aviso = st.session_state.mostrar_aviso_sucesso
-            st.session_state.mostrar_aviso_sucesso = None
-            
-            st.markdown(f"""
-            <style>
-            @keyframes fadeOutPopup {{
-                0% {{ opacity: 1; visibility: visible; }}
-                80% {{ opacity: 1; visibility: visible; }}
-                100% {{ opacity: 0; visibility: hidden; display: none; }}
-            }}
-            @keyframes scaleUp {{
-                0% {{ transform: translate(-50%, -50%) scale(0.8); }}
-                15% {{ transform: translate(-50%, -50%) scale(1.05); }}
-                30% {{ transform: translate(-50%, -50%) scale(1); }}
-                100% {{ transform: translate(-50%, -50%) scale(1); }}
-            }}
-            .jj-overlay-success {{
-                position: fixed;
-                top: 0; left: 0; width: 100vw; height: 100vh;
-                background: rgba(5, 4, 3, 0.85);
-                z-index: 99999998;
-                animation: fadeOutPopup 1.5s forwards;
-                pointer-events: none;
-            }}
-            .jj-popup-success {{
-                position: fixed;
-                top: 50%; left: 50%;
-                transform: translate(-50%, -50%);
-                background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(45, 33, 19, 0.99) 100%);
-                border: 2px solid #d4af37;
-                border-radius: 14px;
-                padding: 25px 22px;
-                text-align: center;
-                width: 340px;
-                max-width: 90vw;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.9);
-                z-index: 99999999;
-                animation: fadeOutPopup 1.5s forwards, scaleUp 1.5s forwards;
-                pointer-events: none;
-            }}
-            </style>
-            <div class="jj-overlay-success"></div>
-            <div class="jj-popup-success">
-                <div style="font-size: 42px; margin-bottom: 8px; color: #d4af37;">✅</div>
-                <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 16px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
-                <div style="color: #ded2b4; font-size: 12px; line-height: 1.4;">Avaliação de <b>{comp_nome_aviso}</b><br>concluída com sucesso!</div>
-            </div>
-            """, unsafe_allow_html=True)
-
         if st.session_state.categoria_selecionada is None:
             logout_param = (
                 "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
@@ -1269,6 +1216,43 @@ if modo == "Painel do Jurado":
                                 )
                                 st.session_state[chave_nota_input] = nota_limpa.replace(".", ",")
 
+                                # -------------------------------------------------------------
+                                # SOLUÇÃO INFALÍVEL: PINTA A TELA, PAUSA O CÓDIGO POR 1.2S,
+                                # E SÓ ENTÃO RECARREGA PARA O PRÓXIMO COMPETIDOR.
+                                # -------------------------------------------------------------
+                                aviso_placeholder = st.empty()
+                                aviso_placeholder.markdown(
+                                    f"""
+                                    <style>
+                                    @keyframes scaleUp {{
+                                        0% {{ opacity: 0; transform: translate(-50%, -50%) scale(0.8); }}
+                                        100% {{ opacity: 1; transform: translate(-50%, -50%) scale(1); }}
+                                    }}
+                                    .jj-overlay-success {{
+                                        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                                        background: rgba(5, 4, 3, 0.85); z-index: 99999998;
+                                    }}
+                                    .jj-popup-success {{
+                                        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                                        background: linear-gradient(135deg, rgba(20, 15, 10, 0.99) 0%, rgba(45, 33, 19, 0.99) 100%);
+                                        border: 2px solid #d4af37; border-radius: 14px; padding: 25px 22px; text-align: center;
+                                        width: 340px; max-width: 90vw; box-shadow: 0 10px 30px rgba(0,0,0,0.9); z-index: 99999999;
+                                        animation: scaleUp 0.2s ease-out forwards;
+                                    }}
+                                    </style>
+                                    <div class="jj-overlay-success"></div>
+                                    <div class="jj-popup-success">
+                                        <div style="font-size: 42px; margin-bottom: 8px; color: #d4af37;">✅</div>
+                                        <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 16px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
+                                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4;">Avaliação de <b>{competidor_escolhido}</b><br>concluída com sucesso!</div>
+                                    </div>
+                                    """,
+                                    unsafe_allow_html=True
+                                )
+
+                                # Força o Streamlit a esperar exatamente 1.2 segundos para que o usuário leia a mensagem.
+                                time.sleep(1.2) 
+
                                 if st.session_state.idx_crit + 1 < total_crit:
                                     st.session_state.idx_crit += 1
                                 else:
@@ -1277,7 +1261,6 @@ if modo == "Painel do Jurado":
                                         st.session_state.idx_comp + 1
                                     ) % total_comp
 
-                                st.session_state.mostrar_aviso_sucesso = competidor_escolhido
                                 st.rerun()
                         except ValueError:
                             st.error("❌ Digite um valor numérico válido para a nota.")
