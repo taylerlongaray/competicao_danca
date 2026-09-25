@@ -131,6 +131,10 @@ if "fase_atual" not in st.session_state:
 if "grupo_atual" not in st.session_state:
     st.session_state.grupo_atual = "Condutor"
 
+# Estado para controlar o modal central de sucesso
+if "sucesso_feedback" not in st.session_state:
+    st.session_state.sucesso_feedback = None
+
 try:
     qp = st.query_params
     link_jurado_exclusivo = qp.get("view") == "jurado"
@@ -888,6 +892,28 @@ if modo == "Painel do Jurado":
         nome_jurado = dados_jurado["nome"]
         permissoes_jurado = dados_jurado["permissoes"]
 
+        # MODAL CENTRAL DE SUCESSO (EXIBIDO BEM NO MEIO DA TELA APÓS ENVIAR)
+        if st.session_state.sucesso_feedback:
+            msg_sucesso = st.session_state.sucesso_feedback
+            st.markdown(
+                f"""
+                <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 4, 3, 0.85); z-index: 9999999; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: linear-gradient(135deg, rgba(20, 15, 10, 0.98) 0%, rgba(40, 30, 18, 0.98) 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 25px 30px; text-align: center; max-width: 90vw; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+                        <div style="font-size: 45px; margin-bottom: 10px; color: #d4af37;">✅</div>
+                        <div style="font-family: 'Cinzel', Georgia, serif; color: #f3e5ab; font-size: 18px; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px;">AVALIAÇÃO ENVIADA!</div>
+                        <div style="color: #ded2b4; font-size: 12px; line-height: 1.4; margin-bottom: 20px;">{msg_sucesso}</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
+            with col_b2:
+                if st.button("CONTINUAR AVALIAÇÃO", type="primary", use_container_width=True):
+                    st.session_state.sucesso_feedback = None
+                    st.rerun()
+            st.stop()
+
         if st.session_state.categoria_selecionada is None:
             logout_param = (
                 "view=jurado&logout=true" if link_jurado_exclusivo else "logout=true"
@@ -1217,18 +1243,13 @@ if modo == "Painel do Jurado":
 
                                 if st.session_state.idx_crit + 1 < total_crit:
                                     st.session_state.idx_crit += 1
-                                    st.toast(
-                                        f"✨ Nota registrada para {competidor_escolhido} —"
-                                        f" {criterio_nome}"
-                                    )
+                                    st.session_state.sucesso_feedback = f"Avaliação registrada para <b>{competidor_escolhido}</b> no critério <b>{criterio_nome}</b>!"
                                 else:
                                     st.session_state.idx_crit = 0
                                     st.session_state.idx_comp = (
                                         st.session_state.idx_comp + 1
                                     ) % total_comp
-                                    st.toast(
-                                        f"🏅 Avaliação de {competidor_escolhido} concluída!"
-                                    )
+                                    st.session_state.sucesso_feedback = f"Avaliação de <b>{competidor_escolhido}</b> concluída com sucesso!"
                                 st.rerun()
                         except ValueError:
                             st.error("❌ Digite um valor numérico válido para a nota.")
@@ -1475,7 +1496,6 @@ else:
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
             white-space: nowrap !important;
         }
-        /* NOME E SOBRENOME EM MAIÚSCULAS, FONTE OTIMIZADA PARA APROVEITAR O ESPAÇO SEM SCROLL */
         .tabela-dourada td:nth-child(2) {
             font-size: 12.5px !important;
             font-weight: bold !important;
@@ -1538,7 +1558,6 @@ else:
             background-color: rgba(212, 175, 55, 0.15);
         }
 
-        /* ESTILOS DE DESTAQUE PARA O PÓDIO (1º, 2º e 3º LUGAR) */
         .podio-1 {
             color: #ffd700 !important;
             font-weight: bold;
@@ -1673,8 +1692,6 @@ else:
         pivot_df = pivot_df.sort_values(by="TOTAL_RANKING", ascending=False, na_position="last").reset_index(drop=True)
 
         pivot_df["CLASS."] = [formatar_classificacao_podio(idx) for idx in pivot_df.index]
-        
-        # Mantém o nome completo do participante (convertido para maiúsculas via CSS)
         pivot_df["PARTICIPANTE"] = pivot_df["competidor"]
 
         renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
