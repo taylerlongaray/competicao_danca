@@ -518,6 +518,8 @@ def obter_jurados_da_categoria_papel(cat, papel):
             continue
         perm = dados["permissoes"]
         if perm == "TODAS_GLOBAL":
+            if username == "alex" and cat == "Diamante" and papel == "Conduzidas":
+                continue
             jurados_validos.append(dados["nome"])
         elif isinstance(perm, list):
             for p in perm:
@@ -525,8 +527,22 @@ def obter_jurados_da_categoria_papel(cat, papel):
                     jurados_validos.append(dados["nome"])
                     break
     
-    jurados_ordenados = sorted(list(set(jurados_validos)), key=lambda x: (1 if "Alex" in x else 0, x))
+    # Ordem alfabética estrita para Diamante, Alex no final para as outras categorias
+    if cat == "Diamante":
+        jurados_ordenados = sorted(list(set(jurados_validos)))
+    else:
+        jurados_ordenados = sorted(list(set(jurados_validos)), key=lambda x: (1 if "Alex" in x else 0, x))
     return jurados_ordenados
+
+
+def obter_jurado_secreto(cat, papel):
+    if cat == "Diamante":
+        if papel == "Condutores":
+            return "Wagner Camargo"
+        else:
+            return "Nilson Leivas"
+    else:
+        return "Alex Alves"
 
 
 def obter_campeao(categoria, papel):
@@ -537,7 +553,6 @@ def obter_campeao(categoria, papel):
     if df.empty:
         return None
 
-    # Tenta usar a fase final se houver votos lá, senão classificatória
     for fase_alvo in ["Fase Final", "Fase Classificatória"]:
         df_fase = df[(df["categoria"] == categoria) & (df["fase"] == fase_alvo) & (df["papel"] == papel)]
         if not df_fase.empty:
@@ -1065,7 +1080,10 @@ if modo == "Painel do Jurado":
                 st.session_state.idx_crit = 0
 
             if isinstance(permissoes_jurado, str):
-                papeis_permitidos_categoria = ["Condutores", "Conduzidas"]
+                if st.session_state.jurado_logado == "alex" and categoria_escolhida == "Diamante":
+                    papeis_permitidos_categoria = ["Condutores"]
+                else:
+                    papeis_permitidos_categoria = ["Condutores", "Conduzidas"]
             else:
                 papeis_permitidos_categoria = [p["papel"] for p in permissoes_jurado if p["categoria"] == categoria_escolhida]
 
@@ -1461,10 +1479,10 @@ elif modo == "Painel da Organização":
                 st.success("✨ Listas destravadas! Agora voltam a atualizar com base nos votos.")
                 st.rerun()
 
-        # --- SECÇÃO DE CONTROLO REMOTO DO TELÃO (NOTAS SECRETAS DO ALEX) ---
+        # --- SECÇÃO DE CONTROLO REMOTO DO TELÃO (NOTAS SECRETAS) ---
         st.markdown("---")
-        st.markdown("### 🔓 Controlo Remoto do Telão (Notas Secretas do Alex)")
-        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Ative aqui para revelar ou ocultar a nota secreta do Alex no Telão em tempo real.</p>", unsafe_allow_html=True)
+        st.markdown("### 🔓 Controlo Remoto do Telão (Notas Secretas)")
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Ative aqui para revelar ou ocultar a nota secreta no Telão em tempo real.</p>", unsafe_allow_html=True)
         
         config_telao_atual = carregar_config_telao()
         col_ctrl1, col_ctrl2 = st.columns(2)
@@ -1933,9 +1951,9 @@ else:
         status_revelado = config_telao_atual.get(selecao_telao, False)
         st.markdown("---")
         if status_revelado:
-            st.markdown("<div style='text-align: center; color: #ffd700; font-size: 11px; font-weight: bold;'>🔓 Nota de Alex: REVELADA</div>", unsafe_allow_html=True)
+            st.markdown("<div style='text-align: center; color: #ffd700; font-size: 11px; font-weight: bold;'>🔓 Nota Secreta: REVELADA</div>", unsafe_allow_html=True)
         else:
-            st.markdown("<div style='text-align: center; color: #b39b6b; font-size: 11px;'>🔒 Nota de Alex: OCULTA</div>", unsafe_allow_html=True)
+            st.markdown("<div style='text-align: center; color: #b39b6b; font-size: 11px;'>🔒 Nota Secreta: OCULTA</div>", unsafe_allow_html=True)
 
     revelado_atual = carregar_config_telao().get(selecao_telao, False)
 
@@ -1998,7 +2016,8 @@ else:
                 pivot_df[j_col] = None
 
         exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
-        vis_cols = [j for j in exist_j_cols if "Alex" not in j]
+        jurado_secreto_atual = obter_jurado_secreto(categoria_nome, papel_nome)
+        vis_cols = [j for j in exist_j_cols if j != jurado_secreto_atual]
         
         if not revelado_atual:
             pivot_df["TOTAL_RANKING"] = pivot_df[vis_cols].sum(axis=1, min_count=1)
@@ -2020,9 +2039,10 @@ else:
         cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
         tabela_exibicao = pivot_df[cols_finais_existentes].copy()
 
+        jurado_secreto_fmt = formatar_nome_jurado(jurado_secreto_atual)
         for j in jurados_formatados:
             if j in tabela_exibicao.columns:
-                if not revelado_atual and "Alex" in j:
+                if not revelado_atual and j == jurado_secreto_fmt:
                     tabela_exibicao[j] = tabela_exibicao[j].apply(lambda x: "🔒" if pd.notnull(x) and str(x) != "nan" else "-")
                 else:
                     tabela_exibicao[j] = tabela_exibicao[j].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
@@ -2035,6 +2055,7 @@ else:
     def gerar_tabela_acumulada_diamante_platina_html(papel_nome, revelado_atual):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
         comps = categorias[categoria_nome][papel_nome]
+        jurado_secreto_atual = obter_jurado_secreto(categoria_nome, papel_nome)
         
         fase1_nome = "Fase 1 (Música 1)"
         fase2_nome = "Fase 2 (Música 2)"
@@ -2071,11 +2092,11 @@ else:
                 soma_j = val_f1 + val_f2
                 
                 totais_geral.append(soma_j)
-                if "Alex" not in j:
+                if j != jurado_secreto_atual:
                     totais_visiveis.append(soma_j)
                     
             tem_nota_geral = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos)
-            tem_nota_visivel = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos if "Alex" not in j)
+            tem_nota_visivel = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos if j != jurado_secreto_atual)
 
             total_completo = sum(totais_geral) if tem_nota_geral else -1
             total_visivel = sum(totais_visiveis) if tem_nota_visivel else -1
@@ -2128,7 +2149,7 @@ else:
                 f1 = linha["dados"][j]['f1']
                 f2 = linha["dados"][j]['f2']
                 
-                if not revelado_atual and "Alex" in j:
+                if not revelado_atual and j == jurado_secreto_atual:
                     str_f1 = "🔒" if f1 is not None else "-"
                     str_f2 = "🔒" if f2 is not None else "-"
                 else:
@@ -2143,7 +2164,7 @@ else:
             for j in jurados_aptos:
                 f1 = linha["dados"][j]['f1']
                 f2 = linha["dados"][j]['f2']
-                if not revelado_atual and "Alex" in j:
+                if not revelado_atual and j == jurado_secreto_atual:
                     continue
                 if f1 is not None:
                     soma_real += f1
