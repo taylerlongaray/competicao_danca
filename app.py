@@ -717,7 +717,7 @@ else:
             label_visibility="collapsed",
         )
 
-# LAYOUT DINÂMICO: ESTREITO (600px) PARA O JURADO, LARGURA TOTAL PARA ORGANIZAÇÃO E TELÃO
+# LAYOUT DINÂMICO
 if modo == "Painel do Jurado":
     st.markdown("""
     <style>
@@ -802,11 +802,6 @@ div[data-testid="column"]:has(input[type="password"]) {
     -webkit-text-fill-color: #f3e5ab !important;
 }
 
-.stTextInput input::placeholder, .stTextArea textarea::placeholder {
-    color: rgba(243, 229, 171, 0.5) !important;
-    -webkit-text-fill-color: rgba(243, 229, 171, 0.5) !important;
-}
-
 .stButton > button {
     background: linear-gradient(180deg, rgba(40,30,18,0.95) 0%, rgba(70,55,30,0.95) 100%) !important;
     border: 1px solid rgba(212, 175, 55, 0.6) !important;
@@ -832,20 +827,6 @@ div[data-testid="column"]:has(input[type="password"]) {
     font-weight: 700 !important;
     box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25) !important;
     padding: 6px 10px !important;
-}
-.stButton > button[kind="primary"]:hover {
-    background: linear-gradient(180deg, #ffeeb8 0%, #d9b258 100%) !important;
-    color: #1a1208 !important;
-}
-
-div[data-testid="stAlert"] {
-    background-color: rgba(20, 15, 10, 0.95) !important;
-    border: 1px solid rgba(212, 175, 55, 0.6) !important;
-    color: #f3e5ab !important;
-    border-radius: 6px !important;
-}
-div[data-testid="stAlert"] p {
-    color: #f3e5ab !important;
 }
 
 [data-testid="stSidebar"] {
@@ -873,7 +854,6 @@ div[data-testid="stAlert"] p {
     align-items: center;
     gap: 10px;
 }
-.jj-banner-icon { font-size: 24px; line-height: 1; }
 .jj-banner-icon img { width: 28px; height: 28px; object-fit: contain; }
 .jj-label {
     color: #b39b6b;
@@ -998,14 +978,6 @@ div[data-testid="stExpander"] summary p {
     border: 1px solid rgba(212, 175, 55, 0.5) !important;
     border-radius: 8px !important;
     color: #f3e5ab !important;
-}
-.stSelectbox div[data-baseweb="select"] span {
-    color: #f3e5ab !important;
-    font-family: 'Cinzel', 'Georgia', serif !important;
-    font-weight: 600 !important;
-}
-.stSelectbox svg {
-    fill: #e5c158 !important;
 }
 </style>
 """,
@@ -1301,7 +1273,7 @@ if modo == "Painel do Jurado":
                         )
 
                     st.markdown(
-                        """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card div[data-baseweb="input"]:focus-within { border-color: rgba(212, 175, 55, 1) !important; box-shadow: 0 0 8px rgba(212, 175, 55, 0.25) !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; } .st-key-nota_card input::placeholder { color: rgba(243, 229, 171, 0.4) !important; }</style>""",
+                        """<style>.st-key-nota_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 6px 10px 8px 10px; margin-bottom: 6px; } .st-key-nota_card div[data-baseweb="input"] { background: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.55) !important; border-radius: 6px !important; min-height: 38px !important; } .st-key-nota_card input { color: #f3e5ab !important; background: transparent !important; font-size: 15px !important; text-align: center !important; padding: 6px 10px !important; }</style>""",
                         unsafe_allow_html=True,
                     )
 
@@ -1320,32 +1292,7 @@ if modo == "Painel do Jurado":
                         )
 
                     st.markdown(
-                        """<style>
-                        .st-key-coment_card { 
-                            background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); 
-                            border: 1px solid rgba(212, 175, 55, 0.45); 
-                            border-radius: 10px; 
-                            box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
-                            padding: 8px 10px 10px 10px; 
-                            margin-bottom: 6px; 
-                        } 
-                        .st-key-coment_card textarea { 
-                            background-color: rgba(10, 7, 5, 0.92) !important; 
-                            border: 1px solid rgba(212, 175, 55, 0.35) !important; 
-                            border-radius: 6px !important; 
-                            color: #f3e5ab !important; 
-                            font-size: 12px !important; 
-                            height: 45px !important; 
-                            margin-bottom: 0px !important;
-                        } 
-                        .st-key-coment_card textarea::placeholder { 
-                            color: rgba(243, 229, 171, 0.35) !important; 
-                        }
-                        .st-key-coment_card p {
-                            margin: 0 !important;
-                            padding: 0 !important;
-                        }
-                        </style>""",
+                        """<style>.st-key-coment_card { background: linear-gradient(135deg, rgba(14, 10, 7, 0.94) 0%, rgba(26, 18, 11, 0.96) 100%); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); padding: 8px 10px 10px 10px; margin-bottom: 6px; } .st-key-coment_card textarea { background-color: rgba(10, 7, 5, 0.92) !important; border: 1px solid rgba(212, 175, 55, 0.35) !important; border-radius: 6px !important; color: #f3e5ab !important; font-size: 12px !important; height: 45px !important; }</style>""",
                         unsafe_allow_html=True,
                     )
 
@@ -1442,7 +1389,13 @@ if modo == "Painel do Jurado":
                                 st.error("❌ Digite um valor numérico válido para a nota.")
 
 elif modo == "Painel da Organização":
-    # BOTÃO MENU FLUTUANTE TAMBÉM NO PAINEL DA ORGANIZAÇÃO
+    # ADICIONAR ATUALIZAÇÃO AUTOMÁTICA EM TEMPO REAL NO PAINEL DA ORGANIZAÇÃO TAMBÉM!
+    try:
+        from streamlit_autorefresh import st_autorefresh
+        st_autorefresh(interval=2000, limit=None, key="refresh_organizacao_tempo_real")
+    except ImportError:
+        pass
+
     components.html(
         """
         <script>
@@ -1522,7 +1475,7 @@ elif modo == "Painel da Organização":
             st.error("❌ Senha incorreta!")
     
     if st.session_state.admin_logado:
-        st.success("🔓 Acesso autorizado!")
+        st.success("🔓 Acesso autorizado! (Atualização automática ativada em tempo real)")
         
         # --- SECÇÃO DE TRAVAMENTO DE VOTAÇÃO POR CATEGORIA ---
         st.markdown("---")
@@ -1550,7 +1503,7 @@ elif modo == "Painel da Organização":
         # --- SECÇÃO DE SUBIDA AUTOMÁTICA (PRATA -> OURO & OURO -> PLATINA) ---
         st.markdown("---")
         st.markdown("### 🚀 Promoção de Campeões para Categoria Superior")
-        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Clique abaixo para promover automaticamente o 1º colocado (campeão) para a categoria seguinte. O nome continuará na tabela original como campeão.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Clique abaixo para promover automaticamente o 1º colocado (campeão) para a categoria seguinte.</p>", unsafe_allow_html=True)
         
         col_sub1, col_sub2 = st.columns(2)
         
@@ -1593,7 +1546,7 @@ elif modo == "Painel da Organização":
         # --- SECÇÃO DE TRAVAMENTO DE CLASSIFICADOS PARA A FINAL ---
         st.markdown("---")
         st.markdown("### 🔒 Travamento da Fase Classificatória (Gerar Finalistas)")
-        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Clique abaixo para congelar a lista de classificados para a Fase Final. Isso impede que a tabela mude enquanto novos votos entram.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Clique abaixo para congelar a lista de classificados para a Fase Final.</p>", unsafe_allow_html=True)
         
         travados_atuais = carregar_classificados_travados()
         col_trav1, col_trav2 = st.columns(2)
@@ -1651,33 +1604,28 @@ elif modo == "Painel da Organização":
             st.success("✨ Estado do telão atualizado com sucesso!")
             st.rerun()
 
-        # BOTÕES DE AÇÃO RÁPIDA (ATUALIZAR E LIMPAR)
+        # BOTÃO DE LIMPEZA
         st.markdown("---")
-        col_btn_ref, col_btn_lim = st.columns([2, 1])
-        with col_btn_ref:
-            if st.button("🔄 ATUALIZAR DADOS DA TELA (BUSCAR NOVOS VOTOS)", type="primary", use_container_width=True):
-                st.rerun()
-        with col_btn_lim:
-            if st.button("🗑️ APAGAR TUDO", type="secondary", use_container_width=True):
-                salvar_votos([])
-                if os.path.exists(ARQUIVO_PARTICIPANTES):
-                    os.remove(ARQUIVO_PARTICIPANTES)
-                if os.path.exists(ARQUIVO_CLASSIFICADOS):
-                    os.remove(ARQUIVO_CLASSIFICADOS)
-                if os.path.exists(ARQUIVO_CONFIG_TELAO):
-                    os.remove(ARQUIVO_CONFIG_TELAO)
-                if os.path.exists(ARQUIVO_VOTOS_TRAVADOS):
-                    os.remove(ARQUIVO_VOTOS_TRAVADOS)
-                st.success("Sistema limpo e redefinido para o estado original!")
-                st.rerun()
+        if st.button("🗑️ APAGAR TUDO", type="secondary"):
+            salvar_votos([])
+            if os.path.exists(ARQUIVO_PARTICIPANTES):
+                os.remove(ARQUIVO_PARTICIPANTES)
+            if os.path.exists(ARQUIVO_CLASSIFICADOS):
+                os.remove(ARQUIVO_CLASSIFICADOS)
+            if os.path.exists(ARQUIVO_CONFIG_TELAO):
+                os.remove(ARQUIVO_CONFIG_TELAO)
+            if os.path.exists(ARQUIVO_VOTOS_TRAVADOS):
+                os.remove(ARQUIVO_VOTOS_TRAVADOS)
+            st.success("Sistema limpo e redefinido para o estado original!")
+            st.rerun()
 
         votos_atuais = carregar_votos()
         df_rel = pd.DataFrame(votos_atuais) if votos_atuais else pd.DataFrame(columns=["categoria", "fase", "competidor", "jurado", "criterio", "papel", "nota", "justificativa"])
 
-        # --- ACOMPANHAMENTO EM TEMPO REAL COM TABELAS GRANDES (IGUAL AO TELÃO) ---
+        # --- ACOMPANHAMENTO EM TEMPO REAL (EMPILHADO VERTICALMENTE PARA NÃO ACAVALAR) ---
         st.markdown("---")
         st.markdown("### 📊 Acompanhamento em Tempo Real (Tabelas de Votação)")
-        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Aqui podes ver diretamente as tabelas completas com as notas e posições em tempo real para acompanhar os votos de cada categoria e fase.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Tabelas atualizadas em tempo real. Exibidas em largura total para visualização perfeita.</p>", unsafe_allow_html=True)
 
         def formatar_nome_jurado(nome):
             partes = nome.split(" ", 1)
@@ -1847,27 +1795,27 @@ elif modo == "Painel da Organização":
                 fases_cat = fases_por_categoria[cat_nome]
                 for fase_nome in fases_cat:
                     st.markdown(f"#### Etapa: {fase_nome}")
-                    col_adm1, col_adm2 = st.columns(2)
-                    with col_adm1:
-                        st.markdown("<div style='text-align: center; color: #e5c158; font-size: 11px; font-weight: bold;'>CONDUTORES</div>", unsafe_allow_html=True)
-                        if cat_nome in ["Diamante", "Platina"]:
-                            html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Condutores")
-                        else:
-                            html_t = gerar_tabela_admin_papel_fase(cat_nome, fase_nome, "Condutores")
-                        st.markdown(html_t, unsafe_allow_html=True)
-                    with col_adm2:
-                        st.markdown("<div style='text-align: center; color: #e5c158; font-size: 11px; font-weight: bold;'>CONDUZIDAS</div>", unsafe_allow_html=True)
-                        if cat_nome in ["Diamante", "Platina"]:
-                            html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Conduzidas")
-                        else:
-                            html_t = gerar_tabela_admin_papel_fase(cat_nome, fase_nome, "Conduzidas")
-                        st.markdown(html_t, unsafe_allow_html=True)
+                    
+                    # EMPILHADO VERTICALMENTE (LARGURA TOTAL 100%)
+                    st.markdown("<div style='text-align: center; color: #e5c158; font-size: 13px; font-weight: bold; margin-top: 10px;'>👑 CONDUTORES</div>", unsafe_allow_html=True)
+                    if cat_nome in ["Diamante", "Platina"]:
+                        html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Condutores")
+                    else:
+                        html_t = gerar_tabela_admin_papel_fase(cat_nome, fase_nome, "Condutores")
+                    st.markdown(f"<div style='overflow-x: auto;'>{html_t}</div>", unsafe_allow_html=True)
+                    
+                    st.markdown("<div style='margin: 20px 0; border-top: 1px dashed rgba(212,175,55,0.4);'></div>", unsafe_allow_html=True)
+                    
+                    st.markdown("<div style='text-align: center; color: #e5c158; font-size: 13px; font-weight: bold; margin-top: 10px;'>👑 CONDUZIDAS</div>", unsafe_allow_html=True)
+                    if cat_nome in ["Diamante", "Platina"]:
+                        html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Conduzidas")
+                    else:
+                        html_t = gerar_tabela_admin_papel_fase(cat_nome, fase_nome, "Conduzidas")
+                    st.markdown(f"<div style='overflow-x: auto;'>{html_t}</div>", unsafe_allow_html=True)
 
-        # --- SECÇÃO DE RELATÓRIOS UNIFICADOS (COM MÚSICA 1 E 2 JUNTAS PARA DIAMANTE E PLATINA) ---
+        # --- RELATÓRIOS UNIFICADOS ---
         st.markdown("---")
         st.markdown("### 📥 Relatórios Completos por Categoria")
-        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Baixe o relatório detalhado de cada categoria. Para Diamante e Platina, o relatório inclui Música 1 e Música 2 juntas.</p>", unsafe_allow_html=True)
-        
         if not df_rel.empty:
             cols_cat_rel = st.columns(3)
             for idx_c, cat_n in enumerate(categorias.keys()):
@@ -1902,17 +1850,12 @@ elif modo == "Painel da Organização":
                             mime="text/html",
                             key=f"dl_cat_completo_{cat_n}"
                         )
-                    else:
-                        st.markdown(f"<div style='font-size:11px; color:#777; padding:8px;'>⏳ {cat_n}: Sem votos</div>", unsafe_allow_html=True)
-        else:
-            st.info("Ainda não existem votos registados para gerar relatórios.")
 
     elif senha_digitada != "":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) ---
-    
+    # --- TELÃO (PÚBLICO) COM ATUALIZAÇÃO AUTOMÁTICA EM TEMPO REAL ---
     try:
         from streamlit_autorefresh import st_autorefresh
         st_autorefresh(interval=2000, limit=None, key="refresh_telao")
@@ -2079,9 +2022,6 @@ else:
             color: #ffffff !important;
             letter-spacing: 0.4px;
         }
-        .tabela-dourada tbody tr:last-child td {
-            border-bottom: none;
-        }
         .tabela-dourada tbody tr:hover {
             background-color: rgba(212, 175, 55, 0.15);
         }
@@ -2132,21 +2072,9 @@ else:
             background-color: rgba(212, 175, 55, 0.15);
         }
 
-        .podio-1 {
-            color: #ffd700 !important;
-            font-weight: bold;
-            text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
-        }
-        .podio-2 {
-            color: #e0e0e0 !important;
-            font-weight: bold;
-            text-shadow: 0 0 4px rgba(224, 224, 224, 0.5);
-        }
-        .podio-3 {
-            color: #cd7f32 !important;
-            font-weight: bold;
-            text-shadow: 0 0 4px rgba(205, 127, 50, 0.5);
-        }
+        .podio-1 { color: #ffd700 !important; font-weight: bold; text-shadow: 0 0 6px rgba(255, 215, 0, 0.6); }
+        .podio-2 { color: #e0e0e0 !important; font-weight: bold; text-shadow: 0 0 4px rgba(224, 224, 224, 0.5); }
+        .podio-3 { color: #cd7f32 !important; font-weight: bold; text-shadow: 0 0 4px rgba(205, 127, 50, 0.5); }
         </style>
         """,
         unsafe_allow_html=True,
@@ -2405,29 +2333,28 @@ else:
         
         return html
 
+    # TELÃO EMPILHADO VERTICALMENTE (LARGURA TOTAL 100% PARA NUNCA ACAVALAR)
     if categoria_nome in ["Diamante", "Platina"]:
-        col_cond, col_condz = st.columns(2)
+        st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;'>👑 Condutores</h3>", unsafe_allow_html=True)
+        tabela_cond_html = gerar_tabela_acumulada_diamante_platina_html("Condutores", revelado_atual)
+        st.markdown(f"<div style='overflow-x: auto;'>{tabela_cond_html}</div>", unsafe_allow_html=True)
 
-        with col_cond:
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
-            tabela_cond_html = gerar_tabela_acumulada_diamante_platina_html("Condutores", revelado_atual)
-            st.markdown(tabela_cond_html, unsafe_allow_html=True)
+        st.markdown("<div style='margin: 30px 0; border-top: 1px dashed rgba(212,175,55,0.4);'></div>", unsafe_allow_html=True)
 
-        with col_condz:
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
-            tabela_condz_html = gerar_tabela_acumulada_diamante_platina_html("Conduzidas", revelado_atual)
-            st.markdown(tabela_condz_html, unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;'>👑 Conduzidas</h3>", unsafe_allow_html=True)
+        tabela_condz_html = gerar_tabela_acumulada_diamante_platina_html("Conduzidas", revelado_atual)
+        st.markdown(f"<div style='overflow-x: auto;'>{tabela_condz_html}</div>", unsafe_allow_html=True)
 
     else:
         for fase_nome in fases_da_cat:
-            col_cond, col_condz = st.columns(2)
+            st.markdown(f"<h3 style='text-align: center; color: #b39b6b; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;'>Etapa: {fase_nome}</h3>", unsafe_allow_html=True)
+            
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;'>👑 Condutores</h3>", unsafe_allow_html=True)
+            tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores", revelado_atual)
+            st.markdown(f"<div style='overflow-x: auto;'>{tabela_cond}</div>", unsafe_allow_html=True)
 
-            with col_cond:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
-                tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores", revelado_atual)
-                st.markdown(tabela_cond, unsafe_allow_html=True)
+            st.markdown("<div style='margin: 30px 0; border-top: 1px dashed rgba(212,175,55,0.4);'></div>", unsafe_allow_html=True)
 
-            with col_condz:
-                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
-                tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas", revelado_atual)
-                st.markdown(tabela_condz, unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;'>👑 Conduzidas</h3>", unsafe_allow_html=True)
+            tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas", revelado_atual)
+            st.markdown(f"<div style='overflow-x: auto;'>{tabela_condz}</div>", unsafe_allow_html=True)
