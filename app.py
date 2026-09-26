@@ -305,6 +305,9 @@ if "fase_atual" not in st.session_state:
 if "grupo_atual" not in st.session_state:
     st.session_state.grupo_atual = "Condutor"
 
+if "admin_logado" not in st.session_state:
+    st.session_state.admin_logado = False
+
 try:
     qp = st.query_params
     link_jurado_exclusivo = qp.get("view") == "jurado"
@@ -341,8 +344,8 @@ fases_por_categoria = {
     "Aprendendo a Voar": ["Fase Única"],
     "Prata": ["Fase Classificatória", "Fase Final"],
     "Ouro": ["Fase Classificatória", "Fase Final"],
-    "Platina": ["Fase 1 (Música 1)", "Fase 2 (Música 2)"],
-    "Diamante": ["Fase 1 (Música 1)", "Fase 2 (Música 2)"],
+    "Platina": ["Música 1", "Música 2"],
+    "Diamante": ["Música 1", "Música 2"],
 }
 
 criterios_por_categoria = {
@@ -624,6 +627,8 @@ def obter_classificados(categoria, papel):
 
 
 def formatar_fase(fase):
+    if fase in ["Música 1", "Música 2"]:
+        return fase.upper(), "ETAPA"
     if "(" in fase:
         principal, secundaria = fase.split("(", 1)
         return principal.strip().upper(), secundaria.replace(")", "").strip().upper()
@@ -1438,13 +1443,21 @@ if modo == "Painel do Jurado":
 
 elif modo == "Painel da Organização":
     st.title("📋 Painel da Organização — Acompanhamento Geral")
-    with st.container(border=True):
-        senha_digitada = st.text_input(
-            "Digite a senha de acesso da organização", type="password"
-        )
+    
     SENHA_MESTRE = "danca123"
-
-    if senha_digitada == SENHA_MESTRE:
+    
+    if not st.session_state.admin_logado:
+        with st.container(border=True):
+            senha_digitada = st.text_input(
+                "Digite a senha de acesso da organização", type="password"
+            )
+        if senha_digitada == SENHA_MESTRE:
+            st.session_state.admin_logado = True
+            st.rerun()
+        elif senha_digitada != "":
+            st.error("❌ Senha incorreta!")
+    
+    if st.session_state.admin_logado:
         st.success("🔓 Acesso autorizado!")
         
         # --- SECÇÃO DE TRAVAMENTO DE VOTAÇÃO POR CATEGORIA ---
@@ -1597,166 +1610,239 @@ elif modo == "Painel da Organização":
         votos_atuais = carregar_votos()
         df_rel = pd.DataFrame(votos_atuais) if votos_atuais else pd.DataFrame(columns=["categoria", "fase", "competidor", "jurado", "criterio", "papel", "nota", "justificativa"])
 
-        # --- SECÇÃO DE RELATÓRIOS POR ETAPA / FASE ---
+        # --- ACOMPANHAMENTO EM TEMPO REAL COM TABELAS GRANDES (IGUAL AO TELÃO) ---
         st.markdown("---")
-        st.markdown("### 📥 Relatórios por Etapa / Fase Concluída")
-        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Baixe o relatório detalhado de cada fase/etapa assim que ela terminar.</p>", unsafe_allow_html=True)
+        st.markdown("### 📊 Acompanhamento em Tempo Real (Tabelas de Votação)")
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Aqui podes ver diretamente as tabelas completas com as notas e posições em tempo real para acompanhar os votos de cada categoria e fase.</p>", unsafe_allow_html=True)
+
+        def formatar_nome_jurado(nome):
+            partes = nome.split(" ", 1)
+            if len(partes) > 1:
+                return f"{partes[0]}<br>{partes[1]}"
+            return nome
+
+        def formatar_classificacao_podio(idx):
+            pos = idx + 1
+            if pos == 1:
+                return '<span style="color: #ffd700; font-weight: bold;">1º 🥇</span>'
+            elif pos == 2:
+                return '<span style="color: #e0e0e0; font-weight: bold;">2º 🥈</span>'
+            elif pos == 3:
+                return '<span style="color: #cd7f32; font-weight: bold;">3º 🥉</span>'
+            return f"{pos}º"
+
+        def gerar_tabela_admin_papel_fase(cat_nome, fase_nome, papel_nome):
+            jurados_aptos = obter_jurados_da_categoria_papel(cat_nome, papel_nome)
+            df_cat = df_rel[df_rel["categoria"] == cat_nome] if not df_rel.empty else pd.DataFrame()
+            df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
+            
+            if fase_nome == "Fase Final" and cat_nome in ["Prata", "Ouro"]:
+                comps = obter_classificados(cat_nome, papel_nome)
+                if not comps:
+                    comps = categorias[cat_nome][papel_nome]
+            else:
+                comps = categorias[cat_nome][papel_nome]
+
+            df_base = pd.DataFrame({"competidor": comps})
+            df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_fase.empty else pd.DataFrame()
+
+            if not df_papel.empty:
+                df_notas_jurado = df_papel.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
+                df_notas_jurado["jurado_nome"] = df_notas_jurado["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
+                pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado_nome", values="nota").reset_index()
+                pivot_df = pd.merge(df_base, pivot_df, on="competidor", how="left")
+            else:
+                pivot_df = df_base.copy()
+
+            for j_col in jurados_aptos:
+                if j_col not in pivot_df.columns:
+                    pivot_df[j_col] = None
+
+            exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
+            pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+            pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
+
+            pivot_df["CLASS."] = [formatar_classificacao_podio(idx) for idx in pivot_df.index]
+            pivot_df["PARTICIPANTE"] = pivot_df["competidor"]
+
+            renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
+            pivot_df = pivot_df.rename(columns=renomeador)
+
+            jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
+            cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
+            cols_finais_existentes = [c for c in cols_finais if c in pivot_df.columns]
+            tabela_exibicao = pivot_df[cols_finais_existentes].copy()
+
+            for j in jurados_formatados:
+                if j in tabela_exibicao.columns:
+                    tabela_exibicao[j] = tabela_exibicao[j].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != "" and str(x) != "nan" else "-")
+            
+            if "TOTAL" in tabela_exibicao.columns:
+                tabela_exibicao["TOTAL"] = tabela_exibicao["TOTAL"].apply(lambda x: f"{x:.1f}" if pd.notnull(x) and x != 0 and str(x) != "nan" and str(x) != "0.0" else "-")
+
+            return tabela_exibicao.to_html(index=False, classes="tabela-dourada", escape=False)
+
+        def gerar_tabela_admin_diamante_platina_html(cat_nome, papel_nome):
+            jurados_aptos = obter_jurados_da_categoria_papel(cat_nome, papel_nome)
+            comps = categorias[cat_nome][papel_nome]
+            fase1_nome = "Música 1"
+            fase2_nome = "Música 2"
+            
+            df_cat = df_rel[df_rel["categoria"] == cat_nome] if not df_rel.empty else pd.DataFrame()
+            dados_tabela = {c: {j: {'f1': None, 'f2': None} for j in jurados_aptos} for c in comps}
+            
+            if not df_cat.empty:
+                df_papel = df_cat[df_cat["papel"] == papel_nome]
+                if not df_papel.empty:
+                    grouped = df_papel.groupby(["competidor", "fase", "jurado"])["nota"].mean().reset_index()
+                    for _, row in grouped.iterrows():
+                        comp = row["competidor"]
+                        fase = row["fase"]
+                        jurado_username = row["jurado"]
+                        jurado_nome_real = configuracao_jurados.get(jurado_username, {}).get("nome", jurado_username)
+                        
+                        if jurado_nome_real in jurados_aptos:
+                            if comp in dados_tabela:
+                                if fase1_nome in fase:
+                                    dados_tabela[comp][jurado_nome_real]['f1'] = row["nota"]
+                                elif fase2_nome in fase:
+                                    dados_tabela[comp][jurado_nome_real]['f2'] = row["nota"]
+
+            lista_linhas = []
+            for comp in comps:
+                totais_geral = []
+                for j in jurados_aptos:
+                    f1 = dados_tabela[comp][j]['f1']
+                    f2 = dados_tabela[comp][j]['f2']
+                    val_f1 = f1 if f1 is not None else 0
+                    val_f2 = f2 if f2 is not None else 0
+                    totais_geral.append(val_f1 + val_f2)
+                        
+                tem_nota_geral = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos)
+                total_completo = sum(totais_geral) if tem_nota_geral else -1
+
+                lista_linhas.append({
+                    "competidor": comp,
+                    "dados": dados_tabela[comp],
+                    "total": total_completo
+                })
+                
+            lista_linhas.sort(key=lambda x: x["total"], reverse=True)
+            
+            html = '<table class="tabela-dourada-compacta">'
+            html += '<thead>'
+            html += '<tr>'
+            html += '<th rowspan="2">CLASS.</th>'
+            html += '<th rowspan="2">PARTICIPANTE</th>'
+            for j in jurados_aptos:
+                nome_fmt = formatar_nome_jurado(j).replace("<br>", " ")
+                html += f'<th colspan="2">{nome_fmt}</th>'
+            html += '<th rowspan="2">TOTAL</th>'
+            html += '</tr>'
+            html += '<tr>'
+            for _ in jurados_aptos:
+                html += '<th>MÚSICA 1</th><th>MÚSICA 2</th>'
+            html += '</tr>'
+            html += '</thead>'
+            html += '<tbody>'
+            for idx, linha in enumerate(lista_linhas):
+                class_str = formatar_classificacao_podio(idx)
+                comp_nome = linha["competidor"]
+                html += '<tr>'
+                html += f'<td>{class_str}</td>'
+                html += f'<td class="col-partic" title="{comp_nome}">{comp_nome}</td>'
+                for j in jurados_aptos:
+                    f1 = linha["dados"][j]['f1']
+                    f2 = linha["dados"][j]['f2']
+                    str_f1 = f"{f1:.1f}" if f1 is not None else "-"
+                    str_f2 = f"{f2:.1f}" if f2 is not None else "-"
+                    html += f'<td>{str_f1}</td>'
+                    html += f'<td>{str_f2}</td>'
+                
+                soma_real = 0
+                tem_valida = False
+                for j in jurados_aptos:
+                    f1 = linha["dados"][j]['f1']
+                    f2 = linha["dados"][j]['f2']
+                    if f1 is not None:
+                        soma_real += f1
+                        tem_valida = True
+                    if f2 is not None:
+                        soma_real += f2
+                        tem_valida = True
+
+                str_total = f"{soma_real:.1f}" if tem_valida else "-"
+                html += f'<td><b>{str_total}</b></td>'
+                html += '</tr>'
+            html += '</tbody>'
+            html += '</table>'
+            return html
+
+        for cat_nome in ["Diamante", "Platina", "Ouro", "Prata", "Aprendendo a Voar"]:
+            with st.expander(f"📁 Categoria: {cat_nome.upper()} (Tabelas de Acompanhamento)", expanded=False):
+                fases_cat = fases_por_categoria[cat_nome]
+                for fase_nome in fases_cat:
+                    st.markdown(f"#### Etapa: {fase_nome}")
+                    col_adm1, col_adm2 = st.columns(2)
+                    with col_adm1:
+                        st.markdown("<div style='text-align: center; color: #e5c158; font-size: 11px; font-weight: bold;'>CONDUTORES</div>", unsafe_allow_html=True)
+                        if cat_nome in ["Diamante", "Platina"]:
+                            html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Condutores")
+                        else:
+                            html_t = gerar_tabela_admin_papel_fase(cat_nome, fase_nome, "Condutores")
+                        st.markdown(html_t, unsafe_allow_html=True)
+                    with col_adm2:
+                        st.markdown("<div style='text-align: center; color: #e5c158; font-size: 11px; font-weight: bold;'>CONDUZIDAS</div>", unsafe_allow_html=True)
+                        if cat_nome in ["Diamante", "Platina"]:
+                            html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Conduzidas")
+                        else:
+                            html_t = gerar_tabela_admin_papel_fase(cat_nome, fase_nome, "Conduzidas")
+                        st.markdown(html_t, unsafe_allow_html=True)
+
+        # --- SECÇÃO DE RELATÓRIOS UNIFICADOS (COM MÚSICA 1 E 2 JUNTAS PARA DIAMANTE E PLATINA) ---
+        st.markdown("---")
+        st.markdown("### 📥 Relatórios Completos por Categoria")
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Baixe o relatório detalhado de cada categoria. Para Diamante e Platina, o relatório inclui Música 1 e Música 2 juntas.</p>", unsafe_allow_html=True)
         
         if not df_rel.empty:
-            cols_etapa = st.columns(3)
-            idx_col = 0
-            for cat_n in categorias.keys():
-                fases_da_cat = fases_por_categoria[cat_n]
-                for fase_n in fases_da_cat:
-                    df_etapa_check = df_rel[(df_rel["categoria"] == cat_n) & (df_rel["fase"] == fase_n)]
-                    with cols_etapa[idx_col % 3]:
-                        if not df_etapa_check.empty:
-                            html_etapa = f"""
-                            <html><head><meta charset="utf-8">
-                            <style>body{{font-family:Helvetica,Arial,sans-serif;color:#333;margin:20px;}}h1{{color:#b8860b;text-align:center;border-bottom:2px solid #b8860b;padding-bottom:10px;}}h2{{color:#555;margin-top:20px;border-bottom:1px solid #ccc;}}.card{{background:#fdfcf7;border:1px solid #e3d3a1;padding:10px;margin-bottom:8px;border-radius:6px;}}</style>
-                            </head><body>
-                            <h1>Relatório — {cat_n} ({fase_n})</h1>
-                            """
-                            for p_papel in df_etapa_check["papel"].unique():
-                                html_etapa += f"<h2>Papel: {p_papel}</h2>"
-                                df_papel_sub = df_etapa_check[df_etapa_check["papel"] == p_papel]
+            cols_cat_rel = st.columns(3)
+            for idx_c, cat_n in enumerate(categorias.keys()):
+                df_cat_rel = df_rel[df_rel["categoria"] == cat_n]
+                with cols_cat_rel[idx_c % 3]:
+                    if not df_cat_rel.empty:
+                        html_cat_completo = f"""
+                        <html><head><meta charset="utf-8">
+                        <style>body{{font-family:Helvetica,Arial,sans-serif;color:#333;margin:20px;}}h1{{color:#b8860b;text-align:center;border-bottom:2px solid #b8860b;padding-bottom:10px;}}h2{{color:#555;margin-top:20px;border-bottom:1px solid #ccc;}}.card{{background:#fdfcf7;border:1px solid #e3d3a1;padding:10px;margin-bottom:8px;border-radius:6px;}}</style>
+                        </head><body>
+                        <h1>Relatório Completo — {cat_n}</h1>
+                        """
+                        for fase_n in sorted(df_cat_rel["fase"].unique()):
+                            html_cat_completo += f"<h2>Etapa / Fase: {fase_n}</h2>"
+                            df_fase_sub = df_cat_rel[df_cat_rel["fase"] == fase_n]
+                            for p_papel in df_fase_sub["papel"].unique():
+                                html_cat_completo += f"<h3>Papel: {p_papel}</h3>"
+                                df_papel_sub = df_fase_sub[df_fase_sub["papel"] == p_papel]
                                 for comp_sub in df_papel_sub["competidor"].unique():
-                                    html_etapa += f"<h3>Participante: {comp_sub}</h3>"
+                                    html_cat_completo += f"<h4>Participante: {comp_sub}</h4>"
                                     df_comp_sub = df_papel_sub[df_papel_sub["competidor"] == comp_sub]
                                     for _, r_row in df_comp_sub.iterrows():
                                         j_nome = configuracao_jurados.get(r_row['jurado'], {}).get('nome', r_row['jurado'])
                                         just_txt = r_row['justificativa'] if r_row['justificativa'] else "Sem comentários."
-                                        html_etapa += f"""<div class="card"><b>Jurado:</b> {j_nome} | <b>Critério:</b> {r_row['criterio']} | <b>Nota:</b> <b>{r_row['nota']}</b><br><i>Comentário:</i> "{just_txt}"</div>"""
-                            html_etapa += "</body></html>"
-                            
-                            st.download_button(
-                                label=f"📄 {cat_n} — {fase_n}",
-                                data=html_etapa,
-                                file_name=f"Relatorio_{cat_n.replace(' ', '_')}_{fase_n.replace(' ', '_').replace('(', '').replace(')', '')}.html",
-                                mime="text/html",
-                                key=f"dl_etapa_{cat_n}_{fase_n}"
-                            )
-                        else:
-                            st.markdown(f"<div style='font-size:11px; color:#777; padding:8px;'>⏳ {cat_n} ({fase_n}): Sem votos</div>", unsafe_allow_html=True)
-                    idx_col += 1
+                                        html_cat_completo += f"""<div class="card"><b>Jurado:</b> {j_nome} | <b>Critério:</b> {r_row['criterio']} | <b>Nota:</b> <b>{r_row['nota']}</b><br><i>Comentário:</i> "{just_txt}"</div>"""
+                        html_cat_completo += "</body></html>"
+                        
+                        st.download_button(
+                            label=f"📄 Relatório — {cat_n}",
+                            data=html_cat_completo,
+                            file_name=f"Relatorio_{cat_n.replace(' ', '_')}.html",
+                            mime="text/html",
+                            key=f"dl_cat_completo_{cat_n}"
+                        )
+                    else:
+                        st.markdown(f"<div style='font-size:11px; color:#777; padding:8px;'>⏳ {cat_n}: Sem votos</div>", unsafe_allow_html=True)
         else:
-            st.info("Ainda não existem votos registados para gerar relatórios por etapa.")
+            st.info("Ainda não existem votos registados para gerar relatórios.")
 
-        st.markdown("---")
-        st.markdown("### 📊 Auditoria Detalhada por Categoria (Tabelas Largas para o Notebook)")
-        
-        categorias_lista = ["Diamante", "Platina", "Ouro", "Prata", "Aprendendo a Voar"]
-        
-        for cat_nome in categorias_lista:
-            with st.expander(f"📁 Categoria: {cat_nome.upper()} (Ver Votos Detalhados)", expanded=False):
-                df_cat_filtrado = df_rel[df_rel["categoria"] == cat_nome] if not df_rel.empty else pd.DataFrame()
-                
-                if not df_cat_filtrado.empty:
-                    df_exibicao = df_cat_filtrado.copy()
-                    df_exibicao["jurado"] = df_exibicao["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
-                    
-                    st.dataframe(
-                        df_exibicao[["fase", "papel", "competidor", "jurado", "criterio", "nota", "justificativa"]],
-                        use_container_width=True,
-                        hide_index=True
-                    )
-                    
-                    html_cat_rel = f"""
-                    <html>
-                    <head>
-                    <meta charset="utf-8">
-                    <style>
-                        body {{ font-family: Helvetica, Arial, sans-serif; color: #333; margin: 20px; }}
-                        h1 {{ text-align: center; color: #b8860b; border-bottom: 2px solid #b8860b; padding-bottom: 10px; }}
-                        h2 {{ color: #555; border-bottom: 1px solid #ccc; margin-top: 30px; padding-bottom: 5px; }}
-                        h3 {{ color: #444; margin-top: 20px; }}
-                        .voto-card {{ background: #fdfcf7; border: 1px solid #e3d3a1; padding: 10px 15px; margin-bottom: 10px; border-radius: 6px; }}
-                        .meta {{ font-size: 12px; color: #666; margin-bottom: 4px; }}
-                        .comentario {{ font-style: italic; color: #444; background: #fff; padding: 6px; border-left: 3px solid #b8860b; margin-top: 6px; }}
-                    </style>
-                    </head>
-                    <body>
-                    <h1>Relatório de Avaliações — Categoria: {cat_nome}</h1>
-                    """
-                    for fase in sorted(df_cat_filtrado["fase"].unique()):
-                        html_cat_rel += f"<h2>Fase: {fase}</h2>"
-                        df_fase = df_cat_filtrado[df_cat_filtrado["fase"] == fase]
-                        for comp in sorted(df_fase["competidor"].unique()):
-                            html_cat_rel += f"<h3>Participante: {comp}</h3>"
-                            df_comp = df_fase[df_fase["competidor"] == comp]
-                            for _, row in df_comp.iterrows():
-                                jurado_nome = configuracao_jurados.get(row['jurado'], {}).get('nome', row['jurado'])
-                                just = row['justificativa'] if row['justificativa'] else "Sem comentários registados."
-                                html_cat_rel += f"""
-                                <div class="voto-card">
-                                    <div class="meta"><b>Jurado:</b> {jurado_nome} | <b>Critério:</b> {row['criterio']} | <b>Papel:</b> {row['papel']} | <b>Nota:</b> <b>{row['nota']}</b></div>
-                                    <div class="comentario"><b>Comentário:</b> "{just}"</div>
-                                </div>
-                                """
-                    html_cat_rel += "</body></html>"
-                    
-                    st.download_button(
-                        label=f"📥 Baixar Relatório Completo da Categoria {cat_nome}",
-                        data=html_cat_rel,
-                        file_name=f"Relatorio_{cat_nome.replace(' ', '_')}.html",
-                        mime="text/html",
-                        key=f"btn_dl_{cat_nome}"
-                    )
-                else:
-                    st.info(f"Nenhum voto registado ainda na categoria {cat_nome}.")
-
-        st.markdown("---")
-        st.markdown("### 📄 Relatório Geral Consolidado")
-        
-        if votos_atuais:
-            html_relatorio = """
-            <html>
-            <head>
-            <meta charset="utf-8">
-            <style>
-                body { font-family: Helvetica, Arial, sans-serif; color: #333; margin: 20px; }
-                h1 { text-align: center; color: #b8860b; border-bottom: 2px solid #b8860b; padding-bottom: 10px; }
-                h2 { color: #555; border-bottom: 1px solid #ccc; margin-top: 30px; padding-bottom: 5px; }
-                .voto-card { background: #fdfcf7; border: 1px solid #e3d3a1; padding: 10px 15px; margin-bottom: 10px; border-radius: 6px; }
-                .meta { font-size: 12px; color: #666; margin-bottom: 4px; }
-                .comentario { font-style: italic; color: #444; background: #fff; padding: 6px; border-left: 3px solid #b8860b; margin-top: 6px; }
-            </style>
-            </head>
-            <body>
-            <h1>Relatório de Avaliações — Jack & Jill: Noite nas Arábias</h1>
-            """
-            
-            df_rel_all = pd.DataFrame(votos_atuais)
-            for cat in sorted(df_rel_all["categoria"].unique()):
-                html_relatorio += f"<h2>Categoria: {cat}</h2>"
-                df_cat = df_rel_all[df_rel_all["categoria"] == cat]
-                for fase in sorted(df_cat["fase"].unique()):
-                    html_relatorio += f"<h3>Fase: {fase}</h3>"
-                    df_fase = df_cat[df_cat["fase"] == fase]
-                    for comp in sorted(df_fase["competidor"].unique()):
-                        html_relatorio += f"<h4>Participante: {comp}</h4>"
-                        df_comp = df_fase[df_fase["competidor"] == comp]
-                        for _, row in df_comp.iterrows():
-                            jurado_nome = configuracao_jurados.get(row['jurado'], {}).get('nome', row['jurado'])
-                            just = row['justificativa'] if row['justificativa'] else "Sem comentários registados."
-                            html_relatorio += f"""
-                            <div class="voto-card">
-                                <div class="meta"><b>Jurado:</b> {jurado_nome} | <b>Critério:</b> {row['criterio']} | <b>Papel:</b> {row['papel']} | <b>Nota:</b> <b>{row['nota']}</b></div>
-                                <div class="comentario"><b>Comentário:</b> "{just}"</div>
-                            </div>
-                            """
-            html_relatorio += "</body></html>"
-            
-            st.download_button(
-                label="📥 Descarregar Relatório Completo Consolidado (HTML/PDF)",
-                data=html_relatorio,
-                file_name="Relatorio_Geral_JackAndJill.html",
-                mime="text/html",
-                type="primary"
-            )
-        else:
-            st.info("Ainda não existem votos ou comentários registados para gerar o relatório.")
-            
     elif senha_digitada != "":
         st.error("❌ Senha incorreta!")
 
@@ -2130,8 +2216,8 @@ else:
         comps = categorias[categoria_nome][papel_nome]
         jurado_secreto_atual = obter_jurado_secreto(categoria_nome, papel_nome)
         
-        fase1_nome = "Fase 1 (Música 1)"
-        fase2_nome = "Fase 2 (Música 2)"
+        fase1_nome = "Música 1"
+        fase2_nome = "Música 2"
         
         dados_tabela = {c: {j: {'f1': None, 'f2': None} for j in jurados_aptos} for c in comps}
         
