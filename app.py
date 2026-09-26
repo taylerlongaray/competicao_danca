@@ -422,8 +422,8 @@ configuracao_jurados = {
         "nome": "Alan Demarch",
         "senha": "7391",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]}
+            {"categoria": "Platina", "papel": "Condutores", "criterios": ["Musicalidade e Criatividade"]},
+            {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Criatividade e Musicalidade"]}
         ]
     },
     "alex": {
@@ -459,8 +459,8 @@ configuracao_jurados = {
         "nome": "Cléo Santanna",
         "senha": "6835",
         "permissoes": [
-            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
-            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]}
+            {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Musicalidade e Criatividade"]},
+            {"categoria": "Ouro", "papel": "Conduzidas", "criterios": ["Criatividade e Musicalidade"]}
         ]
     },
     "daiani": {
@@ -499,7 +499,7 @@ configuracao_jurados = {
         "nome": "Nilson Leivas",
         "senha": "8614",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Diamante", "papel": "Conduzidas", "criterios": ["Musicalidade e Criatividade"]},
             {"categoria": "Platina", "papel": "Conduzidas", "criterios": ["Conexão e Resposta"]},
             {"categoria": "Ouro", "papel": "Condutores", "criterios": ["Conexão e Resposta"]}
         ]
@@ -508,7 +508,7 @@ configuracao_jurados = {
         "nome": "Wagner Camargo",
         "senha": "4296",
         "permissoes": [
-            {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Musicalidade/Criatividade"]},
+            {"categoria": "Diamante", "papel": "Condutores", "criterios": ["Musicalidade e Criatividade"]},
             {"categoria": "Platina", "papel": "Condutores", "criterios": ["Técnica e Finalização"]}
         ]
     },
