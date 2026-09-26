@@ -1622,7 +1622,7 @@ elif modo == "Painel da Organização":
         votos_atuais = carregar_votos()
         df_rel = pd.DataFrame(votos_atuais) if votos_atuais else pd.DataFrame(columns=["categoria", "fase", "competidor", "jurado", "criterio", "papel", "nota", "justificativa"])
 
-        # --- ACOMPANHAMENTO EM TEMPO REAL (ORGANIZAÇÃO EMPILHADO PARA VISUALIZAÇÃO CLARA) ---
+        # --- ACOMPANHAMENTO EM TEMPO REAL ---
         st.markdown("---")
         st.markdown("### 📊 Acompanhamento em Tempo Real (Tabelas de Votação)")
         st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Tabelas atualizadas em tempo real. Exibidas em largura total para visualização perfeita.</p>", unsafe_allow_html=True)
@@ -1854,7 +1854,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM LADO A LADO ORIGINAL E ATUALIZAÇÃO EM TEMPO REAL ---
+    # --- TELÃO (PÚBLICO) SEM A FRASE REDUNDANTE DE ETAPA ---
     try:
         from streamlit_autorefresh import st_autorefresh
         st_autorefresh(interval=2000, limit=None, key="refresh_telao")
@@ -2332,7 +2332,7 @@ else:
         
         return html
 
-    # TELÃO DE VOLTA LADO A LADO (`st.columns(2)`) COMO ORIGINALMENTE
+    # TELÃO LADO A LADO SEM A FRASE REDUNDANTE DE ETAPA
     if categoria_nome in ["Diamante", "Platina"]:
         col_cond, col_condz = st.columns(2)
 
@@ -2348,7 +2348,6 @@ else:
 
     else:
         for fase_nome in fases_da_cat:
-            st.markdown(f"<h3 style='text-align: center; color: #b39b6b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;'>Etapa: {fase_nome}</h3>", unsafe_allow_html=True)
             col_cond, col_condz = st.columns(2)
 
             with col_cond:
