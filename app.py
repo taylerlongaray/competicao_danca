@@ -96,7 +96,6 @@ def obter_fundo_css(tipo_tela):
             "fundo_painel.jpg",
         ]
     elif tipo_tela == "painel":
-        # Painel da Organização procura APENAS por ficheiros dedicados (ignora imagens soltas na pasta)
         candidatos = ["fundo_painel.png", "fundo_painel.jpg", "fundo.png", "fundo.jpg"]
     else:
         candidatos = [
@@ -106,7 +105,6 @@ def obter_fundo_css(tipo_tela):
             "fundo.jpg",
         ]
 
-    # Apenas varre a pasta automaticamente para as outras telas, NUNCA para o painel
     if tipo_tela != "painel":
         try:
             for arq in os.listdir(base_dir):
@@ -2031,11 +2029,11 @@ else:
             col_cond, col_condz = st.columns(2)
 
             with col_cond:
-                st.markdown(f"<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores — {fase_nome}</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
                 tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores", revelado_atual)
                 st.markdown(tabela_cond, unsafe_allow_html=True)
 
             with col_condz:
-                st.markdown(f"<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas — {fase_nome}</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
                 tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas", revelado_atual)
                 st.markdown(tabela_condz, unsafe_allow_html=True)
