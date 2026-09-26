@@ -95,6 +95,9 @@ def obter_fundo_css(tipo_tela):
             "fundo_painel.png",
             "fundo_painel.jpg",
         ]
+    elif tipo_tela == "painel":
+        # Painel da Organização procura APENAS por ficheiros dedicados (ignora imagens soltas na pasta)
+        candidatos = ["fundo_painel.png", "fundo_painel.jpg", "fundo.png", "fundo.jpg"]
     else:
         candidatos = [
             f"fundo_{tipo_tela}.png",
@@ -103,12 +106,14 @@ def obter_fundo_css(tipo_tela):
             "fundo.jpg",
         ]
 
-    try:
-        for arq in os.listdir(base_dir):
-            if arq.lower().endswith((".png", ".jpg", ".jpeg")) and arq not in candidatos:
-                candidatos.append(arq)
-    except Exception:
-        pass
+    # Apenas varre a pasta automaticamente para as outras telas, NUNCA para o painel
+    if tipo_tela != "painel":
+        try:
+            for arq in os.listdir(base_dir):
+                if arq.lower().endswith((".png", ".jpg", ".jpeg")) and arq not in candidatos:
+                    candidatos.append(arq)
+        except Exception:
+            pass
 
     img_encontrada = None
     for arquivo in candidatos:
