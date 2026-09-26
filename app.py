@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import threading
 import time
 import pandas as pd
 import streamlit as st
@@ -27,6 +28,9 @@ ARQUIVO_VOTOS = "votos.json"
 ARQUIVO_CONFIG_TELAO = "config_telao.json"
 ARQUIVO_PARTICIPANTES = "participantes.json"
 ARQUIVO_CLASSIFICADOS = "classificados_finais.json"
+
+# Lock de segurança para escrita simultânea de múltiplos jurados
+file_lock = threading.Lock()
 
 opcoes_menu_telao = [
     "Diamante",
@@ -110,75 +114,83 @@ CATEGORIAS_ORIGINAIS = {
 
 
 def carregar_participantes():
-    if os.path.exists(ARQUIVO_PARTICIPANTES):
-        try:
-            with open(ARQUIVO_PARTICIPANTES, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass
-    return json.loads(json.dumps(CATEGORIAS_ORIGINAIS))
+    with file_lock:
+        if os.path.exists(ARQUIVO_PARTICIPANTES):
+            try:
+                with open(ARQUIVO_PARTICIPANTES, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return json.loads(json.dumps(CATEGORIAS_ORIGINAIS))
 
 
 def salvar_participantes(cats):
-    try:
-        with open(ARQUIVO_PARTICIPANTES, "w", encoding="utf-8") as f:
-            json.dump(cats, f, ensure_ascii=False, indent=4)
-    except Exception:
-        pass
+    with file_lock:
+        try:
+            with open(ARQUIVO_PARTICIPANTES, "w", encoding="utf-8") as f:
+                json.dump(cats, f, ensure_ascii=False, indent=4)
+        except Exception:
+            pass
 
 
 def carregar_classificados_travados():
-    if os.path.exists(ARQUIVO_CLASSIFICADOS):
-        try:
-            with open(ARQUIVO_CLASSIFICADOS, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass
-    return {}
+    with file_lock:
+        if os.path.exists(ARQUIVO_CLASSIFICADOS):
+            try:
+                with open(ARQUIVO_CLASSIFICADOS, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {}
 
 
 def salvar_classificados_travados(travados):
-    try:
-        with open(ARQUIVO_CLASSIFICADOS, "w", encoding="utf-8") as f:
-            json.dump(travados, f, ensure_ascii=False, indent=4)
-    except Exception:
-        pass
+    with file_lock:
+        try:
+            with open(ARQUIVO_CLASSIFICADOS, "w", encoding="utf-8") as f:
+                json.dump(travados, f, ensure_ascii=False, indent=4)
+        except Exception:
+            pass
 
 
 def carregar_votos():
-    if os.path.exists(ARQUIVO_VOTOS):
-        try:
-            with open(ARQUIVO_VOTOS, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return []
-    return []
+    with file_lock:
+        if os.path.exists(ARQUIVO_VOTOS):
+            try:
+                with open(ARQUIVO_VOTOS, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                return []
+        return []
 
 
 def salvar_votos(votos):
-    try:
-        with open(ARQUIVO_VOTOS, "w", encoding="utf-8") as f:
-            json.dump(votos, f, ensure_ascii=False, indent=4)
-    except Exception:
-        pass
+    with file_lock:
+        try:
+            with open(ARQUIVO_VOTOS, "w", encoding="utf-8") as f:
+                json.dump(votos, f, ensure_ascii=False, indent=4)
+        except Exception:
+            pass
 
 
 def carregar_config_telao():
-    if os.path.exists(ARQUIVO_CONFIG_TELAO):
-        try:
-            with open(ARQUIVO_CONFIG_TELAO, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return {}
-    return {op: False for op in opcoes_menu_telao}
+    with file_lock:
+        if os.path.exists(ARQUIVO_CONFIG_TELAO):
+            try:
+                with open(ARQUIVO_CONFIG_TELAO, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                return {}
+        return {op: False for op in opcoes_menu_telao}
 
 
 def salvar_config_telao(config):
-    try:
-        with open(ARQUIVO_CONFIG_TELAO, "w", encoding="utf-8") as f:
-            json.dump(config, f, ensure_ascii=False, indent=4)
-    except Exception:
-        pass
+    with file_lock:
+        try:
+            with open(ARQUIVO_CONFIG_TELAO, "w", encoding="utf-8") as f:
+                json.dump(config, f, ensure_ascii=False, indent=4)
+        except Exception:
+            pass
 
 
 def obter_fundo_css(tipo_tela):
@@ -527,7 +539,6 @@ def obter_jurados_da_categoria_papel(cat, papel):
                     jurados_validos.append(dados["nome"])
                     break
     
-    # Ordem alfabética estrita para Diamante, Alex no final para as outras categorias
     if cat == "Diamante":
         jurados_ordenados = sorted(list(set(jurados_validos)))
     else:
