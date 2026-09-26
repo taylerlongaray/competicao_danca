@@ -25,6 +25,8 @@ st.markdown("""
 
 ARQUIVO_VOTOS = "votos.json"
 ARQUIVO_CONFIG_TELAO = "config_telao.json"
+ARQUIVO_PARTICIPANTES = "participantes.json"
+ARQUIVO_CLASSIFICADOS = "classificados_finais.json"
 
 opcoes_menu_telao = [
     "Diamante",
@@ -35,6 +37,112 @@ opcoes_menu_telao = [
     "Prata - Fase Final",
     "Aprendendo a Voar"
 ]
+
+CATEGORIAS_ORIGINAIS = {
+    "Diamante": {
+        "Condutores": ["Alan Demarch", "Léo Mello", "Henrique Vargas", "Luan Ruduit", "Maick Martins", "William Ferreira"],
+        "Conduzidas": ["Caroline Guedes", "Cleo Santanna", "Marluce Dimare", "Sah Graziela", "Nara Rosa", "Vih Alves"],
+    },
+    "Platina": {
+        "Condutores": ["Alisson Lopes", "Anderson Oliveira", "Catriel Pereira", "Deivid Nascimento", "Douglas Clo", "Jean Pierre"],
+        "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
+    },
+    "Ouro": {
+        "Condutores": ["Ciro Lima", "Duarte", "Edilson Soares", "Fabiano da Luz", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Everton Fernandes", "Jozemar Vargas", "Maicom Lucas"],
+        "Conduzidas": [
+            "Andreza Godoi",
+            "Angélica Collioni",
+            "Daia Lopes",
+            "Franciely Lopes",
+            "Giovanna Centeno",
+            "Joice Alves",
+            "Julia Graciela",
+            "Juliana Ferraz",
+            "Marcia Araujo",
+            "Marya Costa",
+            "Michele Longarai",
+            "Nanda Ramos",
+            "Thayh Martins",
+            "Valesca Bordon",
+        ],
+    },
+    "Prata": {
+        "Condutores": [
+            "Alisson Gregori",
+            "Albieri Fagundes",
+            "Antonio Vargas",
+            "Cleiton Lovatto",
+            "Fernando Souza",
+            "Iuri Martins",
+            "Douglas Soares",
+            "Léo Luiz",
+            "Marcos Meireles",
+            "Michel Otto",
+            "Pablo Faoro",
+            "Rogério Eich",
+            "Rogério Ferreira",
+            "Tony de Farias",
+            "Adercilio Toretto",
+        ],
+        "Conduzidas": [
+            "Ana Cris Couto",
+            "Daiane Soares",
+            "Dienifer Steffen",
+            "Franciele Zanzi",
+            "Angélica Nascimento",
+            "Gili Costa",
+            "Juliana Vargas",
+            "Larissa Westphal",
+            "Lidiana Soares",
+            "Lili Castro",
+            "Lolo Ferreira",
+            "Nathalia Patrício",
+            "Paulynha Han",
+            "Sabrina da Rosa",
+            "Shayanny Mendes",
+        ],
+    },
+    "Aprendendo a Voar": {
+        "Condutores": ["Anderson Prass", "Bruno Vanassi", "Eduardo Miranda", "Ezequiel Silveira", "Ivan Dutra", "Gilmar Gemelli", "Luis Carlos", "Talisson Silva"],
+        "Conduzidas": ["Carla Sabio", "Elisangela Grund", "Nahuana Rolante", "Patrícia Pereira", "Paula Monteiro", "Raquel Oliveira", "Sheila Josiane", "Sylvana de Souza"],
+    },
+}
+
+
+def carregar_participantes():
+    if os.path.exists(ARQUIVO_PARTICIPANTES):
+        try:
+            with open(ARQUIVO_PARTICIPANTES, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return json.loads(json.dumps(CATEGORIAS_ORIGINAIS))
+
+
+def salvar_participantes(cats):
+    try:
+        with open(ARQUIVO_PARTICIPANTES, "w", encoding="utf-8") as f:
+            json.dump(cats, f, ensure_ascii=False, indent=4)
+    except Exception:
+        pass
+
+
+def carregar_classificados_travados():
+    if os.path.exists(ARQUIVO_CLASSIFICADOS):
+        try:
+            with open(ARQUIVO_CLASSIFICADOS, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+
+def salvar_classificados_travados(travados):
+    try:
+        with open(ARQUIVO_CLASSIFICADOS, "w", encoding="utf-8") as f:
+            json.dump(travados, f, ensure_ascii=False, indent=4)
+    except Exception:
+        pass
 
 
 def carregar_votos():
@@ -194,75 +302,7 @@ try:
 except Exception:
     link_jurado_exclusivo = False
 
-categorias = {
-    "Diamante": {
-        "Condutores": ["Alan Demarch", "Léo Mello", "Henrique Vargas", "Luan Ruduit", "Maick Martins", "William Ferreira"],
-        "Conduzidas": ["Caroline Guedes", "Cleo Santanna", "Marluce Dimare", "Sah Graziela", "Nara Rosa", "Vih Alves"],
-    },
-    "Platina": {
-        "Condutores": ["Alisson Lopes", "Anderson Oliveira", "Catriel Pereira", "Deivid Nascimento", "Douglas Clo", "Jean Pierre"],
-        "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
-    },
-    "Ouro": {
-        "Condutores": ["Ciro Lima", "Duarte", "Edilson Soares", "Fabiano da Luz", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Everton Fernandes", "Jozemar Vargas", "Maicom Lucas"],
-        "Conduzidas": [
-            "Andreza Godoi",
-            "Angélica Collioni",
-            "Daia Lopes",
-            "Franciely Lopes",
-            "Giovanna Centeno",
-            "Joice Alves",
-            "Julia Graciela",
-            "Juliana Ferraz",
-            "Marcia Araujo",
-            "Marya Costa",
-            "Michele Longarai",
-            "Nanda Ramos",
-            "Thayh Martins",
-            "Valesca Bordon",
-        ],
-    },
-    "Prata": {
-        "Condutores": [
-            "Alisson Gregori",
-            "Albieri Fagundes",
-            "Antonio Vargas",
-            "Cleiton Lovatto",
-            "Fernando Souza",
-            "Iuri Martins",
-            "Douglas Soares",
-            "Léo Luiz",
-            "Marcos Meireles",
-            "Michel Otto",
-            "Pablo Faoro",
-            "Rogério Eich",
-            "Rogério Ferreira",
-            "Tony de Farias",
-            "Adercilio Toretto",
-        ],
-        "Conduzidas": [
-            "Ana Cris Couto",
-            "Daiane Soares",
-            "Dienifer Steffen",
-            "Franciele Zanzi",
-            "Angélica Nascimento",
-            "Gili Costa",
-            "Juliana Vargas",
-            "Larissa Westphal",
-            "Lidiana Soares",
-            "Lili Castro",
-            "Lolo Ferreira",
-            "Nathalia Patrício",
-            "Paulynha Han",
-            "Sabrina da Rosa",
-            "Shayanny Mendes",
-        ],
-    },
-    "Aprendendo a Voar": {
-        "Condutores": ["Anderson Prass", "Bruno Vanassi", "Eduardo Miranda", "Ezequiel Silveira", "Ivan Dutra", "Gilmar Gemelli", "Luis Carlos", "Talisson Silva"],
-        "Conduzidas": ["Carla Sabio", "Elisangela Grund", "Nahuana Rolante", "Patrícia Pereira", "Paula Monteiro", "Raquel Oliveira", "Sheila Josiane", "Sylvana de Souza"],
-    },
-}
+categorias = carregar_participantes()
 
 fases_por_categoria = {
     "Aprendendo a Voar": ["Fase Única"],
@@ -489,7 +529,31 @@ def obter_jurados_da_categoria_papel(cat, papel):
     return jurados_ordenados
 
 
+def obter_campeao(categoria, papel):
+    votos_atuais = carregar_votos()
+    if not votos_atuais:
+        return None
+    df = pd.DataFrame(votos_atuais)
+    if df.empty:
+        return None
+
+    # Tenta usar a fase final se houver votos lá, senão classificatória
+    for fase_alvo in ["Fase Final", "Fase Classificatória"]:
+        df_fase = df[(df["categoria"] == categoria) & (df["fase"] == fase_alvo) & (df["papel"] == papel)]
+        if not df_fase.empty:
+            ranking = df_fase.groupby("competidor")["nota"].mean().reset_index()
+            ranking = ranking.sort_values(by="nota", ascending=False)
+            if not ranking.empty:
+                return ranking.iloc[0]["competidor"]
+    return None
+
+
 def obter_classificados(categoria, papel):
+    travados = carregar_classificados_travados()
+    chave_travada = f"{categoria}_{papel}"
+    if chave_travada in travados:
+        return travados[chave_travada]
+
     votos_atuais = carregar_votos()
     if not votos_atuais:
         return []
@@ -1317,6 +1381,86 @@ elif modo == "Painel da Organização":
     if senha_digitada == SENHA_MESTRE:
         st.success("🔓 Acesso autorizado!")
         
+        # --- SECÇÃO DE SUBIDA AUTOMÁTICA (PRATA -> OURO & OURO -> PLATINA) ---
+        st.markdown("---")
+        st.markdown("### 🚀 Promoção de Campeões para Categoria Superior")
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Clique abaixo para promover automaticamente o 1º colocado (campeão) para a categoria seguinte. O nome continuará na tabela original como campeão.</p>", unsafe_allow_html=True)
+        
+        col_sub1, col_sub2 = st.columns(2)
+        
+        with col_sub1:
+            st.markdown("#### 🥈 Prata ➔ 🥇 Ouro")
+            if st.button("🚀 Subir Campeão(ã) do Prata para o Ouro", use_container_width=True):
+                cats_data = carregar_participantes()
+                modificou = False
+                for papel in ["Condutores", "Conduzidas"]:
+                    campeao_prata = obter_campeao("Prata", papel)
+                    if campeao_prata:
+                        if campeao_prata not in cats_data["Ouro"][papel]:
+                            cats_data["Ouro"][papel].append(campeao_prata)
+                            modificou = True
+                if modificou:
+                    salvar_participantes(cats_data)
+                    st.success("✨ Campeão(ões) do Prata promovidos para o Ouro com sucesso!")
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Nenhum vencedor encontrado no Prata para promover ou já foram promovidos.")
+
+        with col_sub2:
+            st.markdown("#### 🥇 Ouro ➔ 🥈 Platina")
+            if st.button("🚀 Subir Campeão(ã) do Ouro para o Platina", use_container_width=True):
+                cats_data = carregar_participantes()
+                modificou = False
+                for papel in ["Condutores", "Conduzidas"]:
+                    campeao_ouro = obter_campeao("Ouro", papel)
+                    if campeao_ouro:
+                        if campeao_ouro not in cats_data["Platina"][papel]:
+                            cats_data["Platina"][papel].append(campeao_ouro)
+                            modificou = True
+                if modificou:
+                    salvar_participantes(cats_data)
+                    st.success("✨ Campeão(ões) do Ouro promovidos para o Platina com sucesso!")
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Nenhum vencedor encontrado no Ouro para promover ou já foram promovidos.")
+
+        # --- SECÇÃO DE TRAVAMENTO DE CLASSIFICADOS PARA A FINAL ---
+        st.markdown("---")
+        st.markdown("### 🔒 Travamento da Fase Classificatória (Gerar Finalistas)")
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Clique abaixo para congelar a lista de classificados para a Fase Final. Isso impede que a tabela mude enquanto novos votos entram.</p>", unsafe_allow_html=True)
+        
+        travados_atuais = carregar_classificados_travados()
+        col_trav1, col_trav2 = st.columns(2)
+        
+        with col_trav1:
+            if st.button("🔒 Travar Finalistas do Ouro", use_container_width=True):
+                travados = carregar_classificados_travados()
+                for p in ["Condutores", "Conduzidas"]:
+                    c_list = obter_classificados("Ouro", p)
+                    if c_list:
+                        travados[f"Ouro_{p}"] = c_list
+                salvar_classificados_travados(travados)
+                st.success("✅ Classificados da Fase Final do Ouro travados com sucesso!")
+                st.rerun()
+                
+        with col_trav2:
+            if st.button("🔒 Travar Finalistas do Prata", use_container_width=True):
+                travados = carregar_classificados_travados()
+                for p in ["Condutores", "Conduzidas"]:
+                    c_list = obter_classificados("Prata", p)
+                    if c_list:
+                        travados[f"Prata_{p}"] = c_list
+                salvar_classificados_travados(travados)
+                st.success("✅ Classificados da Fase Final do Prata travados com sucesso!")
+                st.rerun()
+
+        if travados_atuais:
+            if st.button("🔓 Destravar / Liberar Atualização Automática da Final", use_container_width=True):
+                if os.path.exists(ARQUIVO_CLASSIFICADOS):
+                    os.remove(ARQUIVO_CLASSIFICADOS)
+                st.success("✨ Listas destravadas! Agora voltam a atualizar com base nos votos.")
+                st.rerun()
+
         # --- SECÇÃO DE CONTROLO REMOTO DO TELÃO (NOTAS SECRETAS DO ALEX) ---
         st.markdown("---")
         st.markdown("### 🔓 Controlo Remoto do Telão (Notas Secretas do Alex)")
@@ -1350,7 +1494,13 @@ elif modo == "Painel da Organização":
         with col_btn_lim:
             if st.button("🗑️ APAGAR TUDO", type="secondary", use_container_width=True):
                 salvar_votos([])
-                st.success("Sistema limpo!")
+                if os.path.exists(ARQUIVO_PARTICIPANTES):
+                    os.remove(ARQUIVO_PARTICIPANTES)
+                if os.path.exists(ARQUIVO_CLASSIFICADOS):
+                    os.remove(ARQUIVO_CLASSIFICADOS)
+                if os.path.exists(ARQUIVO_CONFIG_TELAO):
+                    os.remove(ARQUIVO_CONFIG_TELAO)
+                st.success("Sistema limpo e redefinido para o estado original!")
                 st.rerun()
 
         votos_atuais = carregar_votos()
