@@ -1644,10 +1644,10 @@ elif modo == "Painel da Organização":
                 return '<span style="color: #cd7f32; font-weight: bold;">3º 🥉</span>'
             return f"{pos}º"
 
-        def gerar_tabela_admin_papel_fase(cat_nome, fase_nome, papel_nome):
+        def gerat_tabela_admin_papel_fase(cat_nome, fase_nome, papel_nome):
             jurados_aptos = obter_jurados_da_categoria_papel(cat_nome, papel_nome)
             df_cat = df_rel[df_rel["categoria"] == cat_nome] if not df_rel.empty else pd.DataFrame()
-            df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_fase.empty else pd.DataFrame()
+            df_fase = df_cat[df_cat["fase"] == fase_nome] if not df_cat.empty else pd.DataFrame()
             
             if fase_nome == "Fase Final" and cat_nome in ["Prata", "Ouro"]:
                 comps = obter_classificados(cat_nome, papel_nome)
@@ -1801,7 +1801,7 @@ elif modo == "Painel da Organização":
                     if cat_nome in ["Diamante", "Platina"]:
                         html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Condutores")
                     else:
-                        html_t = gerar_tabela_admin_papel_fase(cat_nome, fase_nome, "Condutores")
+                        html_t = gerat_tabela_admin_papel_fase(cat_nome, fase_nome, "Condutores")
                     st.markdown(f"<div style='overflow-x: auto;'>{html_t}</div>", unsafe_allow_html=True)
                     
                     st.markdown("<div style='margin: 20px 0; border-top: 1px dashed rgba(212,175,55,0.4);'></div>", unsafe_allow_html=True)
@@ -1810,7 +1810,7 @@ elif modo == "Painel da Organização":
                     if cat_nome in ["Diamante", "Platina"]:
                         html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Conduzidas")
                     else:
-                        html_t = gerar_tabela_admin_papel_fase(cat_nome, fase_nome, "Conduzidas")
+                        html_t = gerat_tabela_admin_papel_fase(cat_nome, fase_nome, "Conduzidas")
                     st.markdown(f"<div style='overflow-x: auto;'>{html_t}</div>", unsafe_allow_html=True)
 
         # --- RELATÓRIOS UNIFICADOS ---
