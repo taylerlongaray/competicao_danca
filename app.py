@@ -1389,7 +1389,7 @@ if modo == "Painel do Jurado":
                                 st.error("❌ Digite um valor numérico válido para a nota.")
 
 elif modo == "Painel da Organização":
-    # ADICIONAR ATUALIZAÇÃO AUTOMÁTICA EM TEMPO REAL NO PAINEL DA ORGANIZAÇÃO TAMBÉM!
+    # ATUALIZAÇÃO AUTOMÁTICA EM TEMPO REAL NO PAINEL DA ORGANIZAÇÃO
     try:
         from streamlit_autorefresh import st_autorefresh
         st_autorefresh(interval=2000, limit=None, key="refresh_organizacao_tempo_real")
@@ -1622,7 +1622,7 @@ elif modo == "Painel da Organização":
         votos_atuais = carregar_votos()
         df_rel = pd.DataFrame(votos_atuais) if votos_atuais else pd.DataFrame(columns=["categoria", "fase", "competidor", "jurado", "criterio", "papel", "nota", "justificativa"])
 
-        # --- ACOMPANHAMENTO EM TEMPO REAL (EMPILHADO VERTICALMENTE PARA NÃO ACAVALAR) ---
+        # --- ACOMPANHAMENTO EM TEMPO REAL (ORGANIZAÇÃO EMPILHADO PARA VISUALIZAÇÃO CLARA) ---
         st.markdown("---")
         st.markdown("### 📊 Acompanhamento em Tempo Real (Tabelas de Votação)")
         st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Tabelas atualizadas em tempo real. Exibidas em largura total para visualização perfeita.</p>", unsafe_allow_html=True)
@@ -1796,7 +1796,6 @@ elif modo == "Painel da Organização":
                 for fase_nome in fases_cat:
                     st.markdown(f"#### Etapa: {fase_nome}")
                     
-                    # EMPILHADO VERTICALMENTE (LARGURA TOTAL 100%)
                     st.markdown("<div style='text-align: center; color: #e5c158; font-size: 13px; font-weight: bold; margin-top: 10px;'>👑 CONDUTORES</div>", unsafe_allow_html=True)
                     if cat_nome in ["Diamante", "Platina"]:
                         html_t = gerar_tabela_admin_diamante_platina_html(cat_nome, "Condutores")
@@ -1855,7 +1854,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) COM ATUALIZAÇÃO AUTOMÁTICA EM TEMPO REAL ---
+    # --- TELÃO (PÚBLICO) COM LADO A LADO ORIGINAL E ATUALIZAÇÃO EM TEMPO REAL ---
     try:
         from streamlit_autorefresh import st_autorefresh
         st_autorefresh(interval=2000, limit=None, key="refresh_telao")
@@ -2333,28 +2332,31 @@ else:
         
         return html
 
-    # TELÃO EMPILHADO VERTICALMENTE (LARGURA TOTAL 100% PARA NUNCA ACAVALAR)
+    # TELÃO DE VOLTA LADO A LADO (`st.columns(2)`) COMO ORIGINALMENTE
     if categoria_nome in ["Diamante", "Platina"]:
-        st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;'>👑 Condutores</h3>", unsafe_allow_html=True)
-        tabela_cond_html = gerar_tabela_acumulada_diamante_platina_html("Condutores", revelado_atual)
-        st.markdown(f"<div style='overflow-x: auto;'>{tabela_cond_html}</div>", unsafe_allow_html=True)
+        col_cond, col_condz = st.columns(2)
 
-        st.markdown("<div style='margin: 30px 0; border-top: 1px dashed rgba(212,175,55,0.4);'></div>", unsafe_allow_html=True)
+        with col_cond:
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+            tabela_cond_html = gerar_tabela_acumulada_diamante_platina_html("Condutores", revelado_atual)
+            st.markdown(tabela_cond_html, unsafe_allow_html=True)
 
-        st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;'>👑 Conduzidas</h3>", unsafe_allow_html=True)
-        tabela_condz_html = gerar_tabela_acumulada_diamante_platina_html("Conduzidas", revelado_atual)
-        st.markdown(f"<div style='overflow-x: auto;'>{tabela_condz_html}</div>", unsafe_allow_html=True)
+        with col_condz:
+            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+            tabela_condz_html = gerar_tabela_acumulada_diamante_platina_html("Conduzidas", revelado_atual)
+            st.markdown(tabela_condz_html, unsafe_allow_html=True)
 
     else:
         for fase_nome in fases_da_cat:
-            st.markdown(f"<h3 style='text-align: center; color: #b39b6b; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;'>Etapa: {fase_nome}</h3>", unsafe_allow_html=True)
-            
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;'>👑 Condutores</h3>", unsafe_allow_html=True)
-            tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores", revelado_atual)
-            st.markdown(f"<div style='overflow-x: auto;'>{tabela_cond}</div>", unsafe_allow_html=True)
+            st.markdown(f"<h3 style='text-align: center; color: #b39b6b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;'>Etapa: {fase_nome}</h3>", unsafe_allow_html=True)
+            col_cond, col_condz = st.columns(2)
 
-            st.markdown("<div style='margin: 30px 0; border-top: 1px dashed rgba(212,175,55,0.4);'></div>", unsafe_allow_html=True)
+            with col_cond:
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Condutores</h3>", unsafe_allow_html=True)
+                tabela_cond = gerar_tabela_papel_fase(fase_nome, "Condutores", revelado_atual)
+                st.markdown(tabela_cond, unsafe_allow_html=True)
 
-            st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;'>👑 Conduzidas</h3>", unsafe_allow_html=True)
-            tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas", revelado_atual)
-            st.markdown(f"<div style='overflow-x: auto;'>{tabela_condz}</div>", unsafe_allow_html=True)
+            with col_condz:
+                st.markdown("<h3 style='text-align: center; color: #e5c158; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;'>Conduzidas</h3>", unsafe_allow_html=True)
+                tabela_condz = gerar_tabela_papel_fase(fase_nome, "Conduzidas", revelado_atual)
+                st.markdown(tabela_condz, unsafe_allow_html=True)
