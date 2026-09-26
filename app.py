@@ -1353,13 +1353,58 @@ elif modo == "Painel da Organização":
         votos_atuais = carregar_votos()
         df_rel = pd.DataFrame(votos_atuais) if votos_atuais else pd.DataFrame(columns=["categoria", "fase", "competidor", "jurado", "criterio", "papel", "nota", "justificativa"])
 
+        # --- SECÇÃO DE RELATÓRIOS POR ETAPA / FASE ---
+        st.markdown("---")
+        st.markdown("### 📥 Relatórios por Etapa / Fase Concluída")
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Baixe o relatório detalhado de cada fase/etapa assim que ela terminar.</p>", unsafe_allow_html=True)
+        
+        if not df_rel.empty:
+            cols_etapa = st.columns(3)
+            idx_col = 0
+            for cat_n in categorias.keys():
+                fases_da_cat = fases_por_categoria[cat_n]
+                for fase_n in fases_da_cat:
+                    df_etapa_check = df_rel[(df_rel["categoria"] == cat_n) & (df_rel["fase"] == fase_n)]
+                    with cols_etapa[idx_col % 3]:
+                        if not df_etapa_check.empty:
+                            html_etapa = f"""
+                            <html><head><meta charset="utf-8">
+                            <style>body{{font-family:Helvetica,Arial,sans-serif;color:#333;margin:20px;}}h1{{color:#b8860b;text-align:center;border-bottom:2px solid #b8860b;padding-bottom:10px;}}h2{{color:#555;margin-top:20px;border-bottom:1px solid #ccc;}}.card{{background:#fdfcf7;border:1px solid #e3d3a1;padding:10px;margin-bottom:8px;border-radius:6px;}}</style>
+                            </head><body>
+                            <h1>Relatório — {cat_n} ({fase_n})</h1>
+                            """
+                            for p_papel in df_etapa_check["papel"].unique():
+                                html_etapa += f"<h2>Papel: {p_papel}</h2>"
+                                df_papel_sub = df_etapa_check[df_etapa_check["papel"] == p_papel]
+                                for comp_sub in df_papel_sub["competidor"].unique():
+                                    html_etapa += f"<h3>Participante: {comp_sub}</h3>"
+                                    df_comp_sub = df_papel_sub[df_papel_sub["competidor"] == comp_sub]
+                                    for _, r_row in df_comp_sub.iterrows():
+                                        j_nome = configuracao_jurados.get(r_row['jurado'], {}).get('nome', r_row['jurado'])
+                                        just_txt = r_row['justificativa'] if r_row['justificativa'] else "Sem comentários."
+                                        html_etapa += f"""<div class="card"><b>Jurado:</b> {j_nome} | <b>Critério:</b> {r_row['criterio']} | <b>Nota:</b> <b>{r_row['nota']}</b><br><i>Comentário:</i> "{just_txt}"</div>"""
+                            html_etapa += "</body></html>"
+                            
+                            st.download_button(
+                                label=f"📄 {cat_n} — {fase_n}",
+                                data=html_etapa,
+                                file_name=f"Relatorio_{cat_n.replace(' ', '_')}_{fase_n.replace(' ', '_').replace('(', '').replace(')', '')}.html",
+                                mime="text/html",
+                                key=f"dl_etapa_{cat_n}_{fase_n}"
+                            )
+                        else:
+                            st.markdown(f"<div style='font-size:11px; color:#777; padding:8px;'>⏳ {cat_n} ({fase_n}): Sem votos</div>", unsafe_allow_html=True)
+                    idx_col += 1
+        else:
+            st.info("Ainda não existem votos registados para gerar relatórios por etapa.")
+
         st.markdown("---")
         st.markdown("### 📊 Auditoria Detalhada por Categoria (Tabelas Largas para o Notebook)")
         
         categorias_lista = ["Diamante", "Platina", "Ouro", "Prata", "Aprendendo a Voar"]
         
         for cat_nome in categorias_lista:
-            with st.expander(f"📁 Categoria: {cat_nome.upper()} (Ver Votos Detalhados)", expanded=True):
+            with st.expander(f"📁 Categoria: {cat_nome.upper()} (Ver Votos Detalhados)", expanded=False):
                 df_cat_filtrado = df_rel[df_rel["categoria"] == cat_nome] if not df_rel.empty else pd.DataFrame()
                 
                 if not df_cat_filtrado.empty:
@@ -1407,7 +1452,7 @@ elif modo == "Painel da Organização":
                     html_cat_rel += "</body></html>"
                     
                     st.download_button(
-                        label=f"📥 Baixar Relatório em HTML/PDF da Categoria {cat_nome}",
+                        label=f"📥 Baixar Relatório Completo da Categoria {cat_nome}",
                         data=html_cat_rel,
                         file_name=f"Relatorio_{cat_nome.replace(' ', '_')}.html",
                         mime="text/html",
