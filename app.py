@@ -1,7 +1,7 @@
 import base64
 import json
 import os
-import time  # <-- Biblioteca importada para forçar o tempo exato do aviso
+import time
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
@@ -24,6 +24,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 ARQUIVO_VOTOS = "votos.json"
+ARQUIVO_CONFIG_TELAO = "config_telao.json"
+
+opcoes_menu_telao = [
+    "Diamante",
+    "Platina",
+    "Ouro - Fase Classificatória",
+    "Ouro - Fase Final",
+    "Prata - Fase Classificatória",
+    "Prata - Fase Final",
+    "Aprendendo a Voar"
+]
 
 
 def carregar_votos():
@@ -40,6 +51,24 @@ def salvar_votos(votos):
     try:
         with open(ARQUIVO_VOTOS, "w", encoding="utf-8") as f:
             json.dump(votos, f, ensure_ascii=False, indent=4)
+    except Exception:
+        pass
+
+
+def carregar_config_telao():
+    if os.path.exists(ARQUIVO_CONFIG_TELAO):
+        try:
+            with open(ARQUIVO_CONFIG_TELAO, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {op: False for op in opcoes_menu_telao}
+
+
+def salvar_config_telao(config):
+    try:
+        with open(ARQUIVO_CONFIG_TELAO, "w", encoding="utf-8") as f:
+            json.dump(config, f, ensure_ascii=False, indent=4)
     except Exception:
         pass
 
@@ -1285,7 +1314,32 @@ elif modo == "Painel da Organização":
     if senha_digitada == SENHA_MESTRE:
         st.success("🔓 Acesso autorizado!")
         
+        # --- SECÇÃO DE CONTROLO REMOTO DO TELÃO (NOTAS SECRETAS DO ALEX) ---
+        st.markdown("---")
+        st.markdown("### 🔓 Controlo Remoto do Telão (Notas Secretas do Alex)")
+        st.markdown("<p style='font-size: 12px; color: #b39b6b;'>Ative aqui para revelar ou ocultar a nota secreta do Alex no Telão em tempo real.</p>", unsafe_allow_html=True)
+        
+        config_telao_atual = carregar_config_telao()
+        col_ctrl1, col_ctrl2 = st.columns(2)
+        novas_config_telao = config_telao_atual.copy()
+        
+        for idx, op in enumerate(opcoes_menu_telao):
+            val_atual = config_telao_atual.get(op, False)
+            coluna_alvo = col_ctrl1 if idx % 2 == 0 else col_ctrl2
+            with coluna_alvo:
+                novas_config_telao[op] = st.checkbox(
+                    f"🔓 Revelar: {op}",
+                    value=val_atual,
+                    key=f"rem_rev_{op}"
+                )
+                
+        if novas_config_telao != config_telao_atual:
+            salvar_config_telao(novas_config_telao)
+            st.success("✨ Estado do telão atualizado com sucesso!")
+            st.rerun()
+
         # BOTÕES DE AÇÃO RÁPIDA (ATUALIZAR E LIMPAR)
+        st.markdown("---")
         col_btn_ref, col_btn_lim = st.columns([2, 1])
         with col_btn_ref:
             if st.button("🔄 ATUALIZAR DADOS DA TELA (BUSCAR NOVOS VOTOS)", type="primary", use_container_width=True):
@@ -1659,30 +1713,7 @@ else:
         unsafe_allow_html=True,
     )
 
-    opcoes_menu_telao = [
-        "Diamante",
-        "Platina",
-        "Ouro - Fase Classificatória",
-        "Ouro - Fase Final",
-        "Prata - Fase Classificatória",
-        "Prata - Fase Final",
-        "Aprendendo a Voar"
-    ]
-
     with st.sidebar:
-        st.markdown("---")
-        st.markdown("### 🔓 Revelar Nota Secreta (Alex)")
-        
-        if "rev_status" not in st.session_state:
-            st.session_state.rev_status = {op: False for op in opcoes_menu_telao}
-
-        for op in opcoes_menu_telao:
-            st.session_state.rev_status[op] = st.checkbox(
-                f"Revelar: {op}", 
-                value=st.session_state.rev_status[op],
-                key=f"chk_rev_{op}"
-            )
-
         st.markdown("---")
         st.markdown("### 📊 Seleção da Tabela no Telão")
         
@@ -1699,8 +1730,16 @@ else:
             format_func=formatar_icone_menu,
             label_visibility="collapsed"
         )
+        
+        config_telao_atual = carregar_config_telao()
+        status_revelado = config_telao_atual.get(selecao_telao, False)
+        st.markdown("---")
+        if status_revelado:
+            st.markdown("<div style='text-align: center; color: #ffd700; font-size: 11px; font-weight: bold;'>🔓 Nota de Alex: REVELADA</div>", unsafe_allow_html=True)
+        else:
+            st.markdown("<div style='text-align: center; color: #b39b6b; font-size: 11px;'>🔒 Nota de Alex: OCULTA</div>", unsafe_allow_html=True)
 
-    revelado_atual = st.session_state.rev_status.get(selecao_telao, False)
+    revelado_atual = carregar_config_telao().get(selecao_telao, False)
 
     df_votos = pd.DataFrame(carregar_votos()) if carregar_votos() else pd.DataFrame(columns=["jurado", "categoria", "fase", "papel", "competidor", "criterio", "nota", "justificativa"])
     
