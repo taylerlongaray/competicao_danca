@@ -579,6 +579,34 @@ def obter_jurado_secreto(cat, papel):
         return "Alex Alves"
 
 
+def calcular_ranking_df(df_subset, comps, jurados_aptos):
+    df_base = pd.DataFrame({"competidor": comps})
+    if df_subset.empty:
+        df_base["TOTAL"] = 0
+        alex_col_name = configuracao_jurados.get("alex", {}).get("nome", "Alex Alves")
+        df_base[alex_col_name] = 0
+        return df_base.sort_values(by="competidor", ascending=True).reset_index(drop=True)
+
+    df_notas_jurado = df_subset.groupby(["competidor", "jurado"])["nota"].mean().reset_index()
+    df_notas_jurado["jurado_nome"] = df_notas_jurado["jurado"].apply(lambda j: configuracao_jurados.get(j, {}).get("nome", j))
+    pivot_df = df_notas_jurado.pivot(index="competidor", columns="jurado_nome", values="nota").reset_index()
+    pivot_df = pd.merge(df_base, pivot_df, on="competidor", how="left")
+
+    for j_col in jurados_aptos:
+        if j_col not in pivot_df.columns:
+            pivot_df[j_col] = None
+
+    exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
+    pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
+
+    alex_col = configuracao_jurados.get("alex", {}).get("nome", "Alex Alves")
+    if alex_col not in pivot_df.columns:
+        pivot_df[alex_col] = None
+
+    pivot_df = pivot_df.sort_values(by=["TOTAL", alex_col, "competidor"], ascending=[False, False, True], na_position="last").reset_index(drop=True)
+    return pivot_df
+
+
 def obter_campeao(categoria, papel):
     votos_atuais = carregar_votos()
     if not votos_atuais:
@@ -587,11 +615,13 @@ def obter_campeao(categoria, papel):
     if df.empty:
         return None
 
+    jurados_aptos = obter_jurados_da_categoria_papel(categoria, papel)
+    comps = categorias[categoria][papel]
+
     for fase_alvo in ["Fase Final", "Fase Classificatória"]:
         df_fase = df[(df["categoria"] == categoria) & (df["fase"] == fase_alvo) & (df["papel"] == papel)]
         if not df_fase.empty:
-            ranking = df_fase.groupby("competidor")["nota"].mean().reset_index()
-            ranking = ranking.sort_values(by="nota", ascending=False)
+            ranking = calcular_ranking_df(df_fase, comps, jurados_aptos)
             if not ranking.empty:
                 return ranking.iloc[0]["competidor"]
     return None
@@ -619,9 +649,9 @@ def obter_classificados(categoria, papel):
         return []
 
     limite = 8 if categoria == "Prata" else 7
-
-    ranking = df_class.groupby("competidor")["nota"].mean().reset_index()
-    ranking = ranking.sort_values(by="nota", ascending=False)
+    jurados_aptos = obter_jurados_da_categoria_papel(categoria, papel)
+    comps = categorias[categoria][papel]
+    ranking = calcular_ranking_df(df_class, comps, jurados_aptos)
     return ranking.head(limite)["competidor"].tolist()
 
 
@@ -1655,6 +1685,8 @@ elif modo == "Painel da Organização":
             else:
                 comps = categorias[cat_nome][papel_nome]
 
+            comps = sorted(comps)
+
             df_base = pd.DataFrame({"competidor": comps})
             df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_fase.empty else pd.DataFrame()
 
@@ -1672,13 +1704,21 @@ elif modo == "Painel da Organização":
 
             exist_j_cols = [j for j in jurados_aptos if j in pivot_df.columns]
             pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
-            pivot_df = pivot_df.sort_values(by="TOTAL", ascending=False, na_position="last").reset_index(drop=True)
+            
+            alex_col = configuracao_jurados.get("alex", {}).get("nome", "Alex Alves")
+            if alex_col not in pivot_df.columns:
+                pivot_df[alex_col] = None
+
+            # Ordena por TOTAL desc, nota do Alex desc, e desempata alfabeticamente pelo competidor asc
+            pivot_df = pivot_df.sort_values(by=["TOTAL", alex_col, "competidor"], ascending=[False, False, True], na_position="last").reset_index(drop=True)
 
             pivot_df["CLASS."] = [formatar_classificacao_podio(idx) for idx in pivot_df.index]
             pivot_df["PARTICIPANTE"] = pivot_df["competidor"]
 
             renomeador = {j: formatar_nome_jurado(j) for j in jurados_aptos}
             pivot_df = pivot_df.rename(columns=renomeador)
+            if alex_col not in renomeador.values() and alex_col in pivot_df.columns:
+                pass
 
             jurados_formatados = [formatar_nome_jurado(j) for j in jurados_aptos]
             cols_finais = ["CLASS.", "PARTICIPANTE"] + jurados_formatados + ["TOTAL"]
@@ -1696,7 +1736,7 @@ elif modo == "Painel da Organização":
 
         def gerar_tabela_admin_diamante_platina_html(cat_nome, papel_nome):
             jurados_aptos = obter_jurados_da_categoria_papel(cat_nome, papel_nome)
-            comps = categorias[cat_nome][papel_nome]
+            comps = sorted(categorias[cat_nome][papel_nome])
             fase1_nome = "Música 1"
             fase2_nome = "Música 2"
             
@@ -1739,6 +1779,17 @@ elif modo == "Painel da Organização":
                     "total": total_completo
                 })
                 
+            def get_alex_total(row):
+                al_n = configuracao_jurados.get("alex", {}).get("nome", "Alex Alves")
+                d = row["dados"].get(al_n, {})
+                f1 = d.get('f1')
+                f2 = d.get('f2')
+                s = (f1 if f1 else 0) + (f2 if f2 else 0)
+                return s if (f1 is not None or f2 is not None) else -1
+
+            # Ordenação estável: alfabética primeiro, depois nota do Alex, depois total geral
+            lista_linhas.sort(key=lambda x: x["competidor"])
+            lista_linhas.sort(key=lambda x: get_alex_total(x), reverse=True)
             lista_linhas.sort(key=lambda x: x["total"], reverse=True)
             
             html = '<table class="tabela-dourada-compacta">'
@@ -1854,7 +1905,7 @@ elif modo == "Painel da Organização":
         st.error("❌ Senha incorreta!")
 
 else:
-    # --- TELÃO (PÚBLICO) SEM A FRASE REDUNDANTE DE ETAPA ---
+    # --- TELÃO (PÚBLICO) ---
     try:
         from streamlit_autorefresh import st_autorefresh
         st_autorefresh(interval=2000, limit=None, key="refresh_telao")
@@ -2150,6 +2201,8 @@ else:
         else:
             comps = categorias[categoria_nome][papel_nome]
 
+        comps = sorted(comps)
+
         df_base = pd.DataFrame({"competidor": comps})
         df_papel = df_fase[df_fase["papel"] == papel_nome] if not df_fase.empty else pd.DataFrame()
 
@@ -2176,7 +2229,12 @@ else:
             pivot_df["TOTAL_RANKING"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
             pivot_df["TOTAL"] = pivot_df[exist_j_cols].sum(axis=1, min_count=1)
 
-        pivot_df = pivot_df.sort_values(by="TOTAL_RANKING", ascending=False, na_position="last").reset_index(drop=True)
+        alex_col = configuracao_jurados.get("alex", {}).get("nome", "Alex Alves")
+        if alex_col not in pivot_df.columns:
+            pivot_df[alex_col] = None
+
+        # Ordenação com desempate por Alex Alves
+        pivot_df = pivot_df.sort_values(by=["TOTAL_RANKING", alex_col, "competidor"], ascending=[False, False, True], na_position="last").reset_index(drop=True)
 
         pivot_df["CLASS."] = [formatar_classificacao_podio(idx) for idx in pivot_df.index]
         pivot_df["PARTICIPANTE"] = pivot_df["competidor"]
@@ -2204,7 +2262,7 @@ else:
 
     def gerar_tabela_acumulada_diamante_platina_html(papel_nome, revelado_atual):
         jurados_aptos = obter_jurados_da_categoria_papel(categoria_nome, papel_nome)
-        comps = categorias[categoria_nome][papel_nome]
+        comps = sorted(categorias[categoria_nome][papel_nome])
         jurado_secreto_atual = obter_jurado_secreto(categoria_nome, papel_nome)
         
         fase1_nome = "Música 1"
@@ -2244,7 +2302,7 @@ else:
                 totais_geral.append(soma_j)
                 if j != jurado_secreto_atual:
                     totais_visiveis.append(soma_j)
-                    
+                
             tem_nota_geral = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos)
             tem_nota_visivel = any(dados_tabela[comp][j]['f1'] is not None or dados_tabela[comp][j]['f2'] is not None for j in jurados_aptos if j != jurado_secreto_atual)
 
@@ -2265,6 +2323,16 @@ else:
                 "total_ord": total_ord
             })
             
+        def get_alex_total_telao(row):
+            al_n = configuracao_jurados.get("alex", {}).get("nome", "Alex Alves")
+            d = row["dados"].get(al_n, {})
+            f1 = d.get('f1')
+            f2 = d.get('f2')
+            s = (f1 if f1 else 0) + (f2 if f2 else 0)
+            return s if (f1 is not None or f2 is not None) else -1
+
+        lista_linhas.sort(key=lambda x: x["competidor"])
+        lista_linhas.sort(key=lambda x: get_alex_total_telao(x), reverse=True)
         lista_linhas.sort(key=lambda x: x["total_ord"], reverse=True)
         
         html = '<table class="tabela-dourada-compacta">'
