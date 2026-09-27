@@ -50,12 +50,11 @@ CATEGORIAS_ORIGINAIS = {
     },
     "Platina": {
         "Condutores": ["Alisson Lopes", "Anderson Oliveira", "Catriel Pereira", "Deivid Nascimento", "Douglas Clo", "Jean Pierre"],
-        "Conduzidas": ["Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Fran Garcia", "Ingrid Hexcel", "Nanda Soares"],
+        "Conduzidas": ["Andreza Godoi", "Cassi Pooch", "Estéfane Borges", "Fabiola Braga", "Ingrid Hexcel", "Nanda Soares"],
     },
     "Ouro": {
-        "Condutores": ["Ciro Lima", "Duarte", "Edilson Soares", "Fabiano da Luz", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Ruan LW", "Everton Fernandes", "Jozemar Vargas", "Maicom Lucas"],
+        "Condutores": ["Ciro Lima", "Duarte", "Edilson Soares", "Fabiano da Luz", "Isma Simões", "Jonatan Santos", "Jonatan Monteiro", "Lukas Nunes", "Paulo PC", "Rogerio Sorriso", "Everton Fernandes", "Jozemar Vargas", "Maicom Lucas"],
         "Conduzidas": [
-            "Andreza Godoi",
             "Angélica Collioni",
             "Daia Lopes",
             "Franciely Lopes",
